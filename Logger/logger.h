@@ -14,7 +14,6 @@ namespace logger {
         DEBUG,
         ERROR,
         WARNING,
-        TEST,
         INFO
     };
 }
