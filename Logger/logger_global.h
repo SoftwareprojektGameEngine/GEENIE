@@ -3,6 +3,7 @@
 
 #include <QtCore/qglobal.h>
 #include <QString>
+#include "common.h"
 
 #if defined(LOGGER_LIBRARY)
 #  define LOGGERSHARED_EXPORT Q_DECL_EXPORT

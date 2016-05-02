@@ -2,6 +2,8 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     GEENIE \
-    Logger
+    Logger \
+    common
 
-GEENIE.depends = Logger
+GEENIE.depends = Logger common
+Logger.depends = common

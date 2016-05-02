@@ -19,28 +19,28 @@
      <item>
       <widget class="QCheckBox" name="debugCheckBox">
        <property name="text">
-        <string>CheckBox</string>
+        <string>DEBUG</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="errorCheckBox">
        <property name="text">
-        <string>CheckBox</string>
+        <string>ERROR</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="warningCheckBox">
        <property name="text">
-        <string>CheckBox</string>
+        <string>WARNING</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="infoCheckBox">
        <property name="text">
-        <string>CheckBox</string>
+        <string>INFO</string>
        </property>
       </widget>
      </item>

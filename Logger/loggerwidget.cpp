@@ -5,6 +5,10 @@
 
 LoggerWidget::LoggerWidget(QWidget *parent) :
     QWidget(parent),
+    _debugChecked(true),
+    _errorChecked(true),
+    _warningChecked(true),
+    _infoChecked(true),
     ui(new Ui::LoggerWidget)
 {
     ui->setupUi(this);
@@ -12,6 +16,10 @@ LoggerWidget::LoggerWidget(QWidget *parent) :
     QPalette p = ui->logViewer->palette();
     p.setColor(QPalette::Base,QColor(0,0,0));
     ui->logViewer->setPalette(p);
+    ui->debugCheckBox->setChecked(true);
+    ui->errorCheckBox->setChecked(true);
+    ui->warningCheckBox->setChecked(true);
+    ui->infoCheckBox->setChecked(true);
 }
 
 LoggerWidget::~LoggerWidget()
@@ -65,5 +73,25 @@ void LoggerWidget::newMessage(const QString &msg, logger::MessageType type) cons
             .arg(msg);
     ui->logViewer->insertHtml(htmlMessage);
     ui->logViewer->moveCursor(QTextCursor::End);
-    qDebug() << ui->logViewer->toHtml();
+
+}
+
+void LoggerWidget::on_debugCheckBox_toggled(bool checked)
+{
+    _debugChecked = checked;
+}
+
+void LoggerWidget::on_errorCheckBox_toggled(bool checked)
+{
+    _errorChecked = checked;
+}
+
+void LoggerWidget::on_warningCheckBox_toggled(bool checked)
+{
+    _warningChecked = checked;
+}
+
+void LoggerWidget::on_infoCheckBox_toggled(bool checked)
+{
+    _infoChecked = checked;
 }

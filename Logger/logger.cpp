@@ -3,10 +3,8 @@
 #include <QDateTime>
 #include <QTextStream>
 #include "loggerwidget.h"
+#include <QDebug>
 
-static const QString log_file_path(QString("%1/AppData/Local/GEENIE/log/%2.log")
-                                   .arg(QDir::homePath())
-                                   .arg(QDate::currentDate().toString(QString("ddMMyyyy"))));
 
 Logger& Logger::Instance()
 {
@@ -26,9 +24,11 @@ Logger::~Logger()
 void Logger::createMsg(logger::MessageType type, QString msg)
 {
     loggerConsole->newMessage(msg,type);
-    QFile logfile(log_file_path);
+
+    QFile logfile(Common::log_file_path);
     if( logfile.open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Append) )
     {
+        qDebug() << "Opened";
         QTextStream logstream(&logfile);
         switch(type)
         {
@@ -72,6 +72,8 @@ void Logger::createMsg(logger::MessageType type, QString msg)
                       << endl;
         }
         }
+    }else{
+        qDebug() << logfile.errorString();
     }
 }
 
