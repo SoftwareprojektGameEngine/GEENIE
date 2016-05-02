@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #-------------------------------------------------
 #
 # Project created by QtCreator 2016-04-25T10:25:23
@@ -26,3 +27,12 @@ win32 {
 
 INCLUDEPATH += $$PWD/osg-include
 DEPENDPATH += $$PWD/osg-include
+=======
+TEMPLATE = subdirs
+
+SUBDIRS += \
+    GEENIE \
+    Logger
+
+GEENIE.depends = Logger
+>>>>>>> 9b35ea7ad01253c979ea64a27b51d19c1556ff2a
