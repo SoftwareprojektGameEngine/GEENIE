@@ -23,3 +23,10 @@ FORMS    += geeniemainwindow.ui
 
 
 win32: DESTDIR = $$OUT_PWD/../bin
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Logger/release/ -lLogger
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Logger/debug/ -lLogger
+
+INCLUDEPATH += $$PWD/../Logger
+DEPENDPATH += $$PWD/../Logger

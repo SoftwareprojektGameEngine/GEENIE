@@ -2,6 +2,7 @@
 #define GEENIEMAINWINDOW_H
 
 #include <QMainWindow>
+#include "logger.h"
 
 namespace Ui {
 class GEENIEMainWindow;

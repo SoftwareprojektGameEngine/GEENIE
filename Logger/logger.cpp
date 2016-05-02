@@ -2,8 +2,9 @@
 #include <QDir>
 #include <QDateTime>
 #include <QTextStream>
+#include "loggerwidget.h"
 
-static const QString log_file_path(QString("%1/AppData/Local/CalibraTHOR/log/%2.log")
+static const QString log_file_path(QString("%1/AppData/Local/GEENIE/log/%2.log")
                                    .arg(QDir::homePath())
                                    .arg(QDate::currentDate().toString(QString("ddMMyyyy"))));
 
@@ -15,6 +16,7 @@ Logger& Logger::Instance()
 
 Logger::Logger()
 {
+    loggerConsole = new LoggerWidget();
 }
 
 Logger::~Logger()
@@ -23,39 +25,51 @@ Logger::~Logger()
 
 void Logger::createMsg(logger::MessageType type, QString msg)
 {
+    loggerConsole->newMessage(msg,type);
     QFile logfile(log_file_path);
     if( logfile.open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Append) )
     {
         QTextStream logstream(&logfile);
         switch(type)
         {
-        case logger::MessageType::DEBUG: {
+        case logger::MessageType::DEBUG:
+        {
             logstream << QDateTime::currentDateTime().toString("hh:mm:ss.zzz")
                       << " DEBUG "
                       << msg
                       << endl;
             break;
         }
-        case logger::MessageType::ERROR: {
+        case logger::MessageType::ERROR:
+        {
             logstream << QDateTime::currentDateTime().toString("hh:mm:ss.zzz")
                       << " ERROR "
                       << msg
                       << endl;
             break;
         }
-        case logger::MessageType::WARNING: {
+        case logger::MessageType::WARNING:
+        {
             logstream << QDateTime::currentDateTime().toString("hh:mm:ss.zzz")
                       << " WARNING "
                       << msg
                       << endl;
             break;
         }
-        case logger::MessageType::INFO: {
+        case logger::MessageType::INFO:
+        {
             logstream << QDateTime::currentDateTime().toString("hh:mm:ss.zzz")
                       << " INFO "
                       << msg
                       << endl;
             break;
+        }
+        default:
+        {
+            logstream << QDateTime::currentDateTime().toString("hh:mm:ss.zzz")
+                      << " UNKNOWN "
+                      << "unknown log message"
+                      << endl;
         }
         }
     }

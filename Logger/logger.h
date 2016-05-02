@@ -3,20 +3,13 @@
 
 #include "logger_global.h"
 #include <string>
+#include "loggerwidget.h"
 
 #define DEBUG_MSG(msg) Logger::Instance().createMsg(logger::MessageType::DEBUG,msg);
 #define ERROR_MSG(msg) Logger::Instance().createMsg(logger::MessageType::ERROR,msg);
 #define WARNING_MSG(msg) Logger::Instance().createMsg(logger::MessageType::WARNING,msg);
 #define INFO_MSG(msg) Logger::Instance().createMsg(logger::MessageType::INFO,msg);
-
-namespace logger {
-    enum class MessageType {
-        DEBUG,
-        ERROR,
-        WARNING,
-        INFO
-    };
-}
+#define LOGGER_WIDGET Logger::Instance().loggerConsole;
 
 class LOGGERSHARED_EXPORT Logger
 {   
@@ -30,6 +23,8 @@ public:
     void createMsg(logger::MessageType type,QString msg);
     void createMsg(logger::MessageType type, std::string msg);
     void createMsg(logger::MessageType type, const char* msg);
+
+    LoggerWidget* loggerConsole;
 
 protected:
     Logger();

@@ -15,10 +15,12 @@ TEMPLATE = lib
 
 DEFINES += LOGGER_LIBRARY
 
-SOURCES += logger.cpp
+SOURCES += logger.cpp \
+    loggerwidget.cpp
 
 HEADERS += logger.h\
-        logger_global.h
+        logger_global.h \
+    loggerwidget.h
 
 DLLDESTDIR = $$OUT_PWD/../bin
 
@@ -26,3 +28,6 @@ unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+FORMS += \
+    loggerwidget.ui

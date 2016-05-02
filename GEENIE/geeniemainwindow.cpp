@@ -6,6 +6,7 @@ GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
     ui(new Ui::GEENIEMainWindow)
 {
     ui->setupUi(this);
+    setCentralWidget(Logger::Instance().loggerConsole);
 }
 
 GEENIEMainWindow::~GEENIEMainWindow()
