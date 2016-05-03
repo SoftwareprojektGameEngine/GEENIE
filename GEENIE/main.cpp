@@ -10,10 +10,5 @@ int main(int argc, char *argv[])
 
     GEENIE g;
 
-    ERROR_MSG("TEST");
-    DEBUG_MSG("TEST");
-    WARNING_MSG("TEST");
-    INFO_MSG("TEST");
-
     return a.exec();
 }

@@ -26,7 +26,6 @@ void LoggerFilterModel::filterChanged(bool debug, bool error, bool warning, bool
 
 bool LoggerFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
-    qDebug() << __LINE__;
     if(this->sourceModel() != nullptr)
     {
         QModelIndex index = sourceModel()->index(source_row,0,source_parent);

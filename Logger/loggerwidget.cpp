@@ -77,7 +77,7 @@ void LoggerWidget::newMessage(const QString &msg, logger::MessageType type) cons
     //QStandardItem* msgItem = new QStandardItem(message);
 
     _msgModel->append(new LoggerListItem(msg,QDateTime::currentDateTime(),type));
-
+    ui->msgConsole->scrollToBottom();
 }
 
 void LoggerWidget::on_debugCheckBox_toggled(bool checked)
