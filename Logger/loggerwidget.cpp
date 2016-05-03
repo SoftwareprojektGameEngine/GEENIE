@@ -2,6 +2,7 @@
 #include "ui_loggerwidget.h"
 #include <QDateTime>
 #include <QDebug>
+#include "loggerlistitem.h"
 
 LoggerWidget::LoggerWidget(QWidget *parent) :
     QWidget(parent),
@@ -9,17 +10,21 @@ LoggerWidget::LoggerWidget(QWidget *parent) :
     _errorChecked(true),
     _warningChecked(true),
     _infoChecked(true),
+    _filterModel(new LoggerFilterModel(this)),
+    _msgModel(new LoggerListModel(this)),
     ui(new Ui::LoggerWidget)
 {
     ui->setupUi(this);
-    ui->logViewer->setReadOnly(true);
-    QPalette p = ui->logViewer->palette();
-    p.setColor(QPalette::Base,QColor(0,0,0));
-    ui->logViewer->setPalette(p);
+
+    _filterModel->setSourceModel(_msgModel);
+    ui->msgConsole->setModel(_filterModel);
+
     ui->debugCheckBox->setChecked(true);
     ui->errorCheckBox->setChecked(true);
     ui->warningCheckBox->setChecked(true);
     ui->infoCheckBox->setChecked(true);
+
+    connect(this,SIGNAL(filterChanged(bool,bool,bool,bool)),_filterModel,SLOT(filterChanged(bool,bool,bool,bool)));
 }
 
 LoggerWidget::~LoggerWidget()
@@ -29,7 +34,6 @@ LoggerWidget::~LoggerWidget()
 
 void LoggerWidget::newMessage(const QString &msg, logger::MessageType type) const
 {
-    ui->logViewer->moveCursor(QTextCursor::End);
     QString color = QString();
     QString stringType = QString();
     switch(type)
@@ -63,35 +67,44 @@ void LoggerWidget::newMessage(const QString &msg, logger::MessageType type) cons
 
     }
     }
-    QString htmlMessage = QString("<font color=#459A06>%1</font>"
-                                  "<font color=\"White\"> - </font>"
-                                  "<font color=%2>[%3] %4</font>"
-                                  "<br>")
+
+    QString message = QString("%1 - %2 [%3] %4")
             .arg(QDateTime::currentDateTime().toString(QString("yyyy-MM-dd hh:mm:ss")))
             .arg(color)
             .arg(stringType)
             .arg(msg);
-    ui->logViewer->insertHtml(htmlMessage);
-    ui->logViewer->moveCursor(QTextCursor::End);
+
+    //QStandardItem* msgItem = new QStandardItem(message);
+
+    _msgModel->append(new LoggerListItem(msg,QDateTime::currentDateTime(),type));
 
 }
 
 void LoggerWidget::on_debugCheckBox_toggled(bool checked)
 {
     _debugChecked = checked;
+    filter();
 }
 
 void LoggerWidget::on_errorCheckBox_toggled(bool checked)
 {
     _errorChecked = checked;
+    filter();
 }
 
 void LoggerWidget::on_warningCheckBox_toggled(bool checked)
 {
     _warningChecked = checked;
+    filter();
 }
 
 void LoggerWidget::on_infoCheckBox_toggled(bool checked)
 {
     _infoChecked = checked;
+    filter();
+}
+
+void LoggerWidget::filter()
+{
+    emit filterChanged(_debugChecked,_errorChecked,_warningChecked,_infoChecked);
 }

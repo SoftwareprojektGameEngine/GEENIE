@@ -60,7 +60,11 @@
     </layout>
    </item>
    <item>
-    <widget class="QTextEdit" name="logViewer"/>
+    <widget class="QListView" name="msgConsole">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

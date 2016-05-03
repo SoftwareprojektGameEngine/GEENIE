@@ -6,8 +6,6 @@
 
 QT       += widgets
 
-QT       -= gui
-
 include(../global.pri)
 
 TARGET = Logger
@@ -16,11 +14,17 @@ TEMPLATE = lib
 DEFINES += LOGGER_LIBRARY
 
 SOURCES += logger.cpp \
-    loggerwidget.cpp
+    loggerwidget.cpp \
+    loggerlistmodel.cpp \
+    loggerlistitem.cpp \
+    loggerfiltermodel.cpp
 
 HEADERS += logger.h\
         logger_global.h \
-    loggerwidget.h
+    loggerwidget.h \
+    loggerlistmodel.h \
+    loggerlistitem.h \
+    loggerfiltermodel.h
 
 DLLDESTDIR = $$OUT_PWD/../bin
 
