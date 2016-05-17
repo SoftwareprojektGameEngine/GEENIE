@@ -50,3 +50,15 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -l
 
 INCLUDEPATH += $$PWD/../common
 DEPENDPATH += $$PWD/../common
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Brain/release/ -lBrain
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Brain/debug/ -lBrain
+
+INCLUDEPATH += $$PWD/../Brain
+DEPENDPATH += $$PWD/../Brain
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Backend/release/ -lBackend
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Backend/debug/ -lBackend
+
+INCLUDEPATH += $$PWD/../Backend
+DEPENDPATH += $$PWD/../Backend

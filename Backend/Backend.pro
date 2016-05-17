@@ -18,6 +18,8 @@ SOURCES += backend.cpp
 HEADERS += backend.h\
         backend_global.h
 
+DLLDESTDIR = $$OUT_PWD/../bin
+
 unix {
     target.path = /usr/lib
     INSTALLS += target

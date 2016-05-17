@@ -18,6 +18,8 @@ SOURCES += brain.cpp
 HEADERS += brain.h\
         brain_global.h
 
+DLLDESTDIR = $$OUT_PWD/../bin
+
 unix {
     target.path = /usr/lib
     INSTALLS += target

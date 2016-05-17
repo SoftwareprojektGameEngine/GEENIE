@@ -20,6 +20,8 @@ SOURCES += common.cpp
 HEADERS += common.h\
         common_global.h
 
+DLLDESTDIR = $$OUT_PWD/../bin
+
 unix {
     target.path = /usr/lib
     INSTALLS += target
