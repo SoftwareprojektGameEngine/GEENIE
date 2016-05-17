@@ -8,6 +8,8 @@ QT       += widgets
 
 QT       -= gui
 
+include(../global.pri)
+
 TARGET = common
 TEMPLATE = lib
 
