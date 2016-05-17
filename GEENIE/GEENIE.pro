@@ -20,14 +20,20 @@ SOURCES += main.cpp\
     ../tinyxml/tinystr.cpp \
     ../tinyxml/tinyxml.cpp \
     ../tinyxml/tinyxmlerror.cpp \
-    ../tinyxml/tinyxmlparser.cpp
+    ../tinyxml/tinyxmlparser.cpp \
+    layoutform.cpp \
+    newprojectwidget.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
     ../tinyxml/tinystr.h \
-    ../tinyxml/tinyxml.h
+    ../tinyxml/tinyxml.h \
+    layoutform.h \
+    newprojectwidget.h
 
-FORMS    += geeniemainwindow.ui
+FORMS    += geeniemainwindow.ui \
+    layoutform.ui \
+    newprojectwidget.ui
 
 
 win32: DESTDIR = $$OUT_PWD/../bin
