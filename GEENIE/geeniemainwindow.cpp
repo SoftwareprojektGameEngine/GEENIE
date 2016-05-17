@@ -6,10 +6,19 @@ GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
     ui(new Ui::GEENIEMainWindow)
 {
     ui->setupUi(this);
-    setCentralWidget(Logger::Instance().loggerConsole);
 }
 
 GEENIEMainWindow::~GEENIEMainWindow()
 {
     delete ui;
+}
+
+void GEENIEMainWindow::on_pushButton_clicked()
+{
+    DEBUG_MSG(QString("Test DEBUG"));
+}
+
+void GEENIEMainWindow::on_pushButton_2_clicked()
+{
+    ERROR_MSG(QString("Test ERROR"));
 }
