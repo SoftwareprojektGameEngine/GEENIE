@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "logger.h"
 
+class QTextDocument;
+
 namespace Ui {
 class GEENIEMainWindow;
 }
@@ -15,6 +17,8 @@ class GEENIEMainWindow : public QMainWindow
 public:
     explicit GEENIEMainWindow(QWidget *parent = 0);
     ~GEENIEMainWindow();
+
+    QTextDocument* scriptEditorDocument();
 
 protected:
     void closeEvent(QCloseEvent* event);

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui opengl
 
 include(../global.pri)
 
@@ -22,14 +22,16 @@ SOURCES += main.cpp\
     ../tinyxml/tinyxmlerror.cpp \
     ../tinyxml/tinyxmlparser.cpp \
     layoutform.cpp \
-    newprojectwidget.cpp
+    newprojectwidget.cpp \
+    scripthighlighter.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
     ../tinyxml/tinystr.h \
     ../tinyxml/tinyxml.h \
     layoutform.h \
-    newprojectwidget.h
+    newprojectwidget.h \
+    scripthighlighter.h
 
 FORMS    += geeniemainwindow.ui \
     layoutform.ui \

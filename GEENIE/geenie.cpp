@@ -13,7 +13,9 @@
 
 GEENIE::GEENIE(QObject *parent) :
     QObject(parent),
-    _mainWindow(new GEENIEMainWindow)
+    _mainWindow(new GEENIEMainWindow),
+    _layoutName("default"),
+    _highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
 {
     createDockWidgetTitles();
     QDir dir;
@@ -35,7 +37,6 @@ GEENIE::GEENIE(QObject *parent) :
     insertDockWidget(EDockWidgetTypes::EntitiesWidget,lbl5,true,Qt::BottomDockWidgetArea);
 
     QObject::connect(_mainWindow,SIGNAL(saveSession()),this,SLOT(saveSession()));
-
     _mainWindow->show();
 }
 
@@ -46,6 +47,8 @@ void GEENIE::insertDockWidget(EDockWidgetTypes type, QWidget *widget, bool show,
     {
         QDockWidget* dWidget = new QDockWidget(_dockWidgetsTitles.value(type),_mainWindow);
         widget->setParent(dWidget);
+        dWidget->setMinimumHeight(200);
+        dWidget->setMinimumWidth(200);
         dWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
         dWidget->setWidget(widget);
         if(show)
@@ -93,6 +96,18 @@ void GEENIE::saveSession()
     {
         TiXmlElement* dockable = new TiXmlElement(_dockWidgetsTitles.value(it.key()).toUtf8().data());
         dockables->LinkEndChild(dockable);
+
+        TiXmlElement* visible = new TiXmlElement("visible");
+        if(dynamic_cast<QDockWidget*>(it.value())->isVisible())
+        {
+            visible->LinkEndChild(new TiXmlText("true"));
+        }
+        else
+        {
+            visible->LinkEndChild(new TiXmlText("false"));
+        }
+        dockable->LinkEndChild(visible);
+
         TiXmlElement* floating = new TiXmlElement("floating");
         if(dynamic_cast<QDockWidget*>(it.value())->isFloating())
         {

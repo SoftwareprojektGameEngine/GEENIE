@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>98</height>
+    <width>246</width>
+    <height>86</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="LayoutLabel">
      <property name="text">
-      <string>Please type in a Layout-Name:</string>
+      <string>Please type in a layout name:</string>
      </property>
     </widget>
    </item>

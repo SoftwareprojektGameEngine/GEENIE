@@ -32,7 +32,7 @@ void Logger::createMsg(logger::MessageType type, QString msg)
         QTextStream logstream(&logfile);
         switch(type)
         {
-        case logger::MessageType::DEBUG:
+        case logger::MessageType::DEBUG_MSG:
         {
             logstream << QDateTime::currentDateTime().toString("hh:mm:ss.zzz")
                       << " DEBUG "
@@ -40,7 +40,7 @@ void Logger::createMsg(logger::MessageType type, QString msg)
                       << endl;
             break;
         }
-        case logger::MessageType::ERROR:
+        case logger::MessageType::ERROR_MSG:
         {
             logstream << QDateTime::currentDateTime().toString("hh:mm:ss.zzz")
                       << " ERROR "
@@ -48,7 +48,7 @@ void Logger::createMsg(logger::MessageType type, QString msg)
                       << endl;
             break;
         }
-        case logger::MessageType::WARNING:
+        case logger::MessageType::WARNING_MSG:
         {
             logstream << QDateTime::currentDateTime().toString("hh:mm:ss.zzz")
                       << " WARNING "
@@ -56,7 +56,7 @@ void Logger::createMsg(logger::MessageType type, QString msg)
                       << endl;
             break;
         }
-        case logger::MessageType::INFO:
+        case logger::MessageType::INFO_MSG:
         {
             logstream << QDateTime::currentDateTime().toString("hh:mm:ss.zzz")
                       << " INFO "
