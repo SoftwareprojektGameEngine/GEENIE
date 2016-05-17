@@ -20,8 +20,7 @@ SOURCES += main.cpp\
     ../tinyxml/tinystr.cpp \
     ../tinyxml/tinyxml.cpp \
     ../tinyxml/tinyxmlerror.cpp \
-    ../tinyxml/tinyxmlparser.cpp \
-    ../tinyxml/xmltest.cpp
+    ../tinyxml/tinyxmlparser.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \

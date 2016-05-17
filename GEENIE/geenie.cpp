@@ -2,7 +2,10 @@
 #include "common.h"
 #include "geeniemainwindow.h"
 
+#include "../tinyxml/tinyxml.h"
+
 #include <QDir>
+#include <QFile>
 #include <QDockWidget>
 #include <QLabel>
 #include <QDebug>
@@ -30,6 +33,8 @@ GEENIE::GEENIE(QObject *parent) :
     insertDockWidget(EDockWidgetTypes::InspectorWidget,lbl2,true,Qt::RightDockWidgetArea);
     insertDockWidget(EDockWidgetTypes::AssetsWidget,lbl3,true,Qt::RightDockWidgetArea);
     insertDockWidget(EDockWidgetTypes::EntitiesWidget,lbl5,true,Qt::BottomDockWidgetArea);
+
+    QObject::connect(_mainWindow,SIGNAL(saveSession()),this,SLOT(saveSession()));
 
     _mainWindow->show();
 }
@@ -65,4 +70,43 @@ void GEENIE::createDockWidgetTitles()
     _dockWidgetsTitles.insert(EDockWidgetTypes::InspectorWidget,QString("Inspector"));
     _dockWidgetsTitles.insert(EDockWidgetTypes::AssetsWidget,QString("Assets"));
     _dockWidgetsTitles.insert(EDockWidgetTypes::EntitiesWidget,QString("Entities"));
+}
+
+void GEENIE::saveSession()
+{
+    QFile sessionSaveFile(QString("%1\\session_save.xml").arg(QDir::currentPath()));
+    if(!sessionSaveFile.exists())
+    {
+        sessionSaveFile.open(QIODevice::WriteOnly);
+        sessionSaveFile.close();
+    }
+
+    TiXmlDocument doc;
+    TiXmlDeclaration* decl = new TiXmlDeclaration("1.0","","");
+    doc.LinkEndChild(decl);
+    TiXmlElement* root = new TiXmlElement("GEENIE");
+    doc.LinkEndChild(root);
+    TiXmlElement* dockables = new TiXmlElement("Dockables");
+    root->LinkEndChild(dockables);
+
+    for(QMap<EDockWidgetTypes, QDockWidget*>::Iterator it = _dockWidgets.begin(); it != _dockWidgets.end(); ++it)
+    {
+        TiXmlElement* dockable = new TiXmlElement(_dockWidgetsTitles.value(it.key()).toUtf8().data());
+        dockables->LinkEndChild(dockable);
+        TiXmlElement* floating = new TiXmlElement("floating");
+        if(dynamic_cast<QDockWidget*>(it.value())->isFloating())
+        {
+            floating->LinkEndChild(new TiXmlText("true"));
+        }
+        else
+        {
+            floating->LinkEndChild(new TiXmlText("false"));
+        }
+        dockable->LinkEndChild(floating);
+        TiXmlElement* dockArea = new TiXmlElement("area");
+        dockArea->LinkEndChild(new TiXmlText(QString::number(_mainWindow->dockWidgetArea(dynamic_cast<QDockWidget*>(it.value()))).toUtf8().data()));
+        dockable->LinkEndChild(dockArea);
+    }
+    doc.SaveFile("session_save.xml");
+
 }
