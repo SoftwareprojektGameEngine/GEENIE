@@ -33,6 +33,9 @@ private:
 
     GEENIEMainWindow* _mainWindow;
 
+private slots:
+    void saveSession();
+
 signals:
 
 public slots:

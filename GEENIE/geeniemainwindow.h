@@ -16,6 +16,12 @@ public:
     explicit GEENIEMainWindow(QWidget *parent = 0);
     ~GEENIEMainWindow();
 
+protected:
+    void closeEvent(QCloseEvent* event);
+
+signals:
+    void saveSession();
+
 private slots:
     void on_pushButton_clicked();
 

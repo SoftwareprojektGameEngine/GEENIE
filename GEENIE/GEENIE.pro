@@ -16,10 +16,17 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         geeniemainwindow.cpp \
-    geenie.cpp
+    geenie.cpp \
+    ../tinyxml/tinystr.cpp \
+    ../tinyxml/tinyxml.cpp \
+    ../tinyxml/tinyxmlerror.cpp \
+    ../tinyxml/tinyxmlparser.cpp \
+    ../tinyxml/xmltest.cpp
 
 HEADERS  += geeniemainwindow.h \
-    geenie.h
+    geenie.h \
+    ../tinyxml/tinystr.h \
+    ../tinyxml/tinyxml.h
 
 FORMS    += geeniemainwindow.ui
 
