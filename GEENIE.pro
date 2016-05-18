@@ -5,7 +5,8 @@ SUBDIRS += \
     Logger \
     common \
     Brain \
-    Backend
+    Backend \
+    Assetwindow
 
 GEENIE.depends = Backend Brain Logger common
 Brain.depends = Backend Logger common
