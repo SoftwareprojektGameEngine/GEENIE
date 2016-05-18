@@ -3,6 +3,7 @@
 
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
+#include <QString>
 
 namespace Highlighter
 {
@@ -23,6 +24,9 @@ public:
     Highlighter::Types currentType();
     void changeType(Highlighter::Types type);
 
+signals:
+    void typeChanged(Highlighter::Types);
+
 private:
     Highlighter::Types _currentType;
 
@@ -32,7 +36,12 @@ private:
             QTextCharFormat format;
     };
 
-    QVector<Rule> _rules;
+    QTextCharFormat _keywordFormat;
+    QTextCharFormat _singleLineCommentFormat;
+    QTextCharFormat _multilineCommentFormat;
+    QTextCharFormat _quotationFormat;
+
+    QMultiMap<Highlighter::Types,Rule> _rules;
 
 protected:
     void highlightBlock(const QString& text) Q_DECL_OVERRIDE;

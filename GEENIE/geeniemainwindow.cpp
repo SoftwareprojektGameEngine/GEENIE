@@ -15,6 +15,10 @@ GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
     font.setPointSize(10);
 
     ui->scriptEditor->setFont(font);
+    ui->scriptEditor->setStyleSheet(QString("background-color: black;color: white;"));
+    ui->comboBox->addItem(QString("Python"));
+    ui->comboBox->addItem(QString("Lua"));
+    ui->comboBox->setCurrentIndex(0);
 }
 
 GEENIEMainWindow::~GEENIEMainWindow()
@@ -51,4 +55,16 @@ void GEENIEMainWindow::closeEvent(QCloseEvent *event)
 QTextDocument* GEENIEMainWindow::scriptEditorDocument()
 {
     return ui->scriptEditor->document();
+}
+
+void GEENIEMainWindow::on_comboBox_currentIndexChanged(int index)
+{
+    if(index == 0)
+    {
+        emit changeScriptType(Highlighter::Types::Python);
+    }
+    else
+    {
+        emit changeScriptType(Highlighter::Types::Lua);
+    }
 }

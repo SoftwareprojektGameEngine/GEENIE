@@ -42,6 +42,7 @@ private:
 
 private slots:
     void saveSession();
+    void changeScriptType(Highlighter::Types type);
 
 signals:
 
