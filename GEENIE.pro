@@ -6,7 +6,11 @@ SUBDIRS += \
     common \
     Brain \
     Backend \
+<<<<<<< HEAD
     ScriptEditor
+=======
+    Assetwindow
+>>>>>>> origin/develop
 
 GEENIE.depends = Backend Brain Logger common
 Brain.depends = Backend Logger common
