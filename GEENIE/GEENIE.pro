@@ -4,11 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui opengl
+QT       += core widgets gui opengl
 
 include(../global.pri)
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4)
 
 TARGET = GEENIE
 TEMPLATE = app
@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     ../tinyxml/tinyxmlparser.cpp \
     layoutform.cpp \
     newprojectwidget.cpp \
-    scripthighlighter.cpp
+    scripthighlighter.cpp \
+    assetwidget.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
@@ -31,15 +32,16 @@ HEADERS  += geeniemainwindow.h \
     ../tinyxml/tinyxml.h \
     layoutform.h \
     newprojectwidget.h \
-    scripthighlighter.h
+    scripthighlighter.h \
+    assetwidget.h
 
 FORMS    += geeniemainwindow.ui \
     layoutform.ui \
-    newprojectwidget.ui
+    newprojectwidget.ui \
+    assetwidget.ui
 
 
 win32: DESTDIR = $$OUT_PWD/../bin
-
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Logger/release/ -lLogger
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Logger/debug/ -lLogger
@@ -53,14 +55,15 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -l
 INCLUDEPATH += $$PWD/../common
 DEPENDPATH += $$PWD/../common
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Brain/release/ -lBrain
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Brain/debug/ -lBrain
-
-INCLUDEPATH += $$PWD/../Brain
-DEPENDPATH += $$PWD/../Brain
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Backend/release/ -lBackend
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Backend/debug/ -lBackend
 
 INCLUDEPATH += $$PWD/../Backend
 DEPENDPATH += $$PWD/../Backend
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../GEENIE_Core/release/ -lGEENIE_Core
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../GEENIE_Core/debug/ -lGEENIE_Core
+else:unix: LIBS += -L$$OUT_PWD/../GEENIE_Core/ -lGEENIE_Core
+
+INCLUDEPATH += $$PWD/../GEENIE_Core
+DEPENDPATH += $$PWD/../GEENIE_Core
