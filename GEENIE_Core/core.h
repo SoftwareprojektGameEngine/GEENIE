@@ -18,6 +18,9 @@ enum AssetType {
     SCRIPT_ASSET,
 };
 
+/*!
+ * \brief The ComponentType enum
+ */
 enum ComponentType {
     MODEL,
     MATERIAL,
@@ -29,13 +32,16 @@ enum ComponentType {
  *
  * The UserAction class is an interface for state-changing operations on a Project instance.
  */
-
 class SHARED_EXPORT UserAction {
 public:
+    //! The constructor.
     UserAction() {}
+    //! The destructor.
     virtual ~UserAction() {}
 
+    //! Executes the action.
     virtual void Do() = 0;
+    //! Re
     virtual void Undo() = 0;
 };
 

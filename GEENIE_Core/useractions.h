@@ -68,4 +68,58 @@ public:
     void Undo();
 };
 
+class SHARED_EXPORT AddSceneAction : public UserAction {
+private:
+    Project& project;
+    Scene* scene;
+    bool done;
+public:
+    AddSceneAction(Project& project, Scene* scene);
+    ~AddSceneAction();
+
+    void Do();
+    void Undo();
+};
+
+class SHARED_EXPORT RemoveSceneAction : public UserAction {
+private:
+    Project& project;
+    Scene* scene;
+    bool done;
+public:
+    RemoveSceneAction(Project& project, QUuid sceneID);
+    ~RemoveSceneAction();
+
+    void Do();
+    void Undo();
+};
+
+class SHARED_EXPORT AddAssetAction : public UserAction {
+private:
+    Project& project;
+    Asset* asset;
+    bool done;
+public:
+    AddAssetAction(Project& project, Asset* asset);
+    ~AddAssetAction();
+
+    void Do();
+    void Undo();
+};
+
+class SHARED_EXPORT RemoveAssetAction : public UserAction {
+private:
+    Project& project;
+    Asset* asset;
+    bool done;
+public:
+    RemoveAssetAction(Project& project, QUuid assetID);
+    ~RemoveAssetAction();
+
+    void Do();
+    void Undo();
+};
+
+
+
 #endif // USERACTION_H

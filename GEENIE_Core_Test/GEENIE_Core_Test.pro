@@ -19,7 +19,8 @@ DESTDIR = $$OUT_PWD/../bin
 SOURCES += \
     project_test.cpp \
     main.cpp \
-    entity_test.cpp
+    entity_test.cpp \
+    scene_test.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../GEENIE_Core/release/ -lGEENIE_Core
@@ -31,4 +32,5 @@ DEPENDPATH += $$PWD/../GEENIE_Core
 
 HEADERS += \
     project_test.h \
-    entity_test.h
+    entity_test.h \
+    scene_test.h

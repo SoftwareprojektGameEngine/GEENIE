@@ -26,7 +26,11 @@ SOURCES += \
     removeentityaction.cpp \
     addcomponentaction.cpp \
     modifyentityaction.cpp \
-    scene.cpp
+    scene.cpp \
+    addsceneaction.cpp \
+    addassetaction.cpp \
+    removesceneaction.cpp \
+    removeassetaction.cpp
 
 HEADERS +=\
         geenie_core_global.h \

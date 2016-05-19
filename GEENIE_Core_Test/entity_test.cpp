@@ -28,7 +28,16 @@ void EntityTest::testRemoveEntity() {
 }
 
 void EntityTest::testGetEntity() {
+    Entity* parent = new Entity(QUuid::createUuid());
+    Entity* child = new Entity(parent->GetID());
 
+    QVERIFY(parent->GetSubEntity(parent->GetID()) == nullptr);
+    QVERIFY(parent->GetSubEntity(parent->GetParentID()) == nullptr);
+    QVERIFY(parent->GetSubEntity(QUuid::createUuid()) == nullptr);
+    QVERIFY(parent->GetSubEntity(child->GetID()) == nullptr);
+
+    parent->AddSubEntity(child);
+    QVERIFY(parent->GetSubEntity(child->GetID()) == child);
 }
 
 void EntityTest::testAddComponent() {
