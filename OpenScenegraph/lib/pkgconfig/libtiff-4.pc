@@ -1,0 +1,11 @@
+prefix=C:/Users/schoe/Desktop/Openscenegraph/x64/OpenScenegraph
+exec_prefix=C:/Users/schoe/Desktop/Openscenegraph/x64/OpenScenegraph
+libdir=C:/Users/schoe/Desktop/Openscenegraph/x64/OpenScenegraph/lib
+includedir=C:/Users/schoe/Desktop/Openscenegraph/x64/OpenScenegraph/include
+
+Name: libtiff
+Description:  Tag Image File Format (TIFF) library.
+Version: 4.0.6
+Libs: -LC:/Users/schoe/Desktop/Openscenegraph/x64/OpenScenegraph/lib -ltiff
+Libs.private: 
+Cflags: -IC:/Users/schoe/Desktop/Openscenegraph/x64/OpenScenegraph/include
