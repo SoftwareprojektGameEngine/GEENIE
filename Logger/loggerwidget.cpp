@@ -38,25 +38,25 @@ void LoggerWidget::newMessage(const QString &msg, logger::MessageType type) cons
     QString stringType = QString();
     switch(type)
     {
-    case logger::MessageType::DEBUG:
+    case logger::MessageType::DEBUG_MSG:
     {
         stringType = QString("DEBUG");
         color = QString("#459A06");
         break;
     }
-    case logger::MessageType::ERROR:
+    case logger::MessageType::ERROR_MSG:
     {
         stringType = QString("ERROR");
         color = QString("#CC0000");
         break;
     }
-    case logger::MessageType::WARNING:
+    case logger::MessageType::WARNING_MSG:
     {
         stringType = QString("WARNING");
         color = QString("#AAA000");
         break;
     }
-    case logger::MessageType::INFO:
+    case logger::MessageType::INFO_MSG:
     {
         stringType = QString("INFO");
         color = QString("White");

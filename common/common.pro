@@ -8,6 +8,8 @@ QT       += widgets
 
 QT       -= gui
 
+include(../global.pri)
+
 TARGET = common
 TEMPLATE = lib
 
@@ -17,6 +19,8 @@ SOURCES += common.cpp
 
 HEADERS += common.h\
         common_global.h
+
+DLLDESTDIR = $$OUT_PWD/../bin
 
 unix {
     target.path = /usr/lib

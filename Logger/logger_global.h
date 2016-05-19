@@ -13,10 +13,10 @@
 
 namespace logger {
     enum class MessageType {
-        DEBUG,
-        ERROR,
-        WARNING,
-        INFO
+        DEBUG_MSG,
+        ERROR_MSG,
+        WARNING_MSG,
+        INFO_MSG
     };
 }
 

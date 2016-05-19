@@ -28,13 +28,13 @@ QVariant LoggerListModel::data(const QModelIndex &index, int role) const
     {
         switch(type)
         {
-        case logger::MessageType::DEBUG:
+        case logger::MessageType::DEBUG_MSG:
             return QBrush(QColor(69,154,6));
-        case logger::MessageType::ERROR:
+        case logger::MessageType::ERROR_MSG:
             return QBrush(QColor(204,0,0));
-        case logger::MessageType::WARNING:
+        case logger::MessageType::WARNING_MSG:
             return QBrush(QColor(170,160,0));
-        case logger::MessageType::INFO:
+        case logger::MessageType::INFO_MSG:
             return QBrush(QColor(255,255,255));
         default:
             return QBrush(QColor(255,255,255));

@@ -32,19 +32,19 @@ bool LoggerFilterModel::filterAcceptsRow(int source_row, const QModelIndex &sour
         if(index.isValid())
         {
             LoggerListItem* item = dynamic_cast<LoggerListModel*>(sourceModel())->itemAt(source_row);
-            if(_debug && (item->type() == logger::MessageType::DEBUG))
+            if(_debug && (item->type() == logger::MessageType::DEBUG_MSG))
             {
                 return true;
             }
-            if(_error && (item->type() == logger::MessageType::ERROR))
+            if(_error && (item->type() == logger::MessageType::ERROR_MSG))
             {
                 return true;
             }
-            if(_warning && (item->type() == logger::MessageType::WARNING))
+            if(_warning && (item->type() == logger::MessageType::WARNING_MSG))
             {
                 return true;
             }
-            if(_info && (item->type() == logger::MessageType::INFO))
+            if(_info && (item->type() == logger::MessageType::INFO_MSG))
             {
                 return true;
             }

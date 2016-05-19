@@ -9,22 +9,22 @@
  * \def DEBUG_MSG(msg)
  * Macro for printing debug messages
  */
-#define DEBUG_MSG(msg) Logger::Instance().createMsg(logger::MessageType::DEBUG,msg);
+#define DEBUG_MSG(msg) Logger::Instance().createMsg(logger::MessageType::DEBUG_MSG,msg);
 /*!
  * \def ERROR_MSG(msg)
  * Macro for printing error messages
  */
-#define ERROR_MSG(msg) Logger::Instance().createMsg(logger::MessageType::ERROR,msg);
+#define ERROR_MSG(msg) Logger::Instance().createMsg(logger::MessageType::ERROR_MSG,msg);
 /*!
  * \def WARNING_MSG(msg)
  * Macro for printing warning messages
  */
-#define WARNING_MSG(msg) Logger::Instance().createMsg(logger::MessageType::WARNING,msg);
+#define WARNING_MSG(msg) Logger::Instance().createMsg(logger::MessageType::WARNING_MSG,msg);
 /*!
  * \def INFO_MSG(msg)
  * Macro for printing information messages
  */
-#define INFO_MSG(msg) Logger::Instance().createMsg(logger::MessageType::INFO,msg);
+#define INFO_MSG(msg) Logger::Instance().createMsg(logger::MessageType::INFO_MSG,msg);
 /*!
  * \def LOGGER_WIDGET
  * Macro for giving simple access to the LoggerWidget

@@ -3,7 +3,9 @@
 
 #include <QObject>
 #include <QMap>
+#include <QString>
 #include "common.h"
+#include "scripthighlighter.h"
 
 class GEENIEMainWindow;
 class QDockWidget;
@@ -13,7 +15,8 @@ enum class EDockWidgetTypes
     LoggerWidget,
     InspectorWidget,
     AssetsWidget,
-    EntitiesWidget
+    EntitiesWidget,
+    ScriptEditorWidget
 };
 
 class GEENIE : public QObject
@@ -32,9 +35,14 @@ private:
     QMap<EDockWidgetTypes, QString> _dockWidgetsTitles;
 
     GEENIEMainWindow* _mainWindow;
+    ScriptHighlighter* _highlighter;
+
+    QString _layoutName;
+
 
 private slots:
     void saveSession();
+    void changeScriptType(Highlighter::Types type);
 
 signals:
 

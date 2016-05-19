@@ -8,7 +8,7 @@
 class LOGGERSHARED_EXPORT LoggerListItem
 {
 public:
-    LoggerListItem(const QString msg = QString(), const QDateTime timestamp = QDateTime::currentDateTime(), logger::MessageType type = logger::MessageType::INFO);
+    LoggerListItem(const QString msg = QString(), const QDateTime timestamp = QDateTime::currentDateTime(), logger::MessageType type = logger::MessageType::INFO_MSG);
     ~LoggerListItem(){}
 
 
