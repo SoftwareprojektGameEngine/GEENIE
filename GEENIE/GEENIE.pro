@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core widgets gui opengl
+QT       += core gui opengl
 
 include(../global.pri)
 
@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     layoutform.cpp \
     newprojectwidget.cpp \
     scripthighlighter.cpp \
-    assetwidget.cpp
+    assetwidget.cpp \
+    entitievervaltung.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
@@ -33,12 +34,14 @@ HEADERS  += geeniemainwindow.h \
     layoutform.h \
     newprojectwidget.h \
     scripthighlighter.h \
-    assetwidget.h
+    assetwidget.h \
+    entitievervaltung.h
 
 FORMS    += geeniemainwindow.ui \
     layoutform.ui \
     newprojectwidget.ui \
-    assetwidget.ui
+    assetwidget.ui \
+    entitievervaltung.ui
 
 
 win32: DESTDIR = $$OUT_PWD/../bin
