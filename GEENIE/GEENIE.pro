@@ -25,7 +25,10 @@ SOURCES += main.cpp\
     newprojectwidget.cpp \
     scripthighlighter.cpp \
     assetwidget.cpp \
-    entitievervaltung.cpp
+    entitievervaltung.cpp \
+    inspector.cpp \
+    inspectortransformwidget.cpp \
+    inspectorcamerawidget.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
@@ -35,13 +38,19 @@ HEADERS  += geeniemainwindow.h \
     newprojectwidget.h \
     scripthighlighter.h \
     assetwidget.h \
-    entitievervaltung.h
+    entitievervaltung.h \
+    inspector.h \
+    inspectortransformwidget.h \
+    inspectorcamerawidget.h
 
 FORMS    += geeniemainwindow.ui \
     layoutform.ui \
     newprojectwidget.ui \
     assetwidget.ui \
-    entitievervaltung.ui
+    entitievervaltung.ui \
+    inspector.ui \
+    inspectortransformwidget.ui \
+    inspectorcamerawidget.ui
 
 
 win32: DESTDIR = $$OUT_PWD/../bin
