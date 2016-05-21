@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       -= gui
+#QT       -= gui
 
 include(../global.pri)
 
@@ -37,7 +37,9 @@ HEADERS +=\
     useractions.h \
     core.h \
     assets.h \
-    components.h
+    components.h \
+    enginewrapper.h \
+    core_base.h
 
 unix {
     target.path = /usr/lib

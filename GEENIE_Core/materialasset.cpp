@@ -9,14 +9,14 @@ MaterialAsset::~MaterialAsset() {
 
 }
 
-QUuid MaterialAsset::GetID() {
+const QUuid MaterialAsset::GetID() const {
     return this->id;
 }
 
-QString MaterialAsset::GetPath() {
+const QString MaterialAsset::GetPath() const {
     return this->path;
 }
 
-AssetType MaterialAsset::GetType() {
+const AssetType MaterialAsset::GetType() const {
     return MATERIAL_ASSET;
 }

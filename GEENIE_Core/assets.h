@@ -1,7 +1,7 @@
 #ifndef ASSETS_H
 #define ASSETS_H
 
-#include "core.h"
+#include "core_base.h"
 
 //! A texture asset.
 /*!
@@ -18,11 +18,11 @@ public:
     ~TextureAsset();
 
     //! Returns the id of the asset.
-    QUuid GetID();
+    const QUuid GetID() const;
     //! Returns the type of the asset.
-    AssetType GetType();
+    const AssetType GetType() const;
     //! Returns the path of the texture.
-    QString GetPath();
+    const QString GetPath() const;
 };
 
 //! A model asset.
@@ -40,11 +40,11 @@ public:
     ~ModelAsset();
 
     //! Returns the id of the asset.
-    QUuid GetID();
+    const QUuid GetID() const;
     //! Returns the type of the asset.
-    AssetType GetType();
+    const AssetType GetType() const;
     //! Returns the path of the model file.
-    QString GetPath();
+    const QString GetPath() const;
 };
 
 //! A material asset.
@@ -62,11 +62,11 @@ public:
     ~MaterialAsset();
 
     //! Returns the id of the asset.
-    QUuid GetID();
+    const QUuid GetID() const;
     //! Returns the type of the asset.
-    AssetType GetType();
+    const AssetType GetType() const;
     //! Returns the path of the material file.
-    QString GetPath();
+    const QString GetPath() const;
 };
 
 //! A script asset
@@ -84,11 +84,11 @@ public:
     ~ScriptAsset();
 
     //! Returns the id of the asset.
-    QUuid GetID();
+    const QUuid GetID() const;
     //! Returns the type of the asset.
-    AssetType GetType();
+    const AssetType GetType() const;
     //! Returns the path of the script file.
-    QString GetPath();
+    const QString GetPath() const;
 };
 
 #endif // ASSETS_H

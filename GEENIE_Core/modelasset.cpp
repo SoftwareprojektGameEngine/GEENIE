@@ -9,14 +9,14 @@ ModelAsset::~ModelAsset() {
 
 }
 
-QUuid ModelAsset::GetID() {
+const QUuid ModelAsset::GetID() const {
     return this->id;
 }
 
-QString ModelAsset::GetPath() {
+const QString ModelAsset::GetPath() const {
     return this->path;
 }
 
-AssetType ModelAsset::GetType() {
+const AssetType ModelAsset::GetType() const {
     return MODEL_ASSET;
 }

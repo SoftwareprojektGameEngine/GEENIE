@@ -9,14 +9,14 @@ TextureAsset::~TextureAsset() {
 
 }
 
-QUuid TextureAsset::GetID() {
+const QUuid TextureAsset::GetID() const {
     return this->id;
 }
 
-QString TextureAsset::GetPath() {
+const QString TextureAsset::GetPath() const {
     return this->path;
 }
 
-AssetType TextureAsset::GetType() {
+const AssetType TextureAsset::GetType() const {
     return TEXTURE_ASSET;
 }

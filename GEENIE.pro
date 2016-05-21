@@ -9,7 +9,7 @@ SUBDIRS += \
     Backend
 
 GEENIE.depends = Backend GEENIE_Core Logger common
-GEENIE_Core.depends = Backend Logger common
+GEENIE_Core.depends = Logger common
 GEENIE_Core_Test.depends = GEENIE_Core
-Backend.depends = Logger common
+Backend.depends = Logger common GEENIE_Core
 Logger.depends = common

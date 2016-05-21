@@ -2,21 +2,12 @@
 #define CORE_H
 
 #include "geenie_core_global.h"
+#include "core_base.h"
 #include <QString>
 #include <QUuid>
 #include <QHash>
 
 #define MAX_NUM_USERACTIONS 20
-
-/*!
- * \brief The AssetType enum
- */
-enum AssetType {
-    TEXTURE_ASSET,
-    MODEL_ASSET,
-    MATERIAL_ASSET,
-    SCRIPT_ASSET,
-};
 
 /*!
  * \brief The ComponentType enum
@@ -41,20 +32,15 @@ public:
 
     //! Executes the action.
     virtual void Do() = 0;
-    //! Re
+    //! Reverts the action.
     virtual void Undo() = 0;
 };
 
-class SHARED_EXPORT Asset {
-public:
-    Asset() {}
-    virtual ~Asset() {}
-
-    virtual QUuid GetID() = 0;
-    virtual QString GetPath() = 0;
-    virtual AssetType GetType() = 0;
-};
-
+/*!
+ * \brief The Component class
+ *
+ * Note: This is an abstract base class and can't be instantiated directly.
+ */
 class SHARED_EXPORT Component {
 public:
     Component() {}
@@ -105,6 +91,8 @@ public:
     Entity* RemoveEntity(const QUuid& entityID);
 };
 
+#include "enginewrapper.h"
+
 /*!
   The Project class. Used to contain all state of a project.
   */
@@ -122,10 +110,11 @@ private:
     QHash<QUuid, Entity*> fastEntityLookup;
     //! The collection of assets.
     QHash<QUuid, Asset*> assets;
+    EngineWrapper* engine;
 
 public:
     //! The project constructor.
-    Project();
+    Project(EngineWrapper* engine);
     //! The project destructor.
     ~Project();
 

@@ -32,7 +32,7 @@ void ProjectTest::testAddUserAction() {
     QVERIFY(testAction->GetCountUndone() == 0);
 
     // add test action to project (the project should execute the action)
-    Project* project = new Project();
+    Project* project = new Project(nullptr);
     project->AddUserAction(testAction);
 
     QVERIFY(testAction->GetCountDone() == 1);
@@ -62,7 +62,7 @@ void ProjectTest::testAddMultipleUserActions() {
     int prevDestructorCalls = countDestructorCalls;
 
     // create project, add first half of test actions
-    Project* project = new Project();
+    Project* project = new Project(nullptr);
 
     for (int i=0; i < NUM_TESTUSERACTIONS / 2; i++) {
         project->AddUserAction(testActions[i]);
@@ -94,7 +94,7 @@ void ProjectTest::testAddMultipleUserActions() {
 
 void ProjectTest::testCanUndoRedo() {
     // create project
-    Project* project = new Project();
+    Project* project = new Project(nullptr);
 
     QVERIFY(project->CanRedo() == false);
     QVERIFY(project->CanUndo() == false);
@@ -135,7 +135,7 @@ void ProjectTest::testCanUndoRedo() {
 
 void ProjectTest::testUndoRedo() {
     // create project
-    Project* project = new Project();
+    Project* project = new Project(nullptr);
 
     // add test action
     TestUserAction *action = new TestUserAction();

@@ -9,14 +9,14 @@ ScriptAsset::~ScriptAsset() {
 
 }
 
-QUuid ScriptAsset::GetID() {
+const QUuid ScriptAsset::GetID() const {
     return this->id;
 }
 
-QString ScriptAsset::GetPath() {
+const QString ScriptAsset::GetPath() const {
     return this->path;
 }
 
-AssetType ScriptAsset::GetType() {
+const AssetType ScriptAsset::GetType() const {
     return SCRIPT_ASSET;
 }

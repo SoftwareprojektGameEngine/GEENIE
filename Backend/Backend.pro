@@ -13,10 +13,12 @@ TEMPLATE = lib
 
 DEFINES += BACKEND_LIBRARY
 
-SOURCES += backend.cpp
+SOURCES += \
+    osgwrapper.cpp
 
-HEADERS += backend.h\
-        backend_global.h
+HEADERS +=\
+        backend_global.h \
+    osgwrapper.h
 
 DLLDESTDIR = $$OUT_PWD/../bin
 
@@ -38,3 +40,21 @@ else:unix: LIBS += -L$$OUT_PWD/../common/ -lcommon
 
 INCLUDEPATH += $$PWD/../common
 DEPENDPATH += $$PWD/../common
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../GEENIE_Core/release/ -lGEENIE_Core
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../GEENIE_Core/debug/ -lGEENIE_Core
+else:unix: LIBS += -L$$OUT_PWD/../GEENIE_Core/ -lGEENIE_Core
+
+INCLUDEPATH += $$PWD/../GEENIE_Core
+DEPENDPATH += $$PWD/../GEENIE_Core
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../OpenScenegraph/lib/ -losg
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../OpenScenegraph/lib/ -losgd
+else:unix: LIBS += -L$$PWD/../OpenScenegraph/lib/ -losg
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../OpenScenegraph/lib/ -losgDB
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../OpenScenegraph/lib/ -losgDBd
+else:unix: LIBS += -L$$PWD/../OpenScenegraph/lib/ -losgDB
+
+INCLUDEPATH += $$PWD/../OpenScenegraph/include
+DEPENDPATH += $$PWD/../OpenScenegraph/include
