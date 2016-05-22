@@ -1,5 +1,6 @@
 #include "geeniemainwindow.h"
 #include "ui_geeniemainwindow.h"
+#include "exitdialog.h"
 
 #include <QMessageBox>
 #include <QCloseEvent>
@@ -42,13 +43,29 @@ void GEENIEMainWindow::closeEvent(QCloseEvent *event)
 {
     QMessageBox::StandardButton resBtn = QMessageBox::question( this, tr("GEENIE"),
                                                                 tr("Are you sure?\n"),
-                                                                QMessageBox::No | QMessageBox::Yes,
+                                                                QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
                                                                 QMessageBox::Yes);
-    if (resBtn != QMessageBox::Yes) {
+    if (resBtn == QMessageBox::Cancel)
+    {
         event->ignore();
-    } else {
+    }
+    else if (resBtn == QMessageBox::Cancel)
+    {
         emit saveSession();
         event->accept();
+    }
+    else if (resBtn == QMessageBox::No)
+    {
+        ExitDialog* exitDialog = new ExitDialog(this);
+        if(exitDialog->exec() == QDialog::Accepted)
+        {
+            event->ignore();
+        }
+        else
+        {
+            emit saveSession();
+            event->accept();
+        }
     }
 }
 
