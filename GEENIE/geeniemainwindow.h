@@ -19,6 +19,9 @@ public:
     explicit GEENIEMainWindow(QWidget *parent = 0);
     ~GEENIEMainWindow();
 
+    void setScriptType(Highlighter::Types type);
+    void setScript(QString& script);
+
     QTextDocument* scriptEditorDocument();
 
 protected:
