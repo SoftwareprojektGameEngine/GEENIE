@@ -19,6 +19,16 @@ enum class EDockWidgetTypes
     ScriptEditorWidget
 };
 
+enum EInspectorTypes
+{
+    None = 0,
+    Audio = 1,
+    Camera = 2,
+    Material = 3,
+    Texture = 4,
+    Transform = 5
+};
+
 class GEENIE : public QObject
 {
     Q_OBJECT

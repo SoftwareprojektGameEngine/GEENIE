@@ -4,6 +4,7 @@
 
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QDebug>
 
 GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
     QMainWindow(parent),

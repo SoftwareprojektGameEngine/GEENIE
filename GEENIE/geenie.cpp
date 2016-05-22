@@ -4,6 +4,12 @@
 #include "assetwidget.h"
 #include "entitievervaltung.h"
 #include "../tinyxml/tinyxml.h"
+#include "inspector.h"
+#include "inspectoraudiowidget.h"
+#include "inspectorcamerawidget.h"
+#include "inspectormaterialwidget.h"
+#include "inspectortexturewidget.h"
+#include "inspectortransformwidget.h"
 
 #include <QDir>
 #include <QFile>
@@ -11,6 +17,7 @@
 #include <QLabel>
 #include <QDebug>
 #include <QTextDocument>
+#include <QStackedLayout>
 
 GEENIE::GEENIE(QObject *parent) :
     QObject(parent),
@@ -26,12 +33,30 @@ GEENIE::GEENIE(QObject *parent) :
     lbl->setText(QString("Inspector Dock"));
     QLabel* lbl2 = new QLabel();
     lbl2->setText(QString("Asset Logger Dock"));
+
+    QWidget* inspectorWidget = new QWidget(_mainWindow);
+    QStackedLayout* inspectorLayout = new QStackedLayout(inspectorWidget);
+    Inspector* inspector = new Inspector(inspectorWidget);
+    InspectorAudioWidget* inspectorAudio = new InspectorAudioWidget(inspectorWidget);
+    InspectorCameraWidget* inspectorCamera = new InspectorCameraWidget(inspectorWidget);
+    InspectorMaterialWidget* inspectorMaterial = new InspectorMaterialWidget(inspectorWidget);
+    InspectorTextureWidget* inspectorTexture = new InspectorTextureWidget(inspectorWidget);
+    InspectorTransformWidget* inspectorTransform = new InspectorTransformWidget(inspectorWidget);
+    inspectorLayout->addWidget(inspector);
+    inspectorLayout->addWidget(inspectorAudio);
+    inspectorLayout->addWidget(inspectorCamera);
+    inspectorLayout->addWidget(inspectorMaterial);
+    inspectorLayout->addWidget(inspectorTexture);
+    inspectorLayout->addWidget(inspectorTransform);
+    inspectorLayout->setCurrentIndex(EInspectorTypes::None);
+    inspectorWidget->setLayout(inspectorLayout);
+
     AssetWidget* aWidget = new AssetWidget(_mainWindow);
 
     Entitievervaltung* eWidget = new Entitievervaltung(_mainWindow);
 
     insertDockWidget(EDockWidgetTypes::LoggerWidget,Logger::Instance().loggerConsole,true,Qt::LeftDockWidgetArea);
-    insertDockWidget(EDockWidgetTypes::InspectorWidget,lbl,true,Qt::RightDockWidgetArea);
+    insertDockWidget(EDockWidgetTypes::InspectorWidget,inspectorWidget,true,Qt::RightDockWidgetArea);
     insertDockWidget(EDockWidgetTypes::AssetsWidget,aWidget,true,Qt::RightDockWidgetArea);
     insertDockWidget(EDockWidgetTypes::EntitiesWidget,eWidget,true,Qt::BottomDockWidgetArea);
 
