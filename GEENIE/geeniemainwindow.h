@@ -2,6 +2,10 @@
 #define GEENIEMAINWINDOW_H
 
 #include <QMainWindow>
+#include "scripthighlighter.h"
+#include "logger.h"
+
+class QTextDocument;
 
 namespace Ui {
 class GEENIEMainWindow;
@@ -14,6 +18,23 @@ class GEENIEMainWindow : public QMainWindow
 public:
     explicit GEENIEMainWindow(QWidget *parent = 0);
     ~GEENIEMainWindow();
+
+    QTextDocument* scriptEditorDocument();
+
+protected:
+    void closeEvent(QCloseEvent* event);
+
+signals:
+    void saveSession();
+    void changeScriptType(Highlighter::Types);
+
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
+
+    void on_comboBox_currentIndexChanged(int index);
 
 private:
     Ui::GEENIEMainWindow *ui;

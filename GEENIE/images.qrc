@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/other">
+        <file alias="exit.gif">resources/images/other/onExitCat.gif</file>
+    </qresource>
+</RCC>
