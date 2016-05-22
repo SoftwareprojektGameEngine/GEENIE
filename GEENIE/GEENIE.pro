@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     ../tinyxml/tinyxmlparser.cpp \
     layoutform.cpp \
     newprojectwidget.cpp \
-    scripthighlighter.cpp
+    scripthighlighter.cpp \
+    assetwidget.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
@@ -31,11 +32,13 @@ HEADERS  += geeniemainwindow.h \
     ../tinyxml/tinyxml.h \
     layoutform.h \
     newprojectwidget.h \
-    scripthighlighter.h
+    scripthighlighter.h \
+    assetwidget.h
 
 FORMS    += geeniemainwindow.ui \
     layoutform.ui \
-    newprojectwidget.ui
+    newprojectwidget.ui \
+    assetwidget.ui
 
 
 win32: DESTDIR = $$OUT_PWD/../bin
