@@ -2,7 +2,7 @@
 #include "common.h"
 #include "geeniemainwindow.h"
 #include "assetwidget.h"
-
+#include "entitievervaltung.h"
 #include "../tinyxml/tinyxml.h"
 
 #include <QDir>
@@ -28,13 +28,12 @@ GEENIE::GEENIE(QObject *parent) :
     lbl2->setText(QString("Asset Logger Dock"));
     AssetWidget* aWidget = new AssetWidget(_mainWindow);
 
-    QLabel* lbl5 = new QLabel();
-    lbl5->setText(QString("Bla"));
+    Entitievervaltung* eWidget = new Entitievervaltung(_mainWindow);
 
     insertDockWidget(EDockWidgetTypes::LoggerWidget,Logger::Instance().loggerConsole,true,Qt::LeftDockWidgetArea);
-    insertDockWidget(EDockWidgetTypes::InspectorWidget,lbl2,true,Qt::RightDockWidgetArea);
+    insertDockWidget(EDockWidgetTypes::InspectorWidget,lbl,true,Qt::RightDockWidgetArea);
     insertDockWidget(EDockWidgetTypes::AssetsWidget,aWidget,true,Qt::RightDockWidgetArea);
-    insertDockWidget(EDockWidgetTypes::EntitiesWidget,lbl5,true,Qt::BottomDockWidgetArea);
+    insertDockWidget(EDockWidgetTypes::EntitiesWidget,eWidget,true,Qt::BottomDockWidgetArea);
 
     QObject::connect(_mainWindow,SIGNAL(saveSession()),
                      this,SLOT(saveSession()));
