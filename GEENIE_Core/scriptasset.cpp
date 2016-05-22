@@ -1,8 +1,8 @@
 #include "assets.h"
 
-ScriptAsset::ScriptAsset(QString path) {
+ScriptAsset::ScriptAsset(QString path, QUuid id) {
     this->path = path;
-    this->id = QUuid::createUuid();
+    this->id = id;
 }
 
 ScriptAsset::~ScriptAsset() {

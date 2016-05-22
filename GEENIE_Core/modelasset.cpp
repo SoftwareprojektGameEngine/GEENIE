@@ -1,8 +1,8 @@
 #include "assets.h"
 
-ModelAsset::ModelAsset(QString path) {
+ModelAsset::ModelAsset(QString path, QUuid id) {
     this->path = path;
-    this->id = QUuid::createUuid();
+    this->id = id;
 }
 
 ModelAsset::~ModelAsset() {

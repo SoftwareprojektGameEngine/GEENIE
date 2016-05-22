@@ -1,7 +1,7 @@
 #include "core.h"
 
-Scene::Scene() : entities() {
-    this->id = QUuid::createUuid();
+Scene::Scene(QUuid id) : entities() {
+    this->id = id;
 }
 
 Scene::~Scene() {

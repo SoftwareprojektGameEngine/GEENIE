@@ -13,7 +13,7 @@ private:
     QUuid id; //!< The id of the asset.
 public:
     //! The texture asset constructor.
-    TextureAsset(QString path);
+    TextureAsset(QString path, QUuid id = QUuid::createUuid());
     //! The texture asset destructor.
     ~TextureAsset();
 
@@ -35,7 +35,7 @@ private:
     QUuid id; //!< The id of the asset.
 public:
     //! The model asset constructor.
-    ModelAsset(QString path);
+    ModelAsset(QString path, QUuid id = QUuid::createUuid());
     //! The model asset destructor.
     ~ModelAsset();
 
@@ -57,7 +57,7 @@ private:
     QUuid id; //!< The id of the asset.
 public:
     //! The material asset constructor.
-    MaterialAsset(QString path);
+    MaterialAsset(QString path, QUuid id = QUuid::createUuid());
     //! The material asset destructor.
     ~MaterialAsset();
 
@@ -79,7 +79,7 @@ private:
     QUuid id; //!< The id of the asset.
 public:
     //! The script asset constructor
-    ScriptAsset(QString path);
+    ScriptAsset(QString path, QUuid id = QUuid::createUuid());
     //! The script asset destructor
     ~ScriptAsset();
 
@@ -90,5 +90,7 @@ public:
     //! Returns the path of the script file.
     const QString GetPath() const;
 };
+
+// TODO: SoundAsset,  ShaderAsset
 
 #endif // ASSETS_H

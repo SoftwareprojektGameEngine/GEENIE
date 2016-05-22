@@ -1,7 +1,7 @@
 #include "core.h"
 
-Entity::Entity(QUuid parentID) : parentID(parentID), components(), subEntities() {
-    this->id = QUuid::createUuid();
+Entity::Entity(QUuid parentID, QUuid id) : parentID(parentID), components(), subEntities() {
+    this->id = id;
 }
 
 Entity::~Entity() {

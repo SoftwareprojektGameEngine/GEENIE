@@ -58,7 +58,7 @@ private:
     QHash<QUuid, Component*> components;
     QHash<QUuid, Entity*> subEntities;
 public:
-    Entity(QUuid parentID);
+    Entity(QUuid parentID, QUuid id = QUuid::createUuid());
     ~Entity();
 
     QUuid GetID();
@@ -80,7 +80,7 @@ private:
     QUuid id;
     QHash<QUuid, Entity*> entities;
 public:
-    Scene();
+    Scene(QUuid id = QUuid::createUuid());
     ~Scene();
 
     QUuid GetID();
