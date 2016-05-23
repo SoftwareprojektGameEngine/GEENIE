@@ -24,7 +24,7 @@ enum ComponentType {
 };
 
 enum LightSourceType {
-    Stuff
+    // TODO: insert plausible values
 };
 
 /*!
@@ -127,11 +127,15 @@ private:
     EngineWrapper* engine;
     //! The project name
     QString projectName;
-    TiXmlElement* subEntitiesToXml(Entity* entity);
+    //! Helper
+    TiXmlElement *SubEntitiesToXml(Entity* entity);
+    void AddComponentInformationToXml(TiXmlElement* componentNode, Component* component);
+    void VectorToXml(TiXmlElement* parent, Vector vector, QString& name);
+    void ColorToXml(TiXmlElement* parent, Color color, QString& name);
 
 public:
     //! The project constructor.
-    Project(EngineWrapper* engine, QString name=QString("untitled"));
+    Project(EngineWrapper* engine, QString name = QString("untitled"));
     //! The project destructor.
     ~Project();
 

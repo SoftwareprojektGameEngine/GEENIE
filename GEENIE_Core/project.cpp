@@ -161,13 +161,131 @@ QHashIterator<QUuid, Asset*> Project::GetAssets() {
 
 #include "../tinyxml/tinyxml.h"
 #include <QFile>
+#include "components.h"
 
 void Project::load(QString &file)
 {
 
 }
 
-TiXmlElement *Project::subEntitiesToXml(Entity *entity)
+void Project::ColorToXml(TiXmlElement *parent, Color color, QString &name)
+{
+    TiXmlElement* c = new TiXmlElement(name.toUtf8().data());
+    c->SetAttribute("type","color");
+    TiXmlElement* r = new TiXmlElement("r");
+    TiXmlElement* g = new TiXmlElement("g");
+    TiXmlElement* b = new TiXmlElement("b");
+    TiXmlElement* a = new TiXmlElement("a");
+    r->SetAttribute("value",QString::number(color.r).toUtf8().data());
+    g->SetAttribute("value",QString::number(color.g).toUtf8().data());
+    b->SetAttribute("value",QString::number(color.b).toUtf8().data());
+    a->SetAttribute("value",QString::number(color.a).toUtf8().data());
+    c->LinkEndChild(r);
+    c->LinkEndChild(g);
+    c->LinkEndChild(b);
+    c->LinkEndChild(a);
+    parent->LinkEndChild(c);
+}
+
+void Project::VectorToXml(TiXmlElement *parent, Vector vector, QString &name)
+{
+    TiXmlElement* v = new TiXmlElement(name.toUtf8().data());
+    v->SetAttribute("type","vector");
+    TiXmlElement* x = new TiXmlElement("x");
+    TiXmlElement* y = new TiXmlElement("y");
+    TiXmlElement* z = new TiXmlElement("z");
+    TiXmlElement* w = new TiXmlElement("w");
+    x->SetAttribute("value",QString::number(vector.x).toUtf8().data());
+    y->SetAttribute("value",QString::number(vector.y).toUtf8().data());
+    z->SetAttribute("value",QString::number(vector.z).toUtf8().data());
+    w->SetAttribute("value",QString::number(vector.w).toUtf8().data());
+    v->LinkEndChild(x);
+    v->LinkEndChild(y);
+    v->LinkEndChild(z);
+    v->LinkEndChild(w);
+    parent->LinkEndChild(v);
+}
+
+void Project::AddComponentInformationToXml(TiXmlElement *componentNode, Component *component)
+{
+    ComponentType type = component->GetType();
+    switch(type)
+    {
+    case ComponentType::MODEL:
+    {
+        ModelComponent* c = dynamic_cast<ModelComponent*>(component);
+        TiXmlElement* model = new TiXmlElement("model");
+        model->SetAttribute("id",c->GetModel().toByteArray().data());
+        componentNode->LinkEndChild(model);
+        break;
+    }
+    case ComponentType::MATERIAL:
+    {
+        MaterialComponent* c = dynamic_cast<MaterialComponent*>(component);
+        TiXmlElement* material = new TiXmlElement("material");
+        material->SetAttribute("id",c->GetMaterial().toByteArray().data());
+        material->SetAttribute("index",c->GetMaterialIndex());
+        componentNode->LinkEndChild(material);
+        break;
+    }
+    case ComponentType::POSITION:
+    {
+        PositionComponent* c = dynamic_cast<PositionComponent*>(component);
+        VectorToXml(componentNode,c->GetPosition(),QString("position"));
+        break;
+    }
+    case ComponentType::LIGHT:
+    {
+        LightComponent* c = dynamic_cast<LightComponent*>(component);
+        ColorToXml(componentNode,c->GetAmbientColor(),QString("ambient"));
+        ColorToXml(componentNode,c->GetDiffuseColor(),QString("diffuse"));
+        ColorToXml(componentNode,c->GetSpecularColor(),QString("specular"));
+        VectorToXml(componentNode,c->GetSpotlightDirection(),QString("spotlight"));
+        TiXmlElement* lightSource = new TiXmlElement("lightsource");
+        lightSource->SetAttribute("type",(int)c->GetLightSourceType());
+        componentNode->LinkEndChild(lightSource);
+        break;
+    }
+    case ComponentType::TEXTURE:
+    {
+        TextureComponent* c = dynamic_cast<TextureComponent*>(component);
+        TiXmlElement* texture = new TiXmlElement("texture");
+        texture->SetAttribute("id",c->GetTexture().toByteArray().data());
+        texture->SetAttribute("index",c->GetTextureIndex());
+        componentNode->LinkEndChild(texture);
+        break;
+    }
+    case ComponentType::SOUND:
+    {
+        SoundComponent* c = dynamic_cast<SoundComponent*>(component);
+        TiXmlElement* sound = new TiXmlElement("sound");
+        sound->SetAttribute("id",c->GetSound().toByteArray().data());
+        componentNode->LinkEndChild(sound);
+        break;
+    }
+    case ComponentType::SHADER:
+    {
+        ShaderComponent* c = dynamic_cast<ShaderComponent*>(component);
+        TiXmlElement* shader = new TiXmlElement("shader");
+        shader->SetAttribute("id",c->GetShader().toByteArray().data());
+        componentNode->LinkEndChild(shader);
+        break;
+    }
+    case ComponentType::SCRIPT:
+    {
+        ScriptTriggerComponent* c = dynamic_cast<ScriptTriggerComponent*>(component);
+        TiXmlElement* trigger = new TiXmlElement("trigger");
+        trigger->SetAttribute("type",(int)c->GetTriggerType());
+        TiXmlElement* script = new TiXmlElement("script");
+        script->SetAttribute("id",c->GetScript().toByteArray().data());
+        componentNode->LinkEndChild(trigger);
+        componentNode->LinkEndChild(script);
+        break;
+    }
+    }
+}
+
+TiXmlElement *Project::SubEntitiesToXml(Entity *entity)
 {
     TiXmlElement* e = new TiXmlElement("entity");
     e->SetAttribute("id",entity->GetID().toByteArray().data());
@@ -180,7 +298,7 @@ TiXmlElement *Project::subEntitiesToXml(Entity *entity)
         while(it.hasNext())
         {
             it.next();
-            TiXmlElement* sub = subEntitiesToXml(it.value());
+            TiXmlElement* sub = SubEntitiesToXml(it.value());
             subWrapper->LinkEndChild(sub);
         }
     }
@@ -193,6 +311,7 @@ TiXmlElement *Project::subEntitiesToXml(Entity *entity)
             TiXmlElement* comp = new TiXmlElement("component");
             comp->SetAttribute("id",it.value()->GetID().toByteArray().data());
             comp->SetAttribute("type",(int)it.value()->GetType());
+            AddComponentInformationToXml(comp,it.value());
             e->LinkEndChild(comp);
         }
     }
@@ -217,7 +336,7 @@ void Project::save(QString &file)
             while(it.hasNext())
             {
                 it.next();
-                TiXmlElement* entityElement = subEntitiesToXml(it.value());
+                TiXmlElement* entityElement = SubEntitiesToXml(it.value());
                 sceneElement->LinkEndChild(entityElement);
             }
         }
