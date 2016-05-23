@@ -25,6 +25,13 @@ LoggerWidget::LoggerWidget(QWidget *parent) :
     ui->infoCheckBox->setChecked(true);
 
     connect(this,SIGNAL(filterChanged(bool,bool,bool,bool)),_filterModel,SLOT(filterChanged(bool,bool,bool,bool)));
+
+    QFont font;
+    font.setFamily("Courier");
+    font.setFixedPitch(true);
+    font.setPointSize(10);
+
+    ui->msgConsole->setFont(font);
 }
 
 LoggerWidget::~LoggerWidget()

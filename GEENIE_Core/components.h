@@ -5,7 +5,7 @@
 
 //TODO: add components
 
-class SHARED_EXPORT PositionComponent {
+class SHARED_EXPORT PositionComponent : public Component {
 private:
     Vector position;
     QUuid id;
@@ -18,7 +18,7 @@ public:
     Vector GetPosition();
 };
 
-class SHARED_EXPORT LightComponent {
+class SHARED_EXPORT LightComponent : public Component {
 private:
     QUuid id;
     LightSourceType lightSourceType;
@@ -39,7 +39,7 @@ public:
     lightSourceType GetLightSourceType();
 };
 
-class SHARED_EXPORT ModelComponent {
+class SHARED_EXPORT ModelComponent : public Component {
 private:
     QUuid id;
     QUuid modelID;
@@ -52,7 +52,7 @@ public:
     QUuid GetModel();
 };
 
-class SHARED_EXPORT MaterialComponent {
+class SHARED_EXPORT MaterialComponent : public Component {
 private:
     QUuid id;
     QUuid materialID;
@@ -67,7 +67,7 @@ public:
     int GetMaterialIndex();
 };
 
-class SHARED_EXPORT ShaderComponent {
+class SHARED_EXPORT ShaderComponent : public Component {
 private:
     QUuid id;
     QUuid shaderID;
@@ -80,7 +80,7 @@ public:
     QUuid GetShader();
 };
 
-class SHARED_EXPORT TextureComponent {
+class SHARED_EXPORT TextureComponent : public Component {
 private:
     QUuid id;
     QUuid textureID;
@@ -99,7 +99,7 @@ enum ScriptTrigger {
     // TODO: insert plausible values
 };
 
-class SHARED_EXPORT ScriptTriggerComponent {
+class SHARED_EXPORT ScriptTriggerComponent : public Component {
 private:
     QUuid id;
     ScriptTrigger trigger;
@@ -115,7 +115,7 @@ public:
     QUuid GetScript();
 };
 
-class SHARED_EXPORT SoundComponent {
+class SHARED_EXPORT SoundComponent : public Component {
 private:
     QUuid id;
     QUuid soundID;

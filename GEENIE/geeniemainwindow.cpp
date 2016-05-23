@@ -57,8 +57,8 @@ void GEENIEMainWindow::closeEvent(QCloseEvent *event)
     }
     else if (resBtn == QMessageBox::No)
     {
-        ExitDialog* exitDialog = new ExitDialog(this);
-        if(exitDialog->exec() == QDialog::Accepted)
+        ExitDialog exitDialog;
+        if(exitDialog.exec() == QDialog::Accepted)
         {
             event->ignore();
         }
@@ -102,4 +102,9 @@ void GEENIEMainWindow::setScriptType(Highlighter::Types type)
 void GEENIEMainWindow::setScript(QString &script)
 {
     ui->scriptEditor->setText(script);
+}
+
+void GEENIEMainWindow::on_actionExit_triggered()
+{
+    close();
 }

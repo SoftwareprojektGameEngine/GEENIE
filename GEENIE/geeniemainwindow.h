@@ -39,6 +39,8 @@ private slots:
 
     void on_comboBox_currentIndexChanged(int index);
 
+    void on_actionExit_triggered();
+
 private:
     Ui::GEENIEMainWindow *ui;
 };

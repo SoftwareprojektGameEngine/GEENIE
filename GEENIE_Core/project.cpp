@@ -2,7 +2,7 @@
 
 #define CALC_INDEX(index) ((index) % (MAX_NUM_USERACTIONS + 1))
 
-Project::Project(EngineWrapper* engine) : fastEntityLookup(), scenes(), assets() {
+Project::Project(EngineWrapper* engine, QString name) : fastEntityLookup(), scenes(), assets(), projectName(name) {
     for(int i=0; i < MAX_NUM_USERACTIONS+1;i++) {
         this->userActions[i] = nullptr;
     }
