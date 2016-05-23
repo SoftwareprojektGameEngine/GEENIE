@@ -104,13 +104,17 @@ public:
 };
 
 #include "enginewrapper.h"
+#include <QObject>
 
 class TiXmlElement;
 
 /*!
   The Project class. Used to contain all state of a project.
   */
-class SHARED_EXPORT Project {
+class SHARED_EXPORT Project : public QObject {
+
+    Q_OBJECT
+
 private:
     //! Ringbuffer structure of UserActions
     UserAction* userActions[MAX_NUM_USERACTIONS + 1];

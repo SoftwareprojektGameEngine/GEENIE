@@ -6,6 +6,7 @@
 #include "logger.h"
 
 class QTextDocument;
+class Project;
 
 namespace Ui {
 class GEENIEMainWindow;
