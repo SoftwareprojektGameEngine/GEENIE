@@ -6,6 +6,10 @@ ModelComponent::ModelComponent(QUuid modelID, QUuid id) :
 {
 }
 
+ModelComponent::~ModelComponent()
+{
+}
+
 QUuid ModelComponent::GetID()
 {
     return _id;
@@ -28,6 +32,10 @@ LightComponent::LightComponent(LightSourceType lightType, Color ambient, Color d
     _diffuseColor(diffuse),
     _specularColor(specular),
     _spotlightDirection(spotlightDir)
+{
+}
+
+LightComponent::~LightComponent()
 {
 }
 
