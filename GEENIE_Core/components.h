@@ -69,8 +69,8 @@ public:
 
 class SHARED_EXPORT ShaderComponent : public Component {
 private:
-    QUuid id;
-    QUuid shaderID;
+    QUuid _id;
+    QUuid _shaderID;
 public:
     ShaderComponent(QUuid id = QUuid::createUuid());
     ~ShaderComponent();

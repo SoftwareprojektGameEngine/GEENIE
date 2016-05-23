@@ -88,3 +88,20 @@ ScriptTriggerComponent::ScriptTriggerComponent(ScriptTrigger trigger, QUuid scri
     _scriptID(scriptID)
 {
 }
+
+QUuid ShaderComponent::GetID(){
+    return _id;
+}
+
+ComponentType ShaderComponent::GetType(){
+    return ComponentType::ShaderComponent;
+}
+
+QUuid ShaderComponent::GetShader(){
+    return _shaderID;
+}
+
+ShaderComponent::ShaderComponent(QUuid id):
+    _id(id)
+{
+}
