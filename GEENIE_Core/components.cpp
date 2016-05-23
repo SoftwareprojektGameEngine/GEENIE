@@ -127,8 +127,9 @@ int MaterialComponent::GetMaterialIndex()
     return _materialIndex;
 }
 
-ShaderComponent::ShaderComponent(QUuid id):
-    _id(id)
+ShaderComponent::ShaderComponent(QUuid shaderId, QUuid id):
+    _id(id),
+    _shaderID(shaderId)
 {
 }
 ShaderComponent::~ShaderComponent(){}

@@ -127,11 +127,22 @@ private:
     EngineWrapper* engine;
     //! The project name
     QString projectName;
-    //! Helper
+    //! Helper function for subentities
     TiXmlElement *SubEntitiesToXml(Entity* entity);
+    //! Helper function for components
     void AddComponentInformationToXml(TiXmlElement* componentNode, Component* component);
+    //! Helper function for vectors
     void VectorToXml(TiXmlElement* parent, Vector vector, QString& name);
+    //! Helper function for colors
     void ColorToXml(TiXmlElement* parent, Color color, QString& name);
+    //! Helper function for loading entities
+    void XmlToEntity(TiXmlElement* e);
+    //! Helper function for loading components
+    void XmlToComponent(TiXmlElement* c, Entity* e);
+    //! Helper function for loading vectors
+    Vector XmlToVector(TiXmlElement* parent, QString& name);
+    //! Helper function for loading colors
+    Color XmlToColor(TiXmlElement* parent, QString& name);
 
 public:
     //! The project constructor.

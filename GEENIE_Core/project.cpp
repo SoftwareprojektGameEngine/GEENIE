@@ -163,9 +163,193 @@ QHashIterator<QUuid, Asset*> Project::GetAssets() {
 #include <QFile>
 #include "components.h"
 
+Color Project::XmlToColor(TiXmlElement *parent, QString &name)
+{
+    Color ret;
+    TiXmlElement* c = parent->FirstChildElement(name.toUtf8().data());
+    float t = 0;
+    ret.r = c->FirstChildElement("r")->QueryFloatAttribute("r",&t);
+    ret.g = c->FirstChildElement("g")->QueryFloatAttribute("g",&t);
+    ret.b = c->FirstChildElement("b")->QueryFloatAttribute("b",&t);
+    ret.a = c->FirstChildElement("a")->QueryFloatAttribute("a",&t);
+    return ret;
+}
+
+Vector Project::XmlToVector(TiXmlElement *parent, QString &name)
+{
+    Vector ret = Vector();
+    TiXmlElement* v = parent->FirstChildElement(name.toUtf8().data());
+    ret.x = v->FirstChildElement("x")->QueryFloatAttribute("x",0);
+    ret.y = v->FirstChildElement("y")->QueryFloatAttribute("y",0);
+    ret.z = v->FirstChildElement("z")->QueryFloatAttribute("z",0);
+    ret.w = v->FirstChildElement("w")->QueryFloatAttribute("w",0);
+    return ret;
+}
+
+void Project::XmlToComponent(TiXmlElement *c, Entity *e)
+{
+    QUuid id = QUuid(QString(c->Attribute("id")));
+    ComponentType type = (ComponentType)c->QueryIntAttribute("type",(int)ComponentType::MODEL);
+    switch(type)
+    {
+    case ComponentType::MODEL:
+    {
+        TiXmlElement* model = c->FirstChildElement("model");
+        if(model != 0)
+        {
+            QUuid mId = QUuid(QString(model->Attribute("id")));
+            e->AddComponent(new ModelComponent(mId,id));
+        }
+        break;
+    }
+    case ComponentType::MATERIAL:
+    {
+        TiXmlElement* material = c->FirstChildElement("material");
+        if(material != 0)
+        {
+            int index = material->QueryIntAttribute("index",0);
+            QUuid mId = QUuid(QString(material->Attribute("id")));
+            e->AddComponent(new MaterialComponent(mId,index,id));
+        }
+        break;
+    }
+    case ComponentType::POSITION:
+    {
+        TiXmlElement* position = c->FirstChildElement("position");
+        if(position != 0)
+        {
+            Vector pos = XmlToVector(position,QString("position"));
+            e->AddComponent(new PositionComponent(pos,id));
+        }
+        break;
+    }
+    case ComponentType::LIGHT:
+    {
+        TiXmlElement* light = c->FirstChildElement("light");
+        if(light != 0)
+        {
+            Color ambient = XmlToColor(light,QString("ambient"));
+            Color diffuse = XmlToColor(light,QString("diffuse"));
+            Color specular = XmlToColor(light,QString("specular"));
+            Vector spotlight = XmlToVector(light,QString("spotlight"));
+            LightSourceType ltype = (LightSourceType)light->FirstChildElement("lightsource")->QueryIntAttribute("type",0);
+            e->AddComponent(new LightComponent(ltype,ambient,diffuse,specular,spotlight,id));
+        }
+        break;
+    }
+    case ComponentType::TEXTURE:
+    {
+        TiXmlElement* texture = c->FirstChildElement("texture");
+        if(texture != 0)
+        {
+            QUuid tId = QUuid(QString(texture->Attribute("id")));
+            int index = texture->QueryIntAttribute("index",0);
+            e->AddComponent(new TextureComponent(tId,index,id));
+        }
+        break;
+    }
+    case ComponentType::SOUND:
+    {
+        TiXmlElement* sound = c->FirstChildElement("sound");
+        if(sound != 0)
+        {
+            QUuid sId = QUuid(QString(sound->Attribute("id")));
+            e->AddComponent(new SoundComponent(sId,id));
+        }
+        break;
+    }
+    case ComponentType::SHADER:
+    {
+        TiXmlElement* shader = c->FirstChildElement("shader");
+        if(shader != 0)
+        {
+            QUuid sId = QUuid(QString(shader->Attribute("id")));
+            e->AddComponent(new ShaderComponent(sId,id));
+        }
+        break;
+    }
+    case ComponentType::SCRIPT:
+    {
+        TiXmlElement* script = c->FirstChildElement("script");
+        QUuid sId = QUuid(QString(script->Attribute("id")));
+        TiXmlElement* trigger = script->FirstChildElement("trigger");
+        ScriptTrigger ttype = (ScriptTrigger)trigger->QueryIntAttribute("type",0);
+        e->AddComponent(new ScriptTriggerComponent(ttype,sId,id));
+        break;
+    }
+    }
+}
+
+void Project::XmlToEntity(TiXmlElement *e)
+{
+    QUuid id = QUuid(QString(e->Attribute("id")));
+    QUuid parentId = QUuid(QString(e->Attribute("parent")));
+    Entity* entity = new Entity(parentId,id);
+    TiXmlElement* comp = e->FirstChildElement("component");
+    for(comp;comp != 0;comp = comp->NextSiblingElement("component"))
+    {
+        XmlToComponent(comp,entity);
+    }
+    TiXmlElement* sub = e->FirstChildElement("subenteties");
+    if(sub != 0)
+    {
+        TiXmlElement* subE = sub->FirstChildElement("entity");
+        for(subE;subE != 0;subE = subE->NextSiblingElement("entity"))
+        {
+            XmlToEntity(subE);
+        }
+    }
+    this->AddEntity(entity);
+}
+
 void Project::load(QString &file)
 {
+    TiXmlDocument doc(file.toUtf8().data());
+    bool ok = doc.LoadFile();
+    if(!ok)
+    {
+        return;
+    }
+    TiXmlElement* root = doc.FirstChildElement("project");
+    projectName = QString(root->Attribute("name"));
+    TiXmlElement* scene = root->FirstChildElement("scene");
+    for(scene;scene != 0;scene = scene->NextSiblingElement("scene"))
+    {
+        QUuid id = QUuid(QString(scene->Attribute("id")));
+        this->AddScene(new Scene(id));
+        TiXmlElement* entity = scene->FirstChildElement("entity");
+        for(entity;entity != 0;entity->NextSiblingElement("entity"))
+        {
+            XmlToEntity(entity);
+        }
 
+    }
+    TiXmlElement* asset = root->FirstChildElement("asset");
+    for(asset;asset != 0;asset = asset->NextSiblingElement("asset"))
+    {
+        AssetType type = (AssetType)asset->QueryIntAttribute("type",(int)AssetType::TEXTURE_ASSET);
+        QUuid id = QUuid(QString(asset->Attribute("id")));
+        QString path = QString(asset->FirstChildElement("path")->GetText());
+        switch(type)
+        {
+        case AssetType::TEXTURE_ASSET:
+        {
+            this->AddAsset(new TextureAsset(path,id));
+        }
+        case AssetType::MODEL_ASSET:
+        {
+            this->AddAsset(new ModelAsset(path,id));
+        }
+        case AssetType::MATERIAL_ASSET:
+        {
+            this->AddAsset(new MaterialAsset(path,id));
+        }
+        case AssetType::SCRIPT_ASSET:
+        {
+            this->AddAsset(new ScriptAsset(path,id));
+        }
+        }
+    }
 }
 
 void Project::ColorToXml(TiXmlElement *parent, Color color, QString &name)
@@ -231,19 +415,23 @@ void Project::AddComponentInformationToXml(TiXmlElement *componentNode, Componen
     case ComponentType::POSITION:
     {
         PositionComponent* c = dynamic_cast<PositionComponent*>(component);
-        VectorToXml(componentNode,c->GetPosition(),QString("position"));
+        TiXmlElement* position = new TiXmlElement("position");
+        VectorToXml(position,c->GetPosition(),QString("position"));
+        componentNode->LinkEndChild(position);
         break;
     }
     case ComponentType::LIGHT:
     {
         LightComponent* c = dynamic_cast<LightComponent*>(component);
-        ColorToXml(componentNode,c->GetAmbientColor(),QString("ambient"));
-        ColorToXml(componentNode,c->GetDiffuseColor(),QString("diffuse"));
-        ColorToXml(componentNode,c->GetSpecularColor(),QString("specular"));
-        VectorToXml(componentNode,c->GetSpotlightDirection(),QString("spotlight"));
+        TiXmlElement* light = new TiXmlElement("light");
+        ColorToXml(light,c->GetAmbientColor(),QString("ambient"));
+        ColorToXml(light,c->GetDiffuseColor(),QString("diffuse"));
+        ColorToXml(light,c->GetSpecularColor(),QString("specular"));
+        VectorToXml(light,c->GetSpotlightDirection(),QString("spotlight"));
         TiXmlElement* lightSource = new TiXmlElement("lightsource");
         lightSource->SetAttribute("type",(int)c->GetLightSourceType());
-        componentNode->LinkEndChild(lightSource);
+        light->LinkEndChild(lightSource);
+        componentNode->LinkEndChild(light);
         break;
     }
     case ComponentType::TEXTURE:
@@ -278,7 +466,7 @@ void Project::AddComponentInformationToXml(TiXmlElement *componentNode, Componen
         trigger->SetAttribute("type",(int)c->GetTriggerType());
         TiXmlElement* script = new TiXmlElement("script");
         script->SetAttribute("id",c->GetScript().toByteArray().data());
-        componentNode->LinkEndChild(trigger);
+        script->LinkEndChild(trigger);
         componentNode->LinkEndChild(script);
         break;
     }

@@ -81,7 +81,7 @@ GEENIE::GEENIE(QObject *parent) :
                 _mainWindow->setScriptType(Highlighter::Types::Lua);
             }
             TiXmlElement* scriptContent = script->FirstChildElement("Content");
-            if(scriptContent->Attribute("type") == "file")
+            if(QString(scriptContent->Attribute("type")) == QString("file"))
             {
                 QFile lastScriptFile(QString(scriptContent->GetText()));
                 if(!lastScriptFile.open(QIODevice::ReadOnly))

@@ -72,7 +72,7 @@ private:
     QUuid _id;
     QUuid _shaderID;
 public:
-    ShaderComponent(QUuid id = QUuid::createUuid());
+    ShaderComponent(QUuid shaderId,QUuid id = QUuid::createUuid());
     ~ShaderComponent();
 
     QUuid GetID();
