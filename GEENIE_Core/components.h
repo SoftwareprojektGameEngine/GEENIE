@@ -20,12 +20,12 @@ public:
 
 class SHARED_EXPORT LightComponent : public Component {
 private:
-    QUuid id;
-    LightSourceType lightSourceType;
-    Color ambientColor;
-    Color diffuseColor;
-    Color specularColor;
-    Vector spotlightDirection;
+    QUuid _id;
+    LightSourceType _lightSourceType;
+    Color _ambientColor;
+    Color _diffuseColor;
+    Color _specularColor;
+    Vector _spotlightDirection;
 public:
     LightComponent(LightSourceType lightType, Color ambient, Color diffuse, Color specular, Vector spotlightDir = Vector{0.0f,0.0f,0.0f,0.0f}, QUuid id = QUuid::createUuid());
     ~LightComponent();
@@ -36,13 +36,13 @@ public:
     Color GetDiffuseColor();
     Color GetSpecularColor();
     Vector GetSpotlightDirection();
-    lightSourceType GetLightSourceType();
+    LightSourceType GetLightSourceType();
 };
 
 class SHARED_EXPORT ModelComponent : public Component {
 private:
-    QUuid id;
-    QUuid modelID;
+    QUuid _id;
+    QUuid _modelID;
 public:
     ModelComponent(QUuid modelID, QUuid id = QUuid::createUuid());
     ~ModelComponent();

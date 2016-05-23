@@ -16,6 +16,7 @@ enum ComponentType {
     MODEL,
     MATERIAL,
     POSITION,
+    LIGHT
 };
 
 /*!
@@ -111,10 +112,11 @@ private:
     //! The collection of assets.
     QHash<QUuid, Asset*> assets;
     EngineWrapper* engine;
+    QString projectName;
 
 public:
     //! The project constructor.
-    Project(EngineWrapper* engine);
+    Project(EngineWrapper* engine, QString name=QString("untitled"));
     //! The project destructor.
     ~Project();
 

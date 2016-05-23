@@ -30,7 +30,8 @@ SOURCES += \
     addsceneaction.cpp \
     addassetaction.cpp \
     removesceneaction.cpp \
-    removeassetaction.cpp
+    removeassetaction.cpp \
+    components.cpp
 
 HEADERS +=\
         geenie_core_global.h \

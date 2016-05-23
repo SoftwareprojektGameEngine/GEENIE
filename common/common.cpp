@@ -19,3 +19,6 @@ const QString Common::last_script_dir = QString("%1\\").arg(QDir::currentPath())
 
 const QString Common::session_save_file_name = QString("session_save.xml");
 const QString Common::session_save_dir = QString("%1\\").arg(QDir::currentPath());
+
+const QString Common::global_stylesheet = QString("");
+const QString Common::project_file_extension = QString(".geenie");
