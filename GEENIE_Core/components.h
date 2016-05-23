@@ -101,9 +101,9 @@ enum ScriptTrigger {
 
 class SHARED_EXPORT ScriptTriggerComponent : public Component {
 private:
-    QUuid id;
-    ScriptTrigger trigger;
-    QUuid scriptID;
+    QUuid _id;
+    ScriptTrigger _trigger;
+    QUuid _scriptID;
 public:
     ScriptTriggerComponent(ScriptTrigger trigger, QUuid scriptID, QUuid id = QUuid::createUuid());
     ~ScriptTriggerComponent();
