@@ -7,8 +7,8 @@
 
 class SHARED_EXPORT PositionComponent : public Component {
 private:
-    Vector position;
-    QUuid id;
+    Vector _position;
+    QUuid _id;
 public:
     PositionComponent(Vector pos, QUuid id = QUuid::createUuid());
     ~PositionComponent();
@@ -54,9 +54,9 @@ public:
 
 class SHARED_EXPORT MaterialComponent : public Component {
 private:
-    QUuid id;
-    QUuid materialID;
-    int materialIndex;
+    QUuid _id;
+    QUuid _materialID;
+    int _materialIndex;
 public:
     MaterialComponent(QUuid matID, int matIndex, QUuid id = QUuid::createUuid());
     ~MaterialComponent();
@@ -82,9 +82,9 @@ public:
 
 class SHARED_EXPORT TextureComponent : public Component {
 private:
-    QUuid id;
-    QUuid textureID;
-    int textureIndex;
+    QUuid _id;
+    QUuid _textureID;
+    int _textureIndex;
 public:
     TextureComponent(QUuid texID, int texIndex, QUuid id = QUuid::createUuid());
     ~TextureComponent();
@@ -117,8 +117,8 @@ public:
 
 class SHARED_EXPORT SoundComponent : public Component {
 private:
-    QUuid id;
-    QUuid soundID;
+    QUuid _id;
+    QUuid _soundID;
 public:
     SoundComponent(QUuid sound, QUuid id = QUuid::createUuid());
     ~SoundComponent();

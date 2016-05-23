@@ -1,28 +1,26 @@
 #include "components.h"
 
-ModelComponent::ModelComponent(QUuid modelID, QUuid id) :
-    _id(id),
-    _modelID(modelID)
+PositionComponent::PositionComponent(Vector pos, QUuid id) :
+    _position(pos),
+    _id(id)
 {
 }
 
-ModelComponent::~ModelComponent()
-{
-}
+PositionComponent::~PositionComponent(){}
 
-QUuid ModelComponent::GetID()
+QUuid PositionComponent::GetID()
 {
     return _id;
 }
 
-QUuid ModelComponent::GetModel()
+ComponentType PositionComponent::GetType()
 {
-    return _modelID;
+    return ComponentType::POSITION;
 }
 
-ComponentType ModelComponent::GetType()
+Vector PositionComponent::GetPosition()
 {
-    return ComponentType::MODEL;
+    return _position;
 }
 
 LightComponent::LightComponent(LightSourceType lightType, Color ambient, Color diffuse, Color specular, Vector spotlightDir, QUuid id) :
@@ -74,12 +72,127 @@ LightSourceType LightComponent::GetLightSourceType()
     return _lightSourceType;
 }
 
+
+ModelComponent::ModelComponent(QUuid modelID, QUuid id) :
+    _id(id),
+    _modelID(modelID)
+{
+}
+
+ModelComponent::~ModelComponent()
+{
+}
+
+QUuid ModelComponent::GetID()
+{
+    return _id;
+}
+
+QUuid ModelComponent::GetModel()
+{
+    return _modelID;
+}
+
+ComponentType ModelComponent::GetType()
+{
+    return ComponentType::MODEL;
+}
+
+MaterialComponent::MaterialComponent(QUuid matID, int matIndex, QUuid id) :
+    _id(id),
+    _materialID(matID),
+    _materialIndex(matIndex)
+{
+}
+
+MaterialComponent::~MaterialComponent(){}
+
+QUuid MaterialComponent::GetID()
+{
+    return _id;
+}
+
+ComponentType MaterialComponent::GetType()
+{
+    return ComponentType::MATERIAL;
+}
+
+QUuid MaterialComponent::GetMaterial()
+{
+    return _materialID;
+}
+
+int MaterialComponent::GetMaterialIndex()
+{
+    return _materialIndex;
+}
+
+ShaderComponent::ShaderComponent(QUuid id):
+    _id(id)
+{
+}
+ShaderComponent::~ShaderComponent(){}
+
+QUuid ShaderComponent::GetID(){
+    return _id;
+}
+
+ComponentType ShaderComponent::GetType(){
+    return ComponentType::SHADER;
+}
+
+QUuid ShaderComponent::GetShader(){
+    return _shaderID;
+}
+
+TextureComponent::TextureComponent(QUuid texID, int texIndex, QUuid id) :
+    _id(id),
+    _textureID(texID),
+    _textureIndex(texIndex)
+{
+}
+
+TextureComponent::~TextureComponent()
+{
+}
+
+QUuid TextureComponent::GetID()
+{
+    return _id;
+}
+
+ComponentType TextureComponent::GetType()
+{
+    return ComponentType::TEXTURE;
+}
+
+QUuid TextureComponent::GetTexture()
+{
+    return _textureID;
+}
+
+int TextureComponent::GetTextureIndex()
+{
+    return _textureIndex;
+}
+
+ScriptTriggerComponent::ScriptTriggerComponent(ScriptTrigger trigger, QUuid scriptID, QUuid id):
+    _id(id),
+    _trigger(trigger),
+    _scriptID(scriptID)
+{
+}
+
+ScriptTriggerComponent::~ScriptTriggerComponent()
+{
+}
+
 QUuid ScriptTriggerComponent::GetID(){
  return _id;
 }
 
 ComponentType ScriptTriggerComponent::GetType(){
-    return ComponentType::ScriptTrigger;
+    return ComponentType::SCRIPT;
 }
 
 ScriptTrigger ScriptTriggerComponent::GetTriggerType(){
@@ -90,26 +203,25 @@ QUuid ScriptTriggerComponent::GetScript(){
     return _scriptID;
 }
 
-ScriptTriggerComponent::ScriptTriggerComponent(ScriptTrigger trigger, QUuid scriptID, QUuid id):
+SoundComponent::SoundComponent(QUuid sound, QUuid id) :
     _id(id),
-    _trigger(trigger),
-    _scriptID(scriptID)
+    _soundID(sound)
 {
 }
 
-QUuid ShaderComponent::GetID(){
+SoundComponent::~SoundComponent(){}
+
+QUuid SoundComponent::GetID()
+{
     return _id;
 }
 
-ComponentType ShaderComponent::GetType(){
-    return ComponentType::ShaderComponent;
-}
-
-QUuid ShaderComponent::GetShader(){
-    return _shaderID;
-}
-
-ShaderComponent::ShaderComponent(QUuid id):
-    _id(id)
+ComponentType SoundComponent::GetType()
 {
+    return ComponentType::SOUND;
+}
+
+QUuid SoundComponent::GetSound()
+{
+    return _soundID;
 }

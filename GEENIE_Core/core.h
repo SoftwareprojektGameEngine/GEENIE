@@ -16,7 +16,15 @@ enum ComponentType {
     MODEL,
     MATERIAL,
     POSITION,
-    LIGHT
+    LIGHT,
+    TEXTURE,
+    SOUND,
+    SHADER,
+    SCRIPT
+};
+
+enum LightSourceType {
+    Stuff
 };
 
 /*!
@@ -67,6 +75,7 @@ public:
 
     Entity* GetSubEntity(const QUuid& entityID);
     QHashIterator<QUuid, Entity*> GetSubEntities();
+    bool HasSubEntities();
     void AddSubEntity(Entity* entity);
     Entity* RemoveSubEntity(const QUuid& entityID);
 
@@ -74,6 +83,7 @@ public:
     QHashIterator<QUuid, Component*> GetComponents();
     void AddComponent(Component* component);
     Component* RemoveComponent(const QUuid& componentID);
+    bool HasComponents();
 };
 
 class SHARED_EXPORT Scene {
@@ -90,9 +100,12 @@ public:
     QHashIterator<QUuid, Entity*> GetEntities();
     void AddEntity(Entity* entity);
     Entity* RemoveEntity(const QUuid& entityID);
+    bool HasEntities();
 };
 
 #include "enginewrapper.h"
+
+class TiXmlElement;
 
 /*!
   The Project class. Used to contain all state of a project.
@@ -112,7 +125,9 @@ private:
     //! The collection of assets.
     QHash<QUuid, Asset*> assets;
     EngineWrapper* engine;
+    //! The project name
     QString projectName;
+    TiXmlElement* subEntitiesToXml(Entity* entity);
 
 public:
     //! The project constructor.
@@ -155,6 +170,10 @@ public:
     Asset* RemoveAsset(const QUuid& assetID);
     //! Returns an iterator over all assets.
     QHashIterator<QUuid, Asset*> GetAssets();
+    //! Loads project from specified file
+    void load(QString& file);
+    //! Saves project to specified file
+    void save(QString& file);
 };
 
 #endif // CORE_H

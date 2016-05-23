@@ -1,5 +1,4 @@
 #include "core.h"
-
 #define CALC_INDEX(index) ((index) % (MAX_NUM_USERACTIONS + 1))
 
 Project::Project(EngineWrapper* engine, QString name) : fastEntityLookup(), scenes(), assets(), projectName(name) {
@@ -158,4 +157,82 @@ Asset* Project::RemoveAsset(const QUuid &assetID) {
 
 QHashIterator<QUuid, Asset*> Project::GetAssets() {
     return QHashIterator<QUuid, Asset*>(this->assets);
+}
+
+#include "../tinyxml/tinyxml.h"
+#include <QFile>
+
+void Project::load(QString &file)
+{
+
+}
+
+TiXmlElement *Project::subEntitiesToXml(Entity *entity)
+{
+    TiXmlElement* e = new TiXmlElement("entity");
+    e->SetAttribute("id",entity->GetID().toByteArray().data());
+    e->SetAttribute("parent",entity->GetParentID().toByteArray().data());
+    if(entity->HasSubEntities())
+    {
+        TiXmlElement* subWrapper = new TiXmlElement("subentities");
+        e->LinkEndChild(subWrapper);
+        QHashIterator<QUuid, Entity*> it = entity->GetSubEntities();
+        while(it.hasNext())
+        {
+            it.next();
+            TiXmlElement* sub = subEntitiesToXml(it.value());
+            subWrapper->LinkEndChild(sub);
+        }
+    }
+    if(entity->HasComponents())
+    {
+        QHashIterator<QUuid, Component*> it = entity->GetComponents();
+        while(it.hasNext())
+        {
+            it.next();
+            TiXmlElement* comp = new TiXmlElement("component");
+            comp->SetAttribute("id",it.value()->GetID().toByteArray().data());
+            comp->SetAttribute("type",(int)it.value()->GetType());
+            e->LinkEndChild(comp);
+        }
+    }
+    return e;
+}
+
+void Project::save(QString &file)
+{
+    TiXmlDocument doc;
+    TiXmlDeclaration* decl = new TiXmlDeclaration("1.0","utf8","");
+    doc.LinkEndChild(decl);
+    TiXmlElement* root = new TiXmlElement("project");
+    root->SetAttribute("name",this->projectName.toUtf8().data());
+    doc.LinkEndChild(root);
+    for(const auto &scene: scenes)
+    {
+        TiXmlElement* sceneElement = new TiXmlElement("scene");
+        sceneElement->SetAttribute("id",scene->GetID().toByteArray().data());
+        QHashIterator<QUuid, Entity*> it = scene->GetEntities();
+        if(scene->HasEntities())
+        {
+            while(it.hasNext())
+            {
+                it.next();
+                TiXmlElement* entityElement = subEntitiesToXml(it.value());
+                sceneElement->LinkEndChild(entityElement);
+            }
+        }
+        root->LinkEndChild(sceneElement);
+
+    }
+    for(const auto &asset : assets)
+    {
+        TiXmlElement* assetElement = new TiXmlElement("asset");
+        assetElement->SetAttribute("id",asset->GetID().toByteArray().data());
+        assetElement->SetAttribute("type",(int)asset->GetType());
+        TiXmlElement* assetPath = new TiXmlElement("path");
+        assetPath->LinkEndChild(new TiXmlText(asset->GetPath().toUtf8().data()));
+        assetElement->LinkEndChild(assetPath);
+        root->LinkEndChild(assetElement);
+    }
+    doc.SaveFile(file.toUtf8().data());
 }

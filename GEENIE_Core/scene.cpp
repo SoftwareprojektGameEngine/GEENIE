@@ -37,3 +37,8 @@ Entity* Scene::RemoveEntity(const QUuid& entityID) {
 
     return entity;
 }
+
+bool Scene::HasEntities()
+{
+    return !(this->entities.isEmpty());
+}
