@@ -193,6 +193,12 @@ public:
     void load(QString& file);
     //! Saves project to specified file
     void save(QString& file);
+    //! Returns project name
+    QString name();
+
+public slots:
+private slots:
+signals:
 };
 
 #endif // CORE_H

@@ -280,17 +280,20 @@ void Project::XmlToComponent(TiXmlElement *c, Entity *e)
     }
 }
 
+#include <iostream>
+
 void Project::XmlToEntity(TiXmlElement *e)
 {
     QUuid id = QUuid(QString(e->Attribute("id")));
     QUuid parentId = QUuid(QString(e->Attribute("parent")));
     Entity* entity = new Entity(parentId,id);
+    this->AddEntity(entity);
     TiXmlElement* comp = e->FirstChildElement("component");
     for(comp;comp != 0;comp = comp->NextSiblingElement("component"))
     {
         XmlToComponent(comp,entity);
     }
-    TiXmlElement* sub = e->FirstChildElement("subenteties");
+    TiXmlElement* sub = e->FirstChildElement("subentities");
     if(sub != 0)
     {
         TiXmlElement* subE = sub->FirstChildElement("entity");
@@ -299,7 +302,6 @@ void Project::XmlToEntity(TiXmlElement *e)
             XmlToEntity(subE);
         }
     }
-    this->AddEntity(entity);
 }
 
 void Project::load(QString &file)
@@ -318,11 +320,10 @@ void Project::load(QString &file)
         QUuid id = QUuid(QString(scene->Attribute("id")));
         this->AddScene(new Scene(id));
         TiXmlElement* entity = scene->FirstChildElement("entity");
-        for(entity;entity != 0;entity->NextSiblingElement("entity"))
+        for(entity;entity != 0;entity = entity->NextSiblingElement("entity"))
         {
             XmlToEntity(entity);
         }
-
     }
     TiXmlElement* asset = root->FirstChildElement("asset");
     for(asset;asset != 0;asset = asset->NextSiblingElement("asset"))
@@ -542,4 +543,9 @@ void Project::save(QString &file)
         root->LinkEndChild(assetElement);
     }
     doc.SaveFile(file.toUtf8().data());
+}
+
+QString Project::name()
+{
+    return projectName;
 }
