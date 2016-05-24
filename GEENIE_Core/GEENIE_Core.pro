@@ -30,7 +30,12 @@ SOURCES += \
     addsceneaction.cpp \
     addassetaction.cpp \
     removesceneaction.cpp \
-    removeassetaction.cpp
+    removeassetaction.cpp \
+    components.cpp \
+    ../tinyxml/tinystr.cpp \
+    ../tinyxml/tinyxml.cpp \
+    ../tinyxml/tinyxmlerror.cpp \
+    ../tinyxml/tinyxmlparser.cpp
 
 HEADERS +=\
         geenie_core_global.h \
@@ -39,7 +44,9 @@ HEADERS +=\
     assets.h \
     components.h \
     enginewrapper.h \
-    core_base.h
+    core_base.h \
+    ../tinyxml/tinystr.h \
+    ../tinyxml/tinyxml.h
 
 unix {
     target.path = /usr/lib

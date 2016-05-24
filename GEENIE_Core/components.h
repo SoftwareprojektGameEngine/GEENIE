@@ -5,10 +5,10 @@
 
 //TODO: add components
 
-class SHARED_EXPORT PositionComponent {
+class SHARED_EXPORT PositionComponent : public Component {
 private:
-    Vector position;
-    QUuid id;
+    Vector _position;
+    QUuid _id;
 public:
     PositionComponent(Vector pos, QUuid id = QUuid::createUuid());
     ~PositionComponent();
@@ -18,14 +18,14 @@ public:
     Vector GetPosition();
 };
 
-class SHARED_EXPORT LightComponent {
+class SHARED_EXPORT LightComponent : public Component {
 private:
-    QUuid id;
-    LightSourceType lightSourceType;
-    Color ambientColor;
-    Color diffuseColor;
-    Color specularColor;
-    Vector spotlightDirection;
+    QUuid _id;
+    LightSourceType _lightSourceType;
+    Color _ambientColor;
+    Color _diffuseColor;
+    Color _specularColor;
+    Vector _spotlightDirection;
 public:
     LightComponent(LightSourceType lightType, Color ambient, Color diffuse, Color specular, Vector spotlightDir = Vector{0.0f,0.0f,0.0f,0.0f}, QUuid id = QUuid::createUuid());
     ~LightComponent();
@@ -36,13 +36,13 @@ public:
     Color GetDiffuseColor();
     Color GetSpecularColor();
     Vector GetSpotlightDirection();
-    lightSourceType GetLightSourceType();
+    LightSourceType GetLightSourceType();
 };
 
-class SHARED_EXPORT ModelComponent {
+class SHARED_EXPORT ModelComponent : public Component {
 private:
-    QUuid id;
-    QUuid modelID;
+    QUuid _id;
+    QUuid _modelID;
 public:
     ModelComponent(QUuid modelID, QUuid id = QUuid::createUuid());
     ~ModelComponent();
@@ -52,11 +52,11 @@ public:
     QUuid GetModel();
 };
 
-class SHARED_EXPORT MaterialComponent {
+class SHARED_EXPORT MaterialComponent : public Component {
 private:
-    QUuid id;
-    QUuid materialID;
-    int materialIndex;
+    QUuid _id;
+    QUuid _materialID;
+    int _materialIndex;
 public:
     MaterialComponent(QUuid matID, int matIndex, QUuid id = QUuid::createUuid());
     ~MaterialComponent();
@@ -67,12 +67,12 @@ public:
     int GetMaterialIndex();
 };
 
-class SHARED_EXPORT ShaderComponent {
+class SHARED_EXPORT ShaderComponent : public Component {
 private:
-    QUuid id;
-    QUuid shaderID;
+    QUuid _id;
+    QUuid _shaderID;
 public:
-    ShaderComponent(QUuid id = QUuid::createUuid());
+    ShaderComponent(QUuid shaderId,QUuid id = QUuid::createUuid());
     ~ShaderComponent();
 
     QUuid GetID();
@@ -80,11 +80,11 @@ public:
     QUuid GetShader();
 };
 
-class SHARED_EXPORT TextureComponent {
+class SHARED_EXPORT TextureComponent : public Component {
 private:
-    QUuid id;
-    QUuid textureID;
-    int textureIndex;
+    QUuid _id;
+    QUuid _textureID;
+    int _textureIndex;
 public:
     TextureComponent(QUuid texID, int texIndex, QUuid id = QUuid::createUuid());
     ~TextureComponent();
@@ -99,11 +99,11 @@ enum ScriptTrigger {
     // TODO: insert plausible values
 };
 
-class SHARED_EXPORT ScriptTriggerComponent {
+class SHARED_EXPORT ScriptTriggerComponent : public Component {
 private:
-    QUuid id;
-    ScriptTrigger trigger;
-    QUuid scriptID;
+    QUuid _id;
+    ScriptTrigger _trigger;
+    QUuid _scriptID;
 public:
     ScriptTriggerComponent(ScriptTrigger trigger, QUuid scriptID, QUuid id = QUuid::createUuid());
     ~ScriptTriggerComponent();
@@ -115,10 +115,10 @@ public:
     QUuid GetScript();
 };
 
-class SHARED_EXPORT SoundComponent {
+class SHARED_EXPORT SoundComponent : public Component {
 private:
-    QUuid id;
-    QUuid soundID;
+    QUuid _id;
+    QUuid _soundID;
 public:
     SoundComponent(QUuid sound, QUuid id = QUuid::createUuid());
     ~SoundComponent();

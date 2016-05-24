@@ -28,7 +28,6 @@ void Logger::createMsg(logger::MessageType type, QString msg)
     QFile logfile(Common::log_file_path);
     if( logfile.open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Append) )
     {
-        qDebug() << "Opened";
         QTextStream logstream(&logfile);
         switch(type)
         {

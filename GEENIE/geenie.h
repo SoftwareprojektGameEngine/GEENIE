@@ -34,11 +34,14 @@ class GEENIE : public QObject
     Q_OBJECT
 public:
     explicit GEENIE(QObject *parent = 0);
+    ~GEENIE();
 
-    void insertDockWidget(EDockWidgetTypes type, QWidget* widget, bool show = false, Qt::DockWidgetArea area = Qt::BottomDockWidgetArea);
+    void insertDockWidget(EDockWidgetTypes type, QWidget* widget, bool show = false, Qt::DockWidgetArea area = Qt::BottomDockWidgetArea, bool floating = false, int width = 200, int height = 200);
 
 private:
 
+
+    void defaultSession(QWidget* inspector, QWidget* asset, QWidget* entities);
     void createDockWidgetTitles();
 
     QMap<EDockWidgetTypes, QDockWidget*> _dockWidgets;
@@ -48,6 +51,8 @@ private:
     ScriptHighlighter* _highlighter;
 
     QString _layoutName;
+
+    QTimer* _saveTimer;
 
 
 private slots:

@@ -14,6 +14,7 @@ private Q_SLOTS:
     void testAddMultipleUserActions();
     void testCanUndoRedo();
     void testUndoRedo();
+    void testLoadSave();
     //void TestUserActionEdgeCases();
 };
 

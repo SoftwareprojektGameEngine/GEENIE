@@ -7,6 +7,7 @@
 #include <QtWidgets/QWidget>
 
 struct Vector {
+    Vector(float _x = 0.0f,float _y = 0.0f,float _z = 0.0f,float _w = 1.0f) : x(_x),y(_y),z(_z),w(_w){}
     float x;
     float y;
     float z;
@@ -14,6 +15,7 @@ struct Vector {
 };
 
 struct Color {
+    Color(float _r = 0.0f,float _g = 0.0f,float _b = 0.0f,float _a = 0.0f) : r(_r),g(_g),b(_b),a(_a){}
     float r;
     float g; //!< green
     float b; //!< blue

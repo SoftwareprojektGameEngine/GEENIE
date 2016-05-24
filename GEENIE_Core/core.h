@@ -16,6 +16,15 @@ enum ComponentType {
     MODEL,
     MATERIAL,
     POSITION,
+    LIGHT,
+    TEXTURE,
+    SOUND,
+    SHADER,
+    SCRIPT
+};
+
+enum LightSourceType {
+    // TODO: insert plausible values
 };
 
 /*!
@@ -66,6 +75,7 @@ public:
 
     Entity* GetSubEntity(const QUuid& entityID);
     QHashIterator<QUuid, Entity*> GetSubEntities();
+    bool HasSubEntities();
     void AddSubEntity(Entity* entity);
     Entity* RemoveSubEntity(const QUuid& entityID);
 
@@ -73,6 +83,7 @@ public:
     QHashIterator<QUuid, Component*> GetComponents();
     void AddComponent(Component* component);
     Component* RemoveComponent(const QUuid& componentID);
+    bool HasComponents();
 };
 
 class SHARED_EXPORT Scene {
@@ -89,14 +100,21 @@ public:
     QHashIterator<QUuid, Entity*> GetEntities();
     void AddEntity(Entity* entity);
     Entity* RemoveEntity(const QUuid& entityID);
+    bool HasEntities();
 };
 
 #include "enginewrapper.h"
+#include <QObject>
+
+class TiXmlElement;
 
 /*!
   The Project class. Used to contain all state of a project.
   */
-class SHARED_EXPORT Project {
+class SHARED_EXPORT Project : public QObject {
+
+    Q_OBJECT
+
 private:
     //! Ringbuffer structure of UserActions
     UserAction* userActions[MAX_NUM_USERACTIONS + 1];
@@ -111,10 +129,28 @@ private:
     //! The collection of assets.
     QHash<QUuid, Asset*> assets;
     EngineWrapper* engine;
+    //! The project name
+    QString projectName;
+    //! Helper function for subentities
+    TiXmlElement *SubEntitiesToXml(Entity* entity);
+    //! Helper function for components
+    void AddComponentInformationToXml(TiXmlElement* componentNode, Component* component);
+    //! Helper function for vectors
+    void VectorToXml(TiXmlElement* parent, Vector vector, QString& name);
+    //! Helper function for colors
+    void ColorToXml(TiXmlElement* parent, Color color, QString& name);
+    //! Helper function for loading entities
+    void XmlToEntity(TiXmlElement* e);
+    //! Helper function for loading components
+    void XmlToComponent(TiXmlElement* c, Entity* e);
+    //! Helper function for loading vectors
+    Vector XmlToVector(TiXmlElement* parent, QString& name);
+    //! Helper function for loading colors
+    Color XmlToColor(TiXmlElement* parent, QString& name);
 
 public:
     //! The project constructor.
-    Project(EngineWrapper* engine);
+    Project(EngineWrapper* engine, QString name = QString("untitled"));
     //! The project destructor.
     ~Project();
 
@@ -153,6 +189,16 @@ public:
     Asset* RemoveAsset(const QUuid& assetID);
     //! Returns an iterator over all assets.
     QHashIterator<QUuid, Asset*> GetAssets();
+    //! Loads project from specified file
+    void load(QString& file);
+    //! Saves project to specified file
+    void save(QString& file);
+    //! Returns project name
+    QString name();
+
+public slots:
+private slots:
+signals:
 };
 
 #endif // CORE_H

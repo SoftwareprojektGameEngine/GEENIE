@@ -26,6 +26,11 @@ Entity* Entity::GetSubEntity(const QUuid& entityID) {
     return this->subEntities.value(entityID, nullptr);
 }
 
+bool Entity::HasSubEntities()
+{
+    return !(this->subEntities.isEmpty());
+}
+
 QHashIterator<QUuid, Entity*> Entity::GetSubEntities() {
     return QHashIterator<QUuid, Entity*>(this->subEntities);
 }
@@ -64,4 +69,9 @@ Component* Entity::RemoveComponent(const QUuid &componentID) {
         this->components.remove(componentID);
     }
     return component;
+}
+
+bool Entity::HasComponents()
+{
+    return !(this->components.isEmpty());
 }

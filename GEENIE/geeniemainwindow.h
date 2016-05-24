@@ -6,6 +6,7 @@
 #include "logger.h"
 
 class QTextDocument;
+class Project;
 
 namespace Ui {
 class GEENIEMainWindow;
@@ -18,6 +19,9 @@ class GEENIEMainWindow : public QMainWindow
 public:
     explicit GEENIEMainWindow(QWidget *parent = 0);
     ~GEENIEMainWindow();
+
+    void setScriptType(Highlighter::Types type);
+    void setScript(QString& script);
 
     QTextDocument* scriptEditorDocument();
 
@@ -35,6 +39,8 @@ private slots:
 
 
     void on_comboBox_currentIndexChanged(int index);
+
+    void on_actionExit_triggered();
 
 private:
     Ui::GEENIEMainWindow *ui;

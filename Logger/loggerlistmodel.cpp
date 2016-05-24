@@ -50,7 +50,6 @@ int LoggerListModel::rowCount(const QModelIndex&) const
 
 void LoggerListModel::append(LoggerListItem *item)
 {
-    qDebug() << _items.size();
     if(_items.size() == 500)
     {
         removeRows(0,0,QModelIndex());

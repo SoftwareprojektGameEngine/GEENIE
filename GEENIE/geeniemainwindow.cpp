@@ -50,15 +50,15 @@ void GEENIEMainWindow::closeEvent(QCloseEvent *event)
     {
         event->ignore();
     }
-    else if (resBtn == QMessageBox::Cancel)
+    else if (resBtn == QMessageBox::Yes)
     {
         emit saveSession();
         event->accept();
     }
     else if (resBtn == QMessageBox::No)
     {
-        ExitDialog* exitDialog = new ExitDialog(this);
-        if(exitDialog->exec() == QDialog::Accepted)
+        ExitDialog exitDialog;
+        if(exitDialog.exec() == QDialog::Accepted)
         {
             event->ignore();
         }
@@ -85,4 +85,26 @@ void GEENIEMainWindow::on_comboBox_currentIndexChanged(int index)
     {
         emit changeScriptType(Highlighter::Types::Lua);
     }
+}
+
+void GEENIEMainWindow::setScriptType(Highlighter::Types type)
+{
+    if(type == Highlighter::Types::Python)
+    {
+        ui->comboBox->setCurrentIndex(0);
+    }
+    else
+    {
+        ui->comboBox->setCurrentIndex(1);
+    }
+}
+
+void GEENIEMainWindow::setScript(QString &script)
+{
+    ui->scriptEditor->setText(script);
+}
+
+void GEENIEMainWindow::on_actionExit_triggered()
+{
+    close();
 }
