@@ -30,7 +30,7 @@ public:
     ResHandle UpdateModel(ResHandle model, const ModelAsset& modelAsset);
     bool DestroyModel(ResHandle model);
 
-    EngineWidget* CreateWidget();
+    EngineWidgetWrapper* CreateWidget();
 
 private:
     QSet<osg::Geode*> models;

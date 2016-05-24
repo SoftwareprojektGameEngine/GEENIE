@@ -26,7 +26,7 @@ struct Matrix {
 
 typedef void* ResHandle;
 
-class EngineWidget;
+class EngineWidgetWrapper;
 
 class EngineWrapper {
 public:
@@ -50,15 +50,14 @@ public:
     virtual ResHandle UpdateModel(ResHandle model, const ModelAsset& modelAsset) = 0;
     virtual bool DestroyModel(ResHandle model) = 0;
 
-    virtual EngineWidget* CreateWidget() = 0;
+    virtual EngineWidgetWrapper* CreateWidget() = 0;
 };
 
 #include "core.h"
 
-class EngineWidget : public QWidget {
-    virtual void Destroy() = 0;
-
-    virtual bool SetCamera(const Vector& position, const Vector& up) = 0;
+class EngineWidgetWrapper {
+    virtual QWidget* GetWidget() = 0;
+    virtual bool SetCamera(const Vector& eye, const Vector& center, const Vector& up) = 0;
 
     virtual bool BuildSceneGraph(Scene* scene) = 0;
     virtual bool UpdateSceneGraph() = 0;

@@ -1,6 +1,7 @@
 #include "osgwrapper.h"
 
 #include "osgDB/ReadFile"
+#include "osgwidget.h"
 
 OSGWrapper::OSGWrapper() : models(), textures(), materials() {
 
@@ -120,6 +121,6 @@ bool OSGWrapper::DestroyMaterial(ResHandle materialHandle) {
     return false;
 }
 
-EngineWidget* OSGWrapper::CreateWidget() {
-    return nullptr;
+EngineWidgetWrapper* OSGWrapper::CreateWidget() {
+    return new OSGWidget(this);
 }
