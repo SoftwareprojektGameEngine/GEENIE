@@ -94,8 +94,7 @@ bool OSGWidget::UpdateSceneGraph() {
     // TODO: fix memory leak
     if(this->scene == nullptr) return true;
 
-    delete this->rootNode;
-    this->rootNode = new osg::Group;
+    osg::Group* newRootNode = new osg::Group;
 
     auto iter = this->scene->GetEntities();
     while(iter.hasNext()) {
@@ -110,8 +109,10 @@ bool OSGWidget::UpdateSceneGraph() {
         //}
         osg::Node* node = buildNode(entity);
         nodeMap.insert(entity->GetID(), node);
-        rootNode->addChild(node);
+        newRootNode->addChild(node);
     }
+
+    this->rootNode = newRootNode;
 
     viewer->setSceneData(this->rootNode.get());
 
