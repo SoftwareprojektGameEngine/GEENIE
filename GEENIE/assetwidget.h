@@ -14,6 +14,14 @@ class AssetWidget : public QWidget
 public:
     explicit AssetWidget(QWidget *parent = 0);
     ~AssetWidget();
+    FillTreeView(QString _path);
+
+private slots:
+    void on_LoadButton_clicked();
+
+    void on_DeleteButton_clicked();
+
+    void on_treeView_clicked(const QModelIndex &index);
 
 private:
     Ui::AssetWidget *ui;
