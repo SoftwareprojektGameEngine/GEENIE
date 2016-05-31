@@ -14,7 +14,7 @@ class AssetWidget : public QWidget
 public:
     explicit AssetWidget(QWidget *parent = 0);
     ~AssetWidget();
-    FillTreeView(QString _path);
+    void FillTreeView(QString _path);
 
 private slots:
     void on_LoadButton_clicked();

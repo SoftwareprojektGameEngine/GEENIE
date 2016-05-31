@@ -3,7 +3,7 @@
 #include <qfiledialog.h>
 
 QString Path;
-QList FileList;
+QList<QString> FileList;
 
 AssetWidget::AssetWidget(QWidget *parent) :
     QWidget(parent),
@@ -22,12 +22,12 @@ void AssetWidget::on_LoadButton_clicked()
     QStringList *model;
     //Show File Dialog
     QFileDialog View(this);
-    View::setFileMode(QFileDialog::ExistingFiles);
-    View::setViewMode(QFileDialog::Detail);
-    View::show();
+    View.setFileMode(QFileDialog::ExistingFiles);
+    View.setViewMode(QFileDialog::Detail);
+    View.show();
     //Get Files from Dialog
-    Path = View::getExistingDirectory();//@Artem: Muss hier der Konstruktor gefüllt werden?
-    FileList::append(Path);
+    Path = View.getExistingDirectory();//@Artem: Muss hier der Konstruktor gefüllt werden?
+    FileList.append(Path);
     //Fill ListView
     ui->listWidget->addItems(FileList);
 }
@@ -35,21 +35,25 @@ void AssetWidget::on_LoadButton_clicked()
 void AssetWidget::on_DeleteButton_clicked()
 {
     //qDeleteAll(ui->listWidget->selectedItems());
-    FileList::removeAt(FileList::indexOf(ui->listWidget->selectedItems()
-                                         ));
+    int count = ui->listWidget->selectedItems().count();
+    for(int i=0; i<count;i++)
+    {
+        FileList.removeAt(ui->listWidget->selectionModel()->selectedIndexes()[i].row());
+    }
     ui->listWidget->update();
 }
 
 void AssetWidget::on_treeView_clicked(const QModelIndex &index)
 {
     //Append ListView with FileList that gets data from the treeview
-    FileList::clear();
-    FileList::append();//@Artem: HILFE!!!
+    FileList.clear();
+    //FileList.append();//@Artem: HILFE!!!
     ui->listWidget->addItems(FileList);
     ui->listWidget->update();
 }
 
 void AssetWidget::FillTreeView(QString _path){
+   /*
     //filling the tree view with the root path
     QString _path;//root path of the project
     QString mPath;
@@ -61,4 +65,5 @@ void AssetWidget::FillTreeView(QString _path){
     dirModel = new QFileSystemModel(this);
     dirModel->setRootPath(mPath);
     ui->treeView->setModel(dirModel);
+    */
 }
