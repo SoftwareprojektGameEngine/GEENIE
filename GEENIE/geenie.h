@@ -10,6 +10,8 @@
 class GEENIEMainWindow;
 class QDockWidget;
 class Project;
+class Entity;
+class Component;
 
 enum class EDockWidgetTypes
 {
@@ -42,11 +44,16 @@ public:
 private:
 
 
+    void EntityToInspector(Entity* e);
+    void ComponentToInspector(Component* c, bool sub = false);
+    void UnsetInspector();
+
     void defaultSession(QWidget* inspector, QWidget* asset, QWidget* entities);
     void createDockWidgetTitles();
 
     QMap<EDockWidgetTypes, QDockWidget*> _dockWidgets;
     QMap<EDockWidgetTypes, QString> _dockWidgetsTitles;
+    QVector<QWidget*> _inspectorWidgets;
 
     GEENIEMainWindow* _mainWindow;
     ScriptHighlighter* _highlighter;

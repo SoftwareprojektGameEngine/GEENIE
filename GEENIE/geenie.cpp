@@ -11,6 +11,7 @@
 #include "inspectortexturewidget.h"
 #include "inspectortransformwidget.h"
 #include "core.h"
+#include "components.h"
 
 #include <QDir>
 #include <QFile>
@@ -21,6 +22,7 @@
 #include <QStackedLayout>
 #include <QTimer>
 #include <QString>
+#include <QScrollArea>
 
 GEENIE::GEENIE(QObject *parent) :
     QObject(parent),
@@ -28,29 +30,35 @@ GEENIE::GEENIE(QObject *parent) :
     _layoutName("default"),
     _highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
 {
+    //EXAMPLE PROJECT
     _project = new Project(0,QString("untitled"));
-    Scene* scene = new Scene();
-    _project->AddScene(scene);
+    QUuid exEntityId;
+    {
+        Scene* scene = new Scene();
+        _project->AddScene(scene);
+        Entity* entity = new Entity(scene->GetID());
+        exEntityId = entity->GetID();
+        _project->AddEntity(entity);
+        entity->AddComponent(new SoundComponent(QUuid::createUuid()));
+        entity->AddComponent(new TextureComponent(QUuid::createUuid(),0));
+        entity->AddComponent(new ModelComponent(QUuid::createUuid()));
+    }
+    //EXAMPLE PROJECT
     createDockWidgetTitles();
     QDir dir;
     dir.mkpath(Common::log_path);
 
-    QWidget* inspectorWidget = new QWidget(_mainWindow);
-    QStackedLayout* inspectorLayout = new QStackedLayout(inspectorWidget);
-    Inspector* inspector = new Inspector(inspectorWidget);
-    InspectorAudioWidget* inspectorAudio = new InspectorAudioWidget(inspectorWidget);
-    InspectorCameraWidget* inspectorCamera = new InspectorCameraWidget(inspectorWidget);
-    InspectorMaterialWidget* inspectorMaterial = new InspectorMaterialWidget(inspectorWidget);
-    InspectorTextureWidget* inspectorTexture = new InspectorTextureWidget(inspectorWidget);
-    InspectorTransformWidget* inspectorTransform = new InspectorTransformWidget(inspectorWidget);
+    QScrollArea* inspectorWidget = new QScrollArea(_mainWindow);
+    //inspectorWidget->setWidgetResizable(true);
+    QWidget* inspectorInnerWidget = new QWidget(inspectorWidget);
+    inspectorWidget->setWidget(inspectorInnerWidget);
+    QVBoxLayout* inspectorLayout = new QVBoxLayout(inspectorInnerWidget);
+    inspectorLayout->setSizeConstraint(QLayout::SetFixedSize);
+    Inspector* inspector = new Inspector(inspectorInnerWidget);
+    _inspectorWidgets.append(inspector);
     inspectorLayout->addWidget(inspector);
-    inspectorLayout->addWidget(inspectorAudio);
-    inspectorLayout->addWidget(inspectorCamera);
-    inspectorLayout->addWidget(inspectorMaterial);
-    inspectorLayout->addWidget(inspectorTexture);
-    inspectorLayout->addWidget(inspectorTransform);
-    inspectorLayout->setCurrentIndex(EInspectorTypes::None);
     inspectorWidget->setLayout(inspectorLayout);
+
 
     AssetWidget* aWidget = new AssetWidget(_mainWindow);
 
@@ -218,6 +226,7 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(changeScriptType(Highlighter::Types)),
                      this,SLOT(changeScriptType(Highlighter::Types)));
 
+    EntityToInspector(_project->FindEntity(exEntityId));
     _mainWindow->show();
 }
 
@@ -225,6 +234,112 @@ GEENIE::~GEENIE()
 {
     _saveTimer->stop();
     delete _saveTimer;
+}
+
+void GEENIE::EntityToInspector(Entity *e)
+{
+    QLayout* layout = _dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget()->layout();
+    QWidget* parentWidget = layout->parentWidget();
+    for(auto widget : _inspectorWidgets)
+    {
+        layout->removeWidget(widget);
+        delete widget;
+        parentWidget->resize(parentWidget->width(),0);
+    }
+    InspectorTransformWidget* w = new InspectorTransformWidget(parentWidget);
+    layout->addWidget(w);
+    _inspectorWidgets.append(w);
+    parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
+    QHashIterator<QUuid, Component*> it = e->GetComponents();
+    while(it.hasNext())
+    {
+        it.next();
+        ComponentToInspector(it.value(),true);
+    }
+}
+
+void GEENIE::ComponentToInspector(Component *c, bool sub)
+{
+    QLayout* layout = _dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget()->layout();
+    QWidget* parentWidget = layout->parentWidget();
+    if(!sub)
+    {
+        for(auto widget : _inspectorWidgets)
+        {
+            layout->removeWidget(widget);
+            delete widget;
+        }
+    }
+    switch(c->GetType())
+    {
+    case ComponentType::MODEL:
+    {
+        InspectorTransformWidget* w = new InspectorTransformWidget(parentWidget);
+        layout->addWidget(w);
+        _inspectorWidgets.append(w);
+        parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
+        break;
+    }
+    case ComponentType::MATERIAL:
+    {
+        InspectorMaterialWidget* w = new InspectorMaterialWidget(parentWidget);
+        layout->addWidget(w);
+        _inspectorWidgets.append(w);
+        parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
+        break;
+    }
+    case ComponentType::POSITION:
+    {
+        InspectorTransformWidget* w = new InspectorTransformWidget(parentWidget);
+        layout->addWidget(w);
+        _inspectorWidgets.append(w);
+        parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
+        break;
+    }
+    case ComponentType::LIGHT:
+    {
+
+        break;
+    }
+    case ComponentType::TEXTURE:
+    {
+        InspectorTextureWidget* w = new InspectorTextureWidget(parentWidget);
+        layout->addWidget(w);
+        _inspectorWidgets.append(w);
+        parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
+        break;
+    }
+    case ComponentType::SOUND:
+    {
+        InspectorAudioWidget* w = new InspectorAudioWidget(parentWidget);
+        layout->addWidget(w);
+        _inspectorWidgets.append(w);
+        parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
+        break;
+    }
+    case ComponentType::SHADER:
+    {
+        break;
+    }
+    case ComponentType::SCRIPT:
+    {
+        break;
+    }
+    }
+}
+
+void GEENIE::UnsetInspector()
+{
+    QLayout* layout = _dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget()->layout();
+    for(auto widget : _inspectorWidgets)
+    {
+        layout->removeWidget(widget);
+        delete widget;
+    }
+    Inspector* i = new Inspector(layout->parentWidget());
+    layout->addWidget(i);
+    _inspectorWidgets.append(i);
+
 }
 
 void GEENIE::defaultSession(QWidget *inspector, QWidget *asset, QWidget *entities)
