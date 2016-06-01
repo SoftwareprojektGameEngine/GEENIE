@@ -27,6 +27,8 @@ public:
     ComponentType GetType(); // <- gibt POSITION_COMPONENT zurück
     //! Method to get the position vector
     Vector GetPosition();
+    //! Method to get type name, for entityview
+    QString GetTypeName();
 };
 
 //! A light component.
@@ -67,6 +69,8 @@ public:
     Vector GetSpotlightDirection();
     //! Method which delivers you the light source type
     LightSourceType GetLightSourceType();
+    //! Method to get type name, for entityview
+    QString GetTypeName();
 };
 
 //! A model component.
@@ -91,6 +95,8 @@ public:
     ComponentType GetType();
     //! Method which delivers you the model id
     QUuid GetModel();
+    //! Method to get type name, for entityview
+    QString GetTypeName();
 };
 
 //! A material component.
@@ -119,6 +125,8 @@ public:
     QUuid GetMaterial();
     //! Method to get the material index
     int GetMaterialIndex();
+    //! Method to get type name, for entityview
+    QString GetTypeName();
 };
 
 //! A shader component.
@@ -143,6 +151,8 @@ public:
     ComponentType GetType();
     //! Method to get the shader id
     QUuid GetShader();
+    //! Method to get type name, for entityview
+    QString GetTypeName();
 };
 
 //! A texture component.
@@ -171,6 +181,8 @@ public:
     QUuid GetTexture();
     //! Method to get the texture index
     int GetTextureIndex();
+    //! Method to get type name, for entityview
+    QString GetTypeName();
 };
 
 enum ScriptTrigger {
@@ -203,6 +215,8 @@ public:
     ScriptTrigger GetTriggerType();
     //! Method to get the script-trigger id
     QUuid GetScript();
+    //! Method to get type name, for entityview
+    QString GetTypeName();
 };
 
 //! A sound component.
@@ -227,6 +241,8 @@ public:
     ComponentType GetType();
     //! Method to get the sound id
     QUuid GetSound();
+    //! Method to get type name, for entityview
+    QString GetTypeName();
 };
 
 #endif // COMPONENTS_H

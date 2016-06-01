@@ -10,6 +10,7 @@
 #include "inspectormaterialwidget.h"
 #include "inspectortexturewidget.h"
 #include "inspectortransformwidget.h"
+#include "core.h"
 
 #include <QDir>
 #include <QFile>
@@ -19,6 +20,7 @@
 #include <QTextDocument>
 #include <QStackedLayout>
 #include <QTimer>
+#include <QString>
 
 GEENIE::GEENIE(QObject *parent) :
     QObject(parent),
@@ -26,6 +28,9 @@ GEENIE::GEENIE(QObject *parent) :
     _layoutName("default"),
     _highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
 {
+    _project = new Project(0,QString("untitled"));
+    Scene* scene = new Scene();
+    _project->AddScene(scene);
     createDockWidgetTitles();
     QDir dir;
     dir.mkpath(Common::log_path);
@@ -50,7 +55,6 @@ GEENIE::GEENIE(QObject *parent) :
     AssetWidget* aWidget = new AssetWidget(_mainWindow);
 
     Entitievervaltung* eWidget = new Entitievervaltung(_mainWindow);
-
     QFile sessionSaveFile(QString("%1%2").arg(Common::session_save_dir).arg(Common::session_save_file_name));
     if(!sessionSaveFile.exists())
     {
@@ -204,10 +208,8 @@ GEENIE::GEENIE(QObject *parent) :
             }
         }
     }
-
     _saveTimer = new QTimer(0);
     _saveTimer->setInterval(60000);
-
     QObject::connect(_saveTimer,SIGNAL(timeout()),this,SLOT(saveSession()));
     _saveTimer->start();
 
@@ -237,7 +239,6 @@ void GEENIE::insertDockWidget(EDockWidgetTypes type, QWidget *widget, bool show,
 {
     if(!_dockWidgets.contains(type))
     {
-        qDebug() << area;
         QDockWidget* dWidget = new QDockWidget(_dockWidgetsTitles.value(type),_mainWindow);
         widget->setParent(dWidget);
         dWidget->setGeometry(0,0,width,height);

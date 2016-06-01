@@ -9,6 +9,7 @@
 
 class GEENIEMainWindow;
 class QDockWidget;
+class Project;
 
 enum class EDockWidgetTypes
 {
@@ -53,6 +54,8 @@ private:
     QString _layoutName;
 
     QTimer* _saveTimer;
+
+    Project* _project;
 
 
 private slots:

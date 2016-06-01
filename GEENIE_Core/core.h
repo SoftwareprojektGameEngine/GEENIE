@@ -57,6 +57,7 @@ public:
 
     virtual QUuid GetID() = 0;
     virtual ComponentType GetType() = 0;
+    virtual QString GetTypeName() = 0;
 };
 
 class SHARED_EXPORT Entity {

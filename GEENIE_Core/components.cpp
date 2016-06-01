@@ -23,6 +23,11 @@ Vector PositionComponent::GetPosition()
     return _position;
 }
 
+QString PositionComponent::GetTypeName()
+{
+    return QString("Position");
+}
+
 LightComponent::LightComponent(LightSourceType lightType, Color ambient, Color diffuse, Color specular, Vector spotlightDir, QUuid id) :
     _id(id),
     _lightSourceType(lightType),
@@ -72,6 +77,10 @@ LightSourceType LightComponent::GetLightSourceType()
     return _lightSourceType;
 }
 
+QString LightComponent::GetTypeName()
+{
+    return QString("Light");
+}
 
 ModelComponent::ModelComponent(QUuid modelID, QUuid id) :
     _id(id),
@@ -96,6 +105,11 @@ QUuid ModelComponent::GetModel()
 ComponentType ModelComponent::GetType()
 {
     return ComponentType::MODEL;
+}
+
+QString ModelComponent::GetTypeName()
+{
+    return QString("Model");
 }
 
 MaterialComponent::MaterialComponent(QUuid matID, int matIndex, QUuid id) :
@@ -127,6 +141,11 @@ int MaterialComponent::GetMaterialIndex()
     return _materialIndex;
 }
 
+QString MaterialComponent::GetTypeName()
+{
+    return QString("Material");
+}
+
 ShaderComponent::ShaderComponent(QUuid shaderId, QUuid id):
     _id(id),
     _shaderID(shaderId)
@@ -144,6 +163,11 @@ ComponentType ShaderComponent::GetType(){
 
 QUuid ShaderComponent::GetShader(){
     return _shaderID;
+}
+
+QString ShaderComponent::GetTypeName()
+{
+    return QString("Shader");
 }
 
 TextureComponent::TextureComponent(QUuid texID, int texIndex, QUuid id) :
@@ -177,6 +201,11 @@ int TextureComponent::GetTextureIndex()
     return _textureIndex;
 }
 
+QString TextureComponent::GetTypeName()
+{
+    return QString("Texture");
+}
+
 ScriptTriggerComponent::ScriptTriggerComponent(ScriptTrigger trigger, QUuid scriptID, QUuid id):
     _id(id),
     _trigger(trigger),
@@ -204,6 +233,11 @@ QUuid ScriptTriggerComponent::GetScript(){
     return _scriptID;
 }
 
+QString ScriptTriggerComponent::GetTypeName()
+{
+    return QString("Scripttrigger");
+}
+
 SoundComponent::SoundComponent(QUuid sound, QUuid id) :
     _id(id),
     _soundID(sound)
@@ -225,4 +259,9 @@ ComponentType SoundComponent::GetType()
 QUuid SoundComponent::GetSound()
 {
     return _soundID;
+}
+
+QString SoundComponent::GetTypeName()
+{
+    return QString("Sound");
 }

@@ -1,5 +1,7 @@
 #include "entitievervaltung.h"
 #include "ui_entitievervaltung.h"
+#include "core.h"
+#include <QDebug>
 
 Entitievervaltung::Entitievervaltung(QWidget *parent) :
     QWidget(parent),
