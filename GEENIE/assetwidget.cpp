@@ -19,17 +19,13 @@ AssetWidget::~AssetWidget()
 
 void AssetWidget::on_LoadButton_clicked()
 {
-    QStringList *model;
-    //Show File Dialog
-    QFileDialog View(this);
-    View.setFileMode(QFileDialog::ExistingFiles);
-    View.setViewMode(QFileDialog::Detail);
-    View.show();
-    //Get Files from Dialog
-    Path = View.getExistingDirectory();//@Artem: Muss hier der Konstruktor gefüllt werden?
+    //Opens File-Dialog and feeds the FileList
+    Path = QFileDialog::getOpenFileName(this, tr("Load Assets"), "C://", "All Files (*.*)");
     FileList.append(Path);
-    //Fill ListView
-    ui->listWidget->addItems(FileList);
+    foreach (QString item, FileList) {
+        ui->listWidget->update();
+        ui->listWidget->addItem(item);
+    }
 }
 
 void AssetWidget::on_DeleteButton_clicked()
