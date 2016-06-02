@@ -2,7 +2,7 @@
 #include "common.h"
 #include "geeniemainwindow.h"
 #include "assetwidget.h"
-#include "entitievervaltung.h"
+#include "sceneexplorer.h"
 #include "../tinyxml/tinyxml.h"
 #include "inspector.h"
 #include "inspectoraudiowidget.h"
@@ -59,7 +59,7 @@ GEENIE::GEENIE(QObject *parent) :
 qDebug() << __LINE__;
     AssetWidget* aWidget = new AssetWidget(_mainWindow);
 
-    Entitievervaltung* eWidget = new Entitievervaltung(_mainWindow);
+    SceneExplorer* eWidget = new SceneExplorer(_mainWindow);
     QFile sessionSaveFile(QString("%1%2").arg(Common::session_save_dir).arg(Common::session_save_file_name));
     if(!sessionSaveFile.exists())
     {
