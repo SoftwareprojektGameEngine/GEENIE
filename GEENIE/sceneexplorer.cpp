@@ -54,6 +54,7 @@ SCENEID SceneExplorer::AddEntity(QString entityName, SCENEID sceneId, QUuid id)
     QTreeWidgetItem *itm = new QTreeWidgetItem();
     itm->setText(0, entityName);
     itm->setData(0,Qt::UserRole,id.toByteArray());
+    itm->setData(0,Qt::UserRole+1,false);
 
     if (ui->treeWidget->topLevelItemCount() >= sceneId && sceneId <= 0)
     {
@@ -66,8 +67,13 @@ SCENEID SceneExplorer::AddEntity(QString entityName, SCENEID sceneId, QUuid id)
     return -1;
 }
 
-COMPONENTID AddComponent(QString componentName, ENTITYID index, QUuid id)
+COMPONENTID SceneExplorer::AddComponent(QString componentName, ENTITYID index, QUuid id, QUuid entityId)
 {
+    QTreeWidgetItem *itm = new QTreeWidgetItem();
+    itm->setText(0,componentName);
+    itm->setData(0,Qt::UserRole,id.toByteArray());
+    itm->setData(0,Qt::UserRole+1,true);
+    itm->setData(0,Qt::UserRole+2,entityId);
     return -2;
 }
 
@@ -110,6 +116,12 @@ int SceneExplorer::DeleteEntity(SCENEID sceneId, ENTITYID entityId)
     return -2;
 }
 
+int SceneExplorer::DeleteComponent(SCENEID sceneId, ENTITYID entityId, COMPONENTID componentId)
+{
+    return -2;
+}
+
+#include <QDebug>
 
 void SceneExplorer::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
 {
@@ -124,5 +136,13 @@ void SceneExplorer::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
             return;
         }
     }
-    emit clicked(QUuid(item->data(0,Qt::UserRole).toByteArray()));
+    qDebug() << __LINE__;
+    if(item->data(0,Qt::UserRole+1).toBool())
+    {
+        emit clicked(QUuid(item->data(0,Qt::UserRole).toByteArray()),se::ItemType::COMPONENT,QUuid(item->data(0,Qt::UserRole+2).toByteArray()));
+    }
+    else
+    {
+        emit clicked(QUuid(item->data(0,Qt::UserRole).toByteArray()),se::ItemType::ENTITY);
+    }
 }

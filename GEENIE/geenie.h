@@ -6,6 +6,7 @@
 #include <QString>
 #include "common.h"
 #include "scripthighlighter.h"
+#include "sceneexplorer.h"
 
 class GEENIEMainWindow;
 class QDockWidget;
@@ -51,6 +52,9 @@ private:
     void defaultSession(QWidget* inspector, QWidget* asset, QWidget* entities);
     void createDockWidgetTitles();
 
+    void fillSceneExplorer();
+    void fillSceneExplorerWithEntities(SCENEID sceneId,Entity* e);
+
     QMap<EDockWidgetTypes, QDockWidget*> _dockWidgets;
     QMap<EDockWidgetTypes, QString> _dockWidgetsTitles;
     QVector<QWidget*> _inspectorWidgets;
@@ -68,6 +72,8 @@ private:
 private slots:
     void saveSession();
     void changeScriptType(Highlighter::Types type);
+    void ExplorerClicked(QUuid id,se::ItemType);
+    void ExplorerClicked(QUuid id,se::ItemType,QUuid parentId);
 
 signals:
 

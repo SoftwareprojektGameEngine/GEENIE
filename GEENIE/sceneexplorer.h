@@ -13,6 +13,13 @@ namespace Ui {
 class SceneExplorer;
 }
 
+namespace se {
+    enum ItemType {
+        ENTITY,
+        COMPONENT
+    };
+}
+
 class SceneExplorer : public QWidget
 {
     Q_OBJECT
@@ -29,7 +36,7 @@ public:
     SCENEID AddEntity(QString entityName, SCENEID index, QUuid id);
     int DeleteEntity(SCENEID sceneId, ENTITYID entityId);
 
-    COMPONENTID AddComponent(QString componentName, ENTITYID index, QUuid id);
+    COMPONENTID AddComponent(QString componentName, ENTITYID index, QUuid id, QUuid entityId);
     int DeleteComponent(SCENEID sceneId,ENTITYID entityId ,COMPONENTID componentId);
 
     void setHeader(QString& name);
@@ -40,7 +47,8 @@ private slots:
     void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
 
 signals:
-    void clicked(QUuid id);
+    void clicked(QUuid id, se::ItemType type);
+    void clicked(QUuid id, se::ItemType type, QUuid parentId);
 
 private:
 

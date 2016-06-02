@@ -9,7 +9,6 @@ InspectorWidget::InspectorWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->scrollAreaWidgetContents->setLayout(new QVBoxLayout(ui->scrollAreaWidgetContents));
-    qDebug() << ui->scrollAreaWidgetContents;
 }
 
 InspectorWidget::~InspectorWidget()
