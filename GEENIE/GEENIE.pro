@@ -34,7 +34,9 @@ SOURCES += main.cpp\
     inspectortransformwidget.cpp \
     exitdialog.cpp \
     toolbar.cpp \
-    sceneeditwidget.cpp
+    sceneeditwidget.cpp \
+    inspectorwidget.cpp \
+    gdockwidget.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
@@ -53,7 +55,9 @@ HEADERS  += geeniemainwindow.h \
     inspectortransformwidget.h \
     exitdialog.h \
     toolbar.h \
-    sceneeditwidget.h
+    sceneeditwidget.h \
+    inspectorwidget.h \
+    gdockwidget.h
 
 FORMS    += geeniemainwindow.ui \
     layoutform.ui \
@@ -68,7 +72,8 @@ FORMS    += geeniemainwindow.ui \
     inspectortransformwidget.ui \
     exitdialog.ui \
     toolbar.ui \
-    sceneeditwidget.ui
+    sceneeditwidget.ui \
+    inspectorwidget.ui
 
 
 win32: DESTDIR = $$OUT_PWD/../bin

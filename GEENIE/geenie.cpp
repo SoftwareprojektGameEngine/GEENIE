@@ -10,8 +10,10 @@
 #include "inspectormaterialwidget.h"
 #include "inspectortexturewidget.h"
 #include "inspectortransformwidget.h"
+#include "inspectorwidget.h"
 #include "core.h"
 #include "components.h"
+#include "gdockwidget.h"
 
 #include <QDir>
 #include <QFile>
@@ -44,22 +46,17 @@ GEENIE::GEENIE(QObject *parent) :
         entity->AddComponent(new ModelComponent(QUuid::createUuid()));
     }
     //EXAMPLE PROJECT
+    qDebug() << __LINE__;
     createDockWidgetTitles();
     QDir dir;
     dir.mkpath(Common::log_path);
 
-    QScrollArea* inspectorWidget = new QScrollArea(_mainWindow);
-    //inspectorWidget->setWidgetResizable(true);
-    QWidget* inspectorInnerWidget = new QWidget(inspectorWidget);
-    inspectorWidget->setWidget(inspectorInnerWidget);
-    QVBoxLayout* inspectorLayout = new QVBoxLayout(inspectorInnerWidget);
-    inspectorLayout->setSizeConstraint(QLayout::SetFixedSize);
-    Inspector* inspector = new Inspector(inspectorInnerWidget);
+    InspectorWidget* inspectorWidget = new InspectorWidget(_mainWindow);
+    Inspector* inspector = new Inspector(inspectorWidget);
     _inspectorWidgets.append(inspector);
-    inspectorLayout->addWidget(inspector);
-    inspectorWidget->setLayout(inspectorLayout);
+    inspectorWidget->addWidget(inspector);
 
-
+qDebug() << __LINE__;
     AssetWidget* aWidget = new AssetWidget(_mainWindow);
 
     Entitievervaltung* eWidget = new Entitievervaltung(_mainWindow);
@@ -120,7 +117,7 @@ GEENIE::GEENIE(QObject *parent) :
                     {
                     case EDockWidgetTypes::LoggerWidget:
                     {
-                        insertDockWidget(EDockWidgetTypes::LoggerWidget,Logger::Instance().loggerConsole,true,Qt::LeftDockWidgetArea);
+                        insertDockWidget(EDockWidgetTypes::LoggerWidget,Logger::Instance().loggerConsole,true,Qt::BottomDockWidgetArea);
                         break;
                     }
                     case EDockWidgetTypes::InspectorWidget:
@@ -130,7 +127,7 @@ GEENIE::GEENIE(QObject *parent) :
                     }
                     case EDockWidgetTypes::EntitiesWidget:
                     {
-                        insertDockWidget(EDockWidgetTypes::EntitiesWidget,eWidget,true,Qt::BottomDockWidgetArea);
+                        insertDockWidget(EDockWidgetTypes::EntitiesWidget,eWidget,true,Qt::LeftDockWidgetArea);
                         break;
                     }
                     case EDockWidgetTypes::AssetsWidget:
@@ -225,8 +222,9 @@ GEENIE::GEENIE(QObject *parent) :
                      this,SLOT(saveSession()));
     QObject::connect(_mainWindow,SIGNAL(changeScriptType(Highlighter::Types)),
                      this,SLOT(changeScriptType(Highlighter::Types)));
-
+qDebug() << __LINE__;
     EntityToInspector(_project->FindEntity(exEntityId));
+    qDebug() << __LINE__;
     _mainWindow->show();
 }
 
@@ -238,18 +236,22 @@ GEENIE::~GEENIE()
 
 void GEENIE::EntityToInspector(Entity *e)
 {
-    QLayout* layout = _dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget()->layout();
-    QWidget* parentWidget = layout->parentWidget();
+    qDebug() << __LINE__;
+    InspectorWidget* in = dynamic_cast<InspectorWidget*>(_dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget());
+    //QWidget* parentWidget = layout->parentWidget();
+    qDebug() << __LINE__;
     for(auto widget : _inspectorWidgets)
     {
-        layout->removeWidget(widget);
+        in->removeWidget(widget);
+        qDebug() << __LINE__;
         delete widget;
-        parentWidget->resize(parentWidget->width(),0);
+        //parentWidget->resize(parentWidget->width(),0);
     }
-    InspectorTransformWidget* w = new InspectorTransformWidget(parentWidget);
-    layout->addWidget(w);
+    qDebug() << __LINE__;
+    InspectorTransformWidget* w = new InspectorTransformWidget(_mainWindow);
+    in->addWidget(w);
     _inspectorWidgets.append(w);
-    parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
+    //parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
     QHashIterator<QUuid, Component*> it = e->GetComponents();
     while(it.hasNext())
     {
@@ -260,13 +262,13 @@ void GEENIE::EntityToInspector(Entity *e)
 
 void GEENIE::ComponentToInspector(Component *c, bool sub)
 {
-    QLayout* layout = _dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget()->layout();
-    QWidget* parentWidget = layout->parentWidget();
+    InspectorWidget* in = dynamic_cast<InspectorWidget*>(_dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget());
+    //QWidget* parentWidget = layout->parentWidget();
     if(!sub)
     {
         for(auto widget : _inspectorWidgets)
         {
-            layout->removeWidget(widget);
+            in->removeWidget(widget);
             delete widget;
         }
     }
@@ -274,26 +276,26 @@ void GEENIE::ComponentToInspector(Component *c, bool sub)
     {
     case ComponentType::MODEL:
     {
-        InspectorTransformWidget* w = new InspectorTransformWidget(parentWidget);
-        layout->addWidget(w);
+        InspectorTransformWidget* w = new InspectorTransformWidget(_mainWindow);
+        in->addWidget(w);
         _inspectorWidgets.append(w);
-        parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
+        //parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
         break;
     }
     case ComponentType::MATERIAL:
     {
-        InspectorMaterialWidget* w = new InspectorMaterialWidget(parentWidget);
-        layout->addWidget(w);
+        InspectorMaterialWidget* w = new InspectorMaterialWidget(_mainWindow);
+        in->addWidget(w);
         _inspectorWidgets.append(w);
-        parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
+       // parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
         break;
     }
     case ComponentType::POSITION:
     {
-        InspectorTransformWidget* w = new InspectorTransformWidget(parentWidget);
-        layout->addWidget(w);
+        InspectorTransformWidget* w = new InspectorTransformWidget(_mainWindow);
+        in->addWidget(w);
         _inspectorWidgets.append(w);
-        parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
+        //parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
         break;
     }
     case ComponentType::LIGHT:
@@ -303,18 +305,18 @@ void GEENIE::ComponentToInspector(Component *c, bool sub)
     }
     case ComponentType::TEXTURE:
     {
-        InspectorTextureWidget* w = new InspectorTextureWidget(parentWidget);
-        layout->addWidget(w);
+        InspectorTextureWidget* w = new InspectorTextureWidget(_mainWindow);
+        in->addWidget(w);
         _inspectorWidgets.append(w);
-        parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
+        //parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
         break;
     }
     case ComponentType::SOUND:
     {
-        InspectorAudioWidget* w = new InspectorAudioWidget(parentWidget);
-        layout->addWidget(w);
+        InspectorAudioWidget* w = new InspectorAudioWidget(_mainWindow);
+        in->addWidget(w);
         _inspectorWidgets.append(w);
-        parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
+        //parentWidget->resize(parentWidget->width(),parentWidget->height() + w->height());
         break;
     }
     case ComponentType::SHADER:
@@ -330,37 +332,42 @@ void GEENIE::ComponentToInspector(Component *c, bool sub)
 
 void GEENIE::UnsetInspector()
 {
-    QLayout* layout = _dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget()->layout();
+    InspectorWidget* w = dynamic_cast<InspectorWidget*>(_dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget());
     for(auto widget : _inspectorWidgets)
     {
-        layout->removeWidget(widget);
+        w->removeWidget(widget);
         delete widget;
     }
-    Inspector* i = new Inspector(layout->parentWidget());
-    layout->addWidget(i);
+    Inspector* i = new Inspector(w->parentWidget());
+    w->addWidget(i);
     _inspectorWidgets.append(i);
 
 }
 
 void GEENIE::defaultSession(QWidget *inspector, QWidget *asset, QWidget *entities)
 {
-    insertDockWidget(EDockWidgetTypes::LoggerWidget,Logger::Instance().loggerConsole,true,Qt::LeftDockWidgetArea);
+    insertDockWidget(EDockWidgetTypes::LoggerWidget,Logger::Instance().loggerConsole,true,Qt::BottomDockWidgetArea);
     insertDockWidget(EDockWidgetTypes::InspectorWidget,inspector,true,Qt::RightDockWidgetArea);
     insertDockWidget(EDockWidgetTypes::AssetsWidget,asset,true,Qt::RightDockWidgetArea);
-    insertDockWidget(EDockWidgetTypes::EntitiesWidget,entities,true,Qt::BottomDockWidgetArea);
+    insertDockWidget(EDockWidgetTypes::EntitiesWidget,entities,true,Qt::LeftDockWidgetArea);
 }
 
 void GEENIE::insertDockWidget(EDockWidgetTypes type, QWidget *widget, bool show, Qt::DockWidgetArea area, bool floating, int width, int height)
 {
     if(!_dockWidgets.contains(type))
     {
-        QDockWidget* dWidget = new QDockWidget(_dockWidgetsTitles.value(type),_mainWindow);
+        GDockWidget* dWidget = new GDockWidget(_dockWidgetsTitles.value(type),_mainWindow);
         widget->setParent(dWidget);
         dWidget->setGeometry(0,0,width,height);
         dWidget->setMinimumHeight(200);
         dWidget->setMinimumWidth(200);
         dWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
         dWidget->setWidget(widget);
+        dWidget->layout()->setContentsMargins(0,0,0,0);
+        if(type == EDockWidgetTypes::InspectorWidget)
+        {
+            QObject::connect(dWidget,SIGNAL(resizeSignal(int,int)),dynamic_cast<InspectorWidget*>(widget),SLOT(resizeSlot(int,int)));
+        }
 
         if(area == Qt::LeftDockWidgetArea || area == Qt::RightDockWidgetArea || area == Qt::BottomDockWidgetArea)
         {
