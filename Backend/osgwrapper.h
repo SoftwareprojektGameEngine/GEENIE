@@ -33,7 +33,7 @@ public:
     ResHandle UpdateModel(ResHandle model, const ModelAsset& modelAsset);
     bool DestroyModel(ResHandle model);
 
-    EngineWidgetWrapper* CreateWidget(QWidget* parent);
+    EngineWidgetWrapper* CreateWidget();
 
 private:
     QHash<QUuid, osg::Geode*> models;

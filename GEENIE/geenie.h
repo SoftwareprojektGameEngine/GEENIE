@@ -6,7 +6,6 @@
 #include <QString>
 #include "common.h"
 #include "scripthighlighter.h"
-#include "enginewrapper.h"
 
 class GEENIEMainWindow;
 class QDockWidget;
@@ -42,9 +41,6 @@ public:
 
     void insertDockWidget(EDockWidgetTypes type, QWidget* widget, bool show = false, Qt::DockWidgetArea area = Qt::BottomDockWidgetArea, bool floating = false, int width = 200, int height = 200);
 
-    inline Project* getProject() { return _project; }
-    inline EngineWrapper* getEngine() { return engine; }
-
 private:
 
 
@@ -67,7 +63,6 @@ private:
     QTimer* _saveTimer;
 
     Project* _project;
-    EngineWrapper* engine;
 
 
 private slots:

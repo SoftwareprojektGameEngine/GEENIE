@@ -9,10 +9,10 @@
  * \brief The AssetType enum
  */
 enum AssetType {
-    TEXTURE_ASSET, //!< the asset is a texture
-    MODEL_ASSET, //!< the asset is a model
-    MATERIAL_ASSET, //!< the asset is a material
-    SCRIPT_ASSET, //!< the asset is a script
+    TEXTURE_ASSET,
+    MODEL_ASSET,
+    MATERIAL_ASSET,
+    SCRIPT_ASSET,
 };
 
 /*!

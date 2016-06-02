@@ -23,17 +23,15 @@
 #include <QTimer>
 #include <QString>
 #include <QScrollArea>
-#include "osgwrapper.h"
 
 GEENIE::GEENIE(QObject *parent) :
     QObject(parent),
+    _mainWindow(new GEENIEMainWindow),
     _layoutName("default"),
     _highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
 {
     //EXAMPLE PROJECT
-    engine = new OSGWrapper();
-    _project = new Project(engine, QString("untitled"));
-    _mainWindow = new GEENIEMainWindow(this);
+    _project = new Project(0,QString("untitled"));
     QUuid exEntityId;
     {
         Scene* scene = new Scene();
