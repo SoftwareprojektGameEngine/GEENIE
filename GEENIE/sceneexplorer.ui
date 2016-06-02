@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Entitievervaltung</class>
- <widget class="QWidget" name="Entitievervaltung">
+ <class>SceneExplorer</class>
+ <widget class="QWidget" name="SceneExplorer">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -21,7 +21,13 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTreeView" name="treeView"/>
+    <widget class="QTreeWidget" name="treeWidget">
+     <column>
+      <property name="text">
+       <string notr="true">1</string>
+      </property>
+     </column>
+    </widget>
    </item>
   </layout>
  </widget>
