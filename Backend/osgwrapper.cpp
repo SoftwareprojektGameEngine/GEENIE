@@ -125,6 +125,6 @@ bool OSGWrapper::DestroyMaterial(ResHandle materialHandle) {
     return false;
 }
 
-EngineWidgetWrapper* OSGWrapper::CreateWidget() {
-    return new OSGWidget(this);
+EngineWidgetWrapper* OSGWrapper::CreateWidget(QWidget* parent) {
+    return new OSGWidget(this, parent);
 }

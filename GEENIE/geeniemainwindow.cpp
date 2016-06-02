@@ -5,8 +5,10 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QDebug>
+#include "geenie.h"
+#include "sceneeditwidget.h"
 
-GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
+GEENIEMainWindow::GEENIEMainWindow(GEENIE* geenie, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GEENIEMainWindow)
 {
@@ -21,6 +23,10 @@ GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
     ui->comboBox->addItem(QString("Python"));
     ui->comboBox->addItem(QString("Lua"));
     ui->comboBox->setCurrentIndex(0);
+
+    EngineWrapper* engine = geenie->getEngine();
+
+    ui->tabWidget->addTab(new SceneEditWidget(engine), QString("SceneEdit"));
 }
 
 GEENIEMainWindow::~GEENIEMainWindow()

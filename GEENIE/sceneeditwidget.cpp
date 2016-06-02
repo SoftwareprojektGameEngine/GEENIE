@@ -8,7 +8,7 @@ SceneEditWidget::SceneEditWidget(EngineWrapper* engine, QWidget *parent) :
     ui->setupUi(this);
 
     this->engine = engine;
-    this->engineWidget = engine->CreateWidget();
+    this->engineWidget = engine->CreateWidget(this);
 
     engineWidget->GetWidget()->setParent(this);
     engineWidget->GetWidget()->setGeometry(this->findChild<QFrame*>(QString("frame"))->geometry());

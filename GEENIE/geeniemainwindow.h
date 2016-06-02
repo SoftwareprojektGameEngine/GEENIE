@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "scripthighlighter.h"
 #include "logger.h"
+#include "geenie.h"
 
 class QTextDocument;
 class Project;
@@ -17,7 +18,7 @@ class GEENIEMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit GEENIEMainWindow(QWidget *parent = 0);
+    explicit GEENIEMainWindow(GEENIE* geenie, QWidget *parent = 0);
     ~GEENIEMainWindow();
 
     void setScriptType(Highlighter::Types type);

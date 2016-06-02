@@ -52,7 +52,7 @@ public:
     virtual ResHandle UpdateModel(ResHandle model, const ModelAsset& modelAsset) = 0;
     virtual bool DestroyModel(ResHandle model) = 0;
 
-    virtual EngineWidgetWrapper* CreateWidget() = 0;
+    virtual EngineWidgetWrapper* CreateWidget(QWidget* parent) = 0;
 };
 
 #include "core.h"

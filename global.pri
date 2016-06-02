@@ -29,8 +29,10 @@ win32:CONFIG(release, debug|release){
     QMAKE_POST_LINK += $$quote(copy /y \"$${osgDir}\\osg130-osgGAd.dll\" \"$${_out_pwd}\\..\\bin\"$$escape_expand(\n\t))
     QMAKE_POST_LINK += $$quote(copy /y \"$${osgDir}\\osg130-osgViewerd.dll\" \"$${_out_pwd}\\..\\bin\"$$escape_expand(\n\t))
     QMAKE_POST_LINK += $$quote(copy /y \"$${osgDir}\\osg130-osgUtild.dll\" \"$${_out_pwd}\\..\\bin\"$$escape_expand(\n\t))
+    QMAKE_POST_LINK += $$quote(copy /y \"$${osgDir}\\osg130-osgTextd.dll\" \"$${_out_pwd}\\..\\bin\"$$escape_expand(\n\t))
     QMAKE_POST_LINK += $$quote(copy /y \"$${osgDir}\\ot20-OpenThreadsd.dll\" \"$${_out_pwd}\\..\\bin\"$$escape_expand(\n\t))
+    QMAKE_POST_LINK += $$quote(copy /y \"$${osgDir}\\zlibd.dll\" \"$${_out_pwd}\\..\\bin\"$$escape_expand(\n\t))
 }
 
-INCLUDEPATH += $$PWD/../osg/include
-DEPENDPATH += $$PWD/../osg/include
+INCLUDEPATH += $$PWD/OpenScenegraph/include
+DEPENDPATH += $$PWD/OpenScenegraph/include

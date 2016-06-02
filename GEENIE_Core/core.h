@@ -13,12 +13,12 @@
  * \brief The ComponentType enum
  */
 enum ComponentType {
-    MODEL,
-    MATERIAL,
-    POSITION,
-    LIGHT,
-    TEXTURE,
-    SOUND,
+    MODEL, //!< the component adds a model to the entity
+    MATERIAL, //!< the component adds a material to the entity
+    POSITION, //!< the component modifies the position of the entity
+    LIGHT, //!< the component adds a light source
+    TEXTURE, //!< the component adds a texture
+    SOUND, //!<
     SHADER,
     SCRIPT
 };
