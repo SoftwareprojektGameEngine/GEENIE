@@ -3,7 +3,6 @@
 #include "core.h"
 #include <QDebug>
 
-
 //!Initializes the SceneExplorer.
 SceneExplorer::SceneExplorer(QWidget *parent) :
     QWidget(parent),
@@ -11,14 +10,6 @@ SceneExplorer::SceneExplorer(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->treeWidget->setColumnCount(1);
-
-
-    SCENEID id = AddScene("Scene1");
-    ENTITYID id2 = AddEntity("Entity1", id);
-    AddEntity("Entity2", id);
-
-    DeleteEntity(id,id2);
-
     //TODO: Connect the UserAction with the Core. (Extra Useractionclass in core?)
     //connect(ui->treeWidget,ui->treeWidget->itemClicked,)
 }
@@ -29,8 +20,13 @@ SceneExplorer::~SceneExplorer()
     delete ui;
 }
 
+void SceneExplorer::setHeader(QString &name)
+{
+    ui->treeWidget->setHeaderLabel(name);
+}
+
 //!Add Scene in SceneExplorer. Returns the id of the Scene if no error occurs.
-SCENEID SceneExplorer::AddScene(QString sceneName)
+SCENEID SceneExplorer::AddScene(QString sceneName, QUuid id)
 {
     if (sceneName == "")
     {
@@ -40,13 +36,14 @@ SCENEID SceneExplorer::AddScene(QString sceneName)
 
     QTreeWidgetItem *itm = new QTreeWidgetItem(ui->treeWidget);
     itm->setText(0,sceneName);
+    itm->setData(0,Qt::UserRole,id.toByteArray());
     ui->treeWidget->addTopLevelItem(itm);
 
     return ui->treeWidget->indexOfTopLevelItem(itm);
 }
 
 //!Add Entity to Selected Scene in SceneExplorer. Returns the id of the Entity if no error occurs.
-SCENEID SceneExplorer::AddEntity(QString entityName, SCENEID sceneId)
+SCENEID SceneExplorer::AddEntity(QString entityName, SCENEID sceneId, QUuid id)
 {
     if (entityName == "")
     {
@@ -56,6 +53,7 @@ SCENEID SceneExplorer::AddEntity(QString entityName, SCENEID sceneId)
 
     QTreeWidgetItem *itm = new QTreeWidgetItem();
     itm->setText(0, entityName);
+    itm->setData(0,Qt::UserRole,id.toByteArray());
 
     if (ui->treeWidget->topLevelItemCount() >= sceneId && sceneId <= 0)
     {
@@ -68,12 +66,17 @@ SCENEID SceneExplorer::AddEntity(QString entityName, SCENEID sceneId)
     return -1;
 }
 
-//!Delete Scene from SceneExplorer. Returns 0 if no Error occurs.
-int SceneExplorer::DeleteScene(SCENEID sceneId)
+COMPONENTID AddComponent(QString componentName, ENTITYID index, QUuid id)
 {
-    if (sceneId >= 0 && sceneId < ui->treeWidget->topLevelItemCount())
+    return -2;
+}
+
+//!Delete Scene from SceneExplorer. Returns 0 if no Error occurs.
+int SceneExplorer::DeleteScene(SCENEID id)
+{
+    if (id >= 0 && id < ui->treeWidget->topLevelItemCount())
     {
-        if (ui->treeWidget->takeTopLevelItem(sceneId) != 0)
+        if (ui->treeWidget->takeTopLevelItem(id) != 0)
         {
             return 0;
         }
@@ -107,3 +110,19 @@ int SceneExplorer::DeleteEntity(SCENEID sceneId, ENTITYID entityId)
     return -2;
 }
 
+
+void SceneExplorer::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
+{
+    if(column > 0)
+    {
+        return;
+    }
+    for(int i = 0; i < ui->treeWidget->topLevelItemCount(); i++)
+    {
+        if(item == ui->treeWidget->topLevelItem(i))
+        {
+            return;
+        }
+    }
+    emit clicked(QUuid(item->data(0,Qt::UserRole).toByteArray()));
+}

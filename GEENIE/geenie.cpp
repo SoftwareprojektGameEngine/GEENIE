@@ -60,6 +60,7 @@ qDebug() << __LINE__;
     AssetWidget* aWidget = new AssetWidget(_mainWindow);
 
     SceneExplorer* eWidget = new SceneExplorer(_mainWindow);
+    eWidget->setHeader(_project->name());
     QFile sessionSaveFile(QString("%1%2").arg(Common::session_save_dir).arg(Common::session_save_file_name));
     if(!sessionSaveFile.exists())
     {
