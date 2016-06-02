@@ -58,6 +58,7 @@ public:
 #include "core.h"
 
 class EngineWidgetWrapper {
+public:
     virtual QWidget* GetWidget() = 0;
     virtual bool SetCamera(const Vector& eye, const Vector& center, const Vector& up) = 0;
 

@@ -4,12 +4,15 @@
 #include "backend_global.h"
 #include "enginewrapper.h"
 
-#include <QSet>
+#include <QHash>
 
 #include "osg/Geode"
 #include "osg/Material"
 
+class BACKEND_EXPORT OSGWidget;
+
 class BACKEND_EXPORT OSGWrapper : public EngineWrapper {
+    friend class OSGWidget;
 public:
     OSGWrapper();
     ~OSGWrapper();
@@ -33,9 +36,9 @@ public:
     EngineWidgetWrapper* CreateWidget();
 
 private:
-    QSet<osg::Geode*> models;
-    QSet<osg::Image*> textures;
-    QSet<osg::Material*> materials;
+    QHash<QUuid, osg::Geode*> models;
+    QHash<QUuid, osg::Image*> textures;
+    QHash<QUuid, osg::Material*> materials;
 };
 
 #endif // OSGWRAPPER_H

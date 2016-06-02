@@ -226,5 +226,57 @@ void ProjectTest::testLoadSave()
     delete project;
 }
 
+void ProjectTest::testAddScene() {
+    Project* project = new Project(nullptr);
+
+    Scene* scene = new Scene();
+    QVERIFY(project->GetScene(scene->GetID()) == nullptr);
+
+    project->AddScene(scene);
+    QVERIFY(project->GetScene(scene->GetID()) == scene);
+
+    delete project;
+}
+
+void ProjectTest::testRemoveScene() {
+    Project* project = new Project(nullptr);
+
+    Scene* scene = new Scene();
+    project->AddScene(scene);
+    QVERIFY(project->GetScene(scene->GetID()) == scene);
+
+    QVERIFY(project->RemoveScene(scene->GetID()) == scene);
+    QVERIFY(project->GetScene(scene->GetID()) == nullptr);
+
+    delete scene;
+    delete project;
+}
+
+void ProjectTest::testAddAsset() {
+    Project* project = new Project(nullptr);
+
+    Asset* testAsset = new ScriptAsset(QString("dummypath"));
+    QVERIFY(project->GetAsset(testAsset->GetID()) == nullptr);
+
+    project->AddAsset(testAsset);
+    QVERIFY(project->GetAsset(testAsset->GetID()) == testAsset);
+
+    delete project;
+}
+
+void ProjectTest::testRemoveAsset() {
+    Project* project = new Project(nullptr);
+
+    Asset* testAsset = new ScriptAsset(QString("dummypath"));
+    project->AddAsset(testAsset);
+    QVERIFY(project->GetAsset(testAsset->GetID()) == testAsset);
+
+    QVERIFY(project->RemoveAsset(testAsset->GetID()) == testAsset);
+    QVERIFY(project->GetAsset(testAsset->GetID()) == nullptr);
+
+    delete testAsset;
+    delete project;
+}
+
 //QTEST_APPLESS_MAIN(ProjectTest)
 //#include "project_test.moc"

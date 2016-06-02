@@ -5,6 +5,7 @@
 #include "stateex.h"
 #include "components.h"
 #include "osg/PositionAttitudeTransform"
+#include "osg/Texture2D"
 
 OSGWidget::OSGWidget(OSGWrapper* wrapper, QWidget *parentWidget, Qt::WindowFlags flags) : QOpenGLWidget(parentWidget, flags), nodeMap() {
     this->wrapper = wrapper;
@@ -52,7 +53,7 @@ bool OSGWidget::BuildSceneGraph(Scene* scene) {
     return this->UpdateSceneGraph();
 }
 
-osg::Node* buildNode(Entity* entity) {
+osg::Node* OSGWidget::buildNode(Entity* entity) {
     osg::Group* group = new osg::Group;
     osg::Node* rootNode = group;
 
@@ -73,6 +74,88 @@ osg::Node* buildNode(Entity* entity) {
                 rootNode = pat;
             }
             break;*/
+        case MODEL:
+        {
+            QUuid modelID = static_cast<ModelComponent*>(component)->GetModel();
+            osg::Geode* model = this->wrapper->models.value(modelID, nullptr);
+
+            if(model != nullptr) {
+                group->addChild(model);
+            }
+        }
+            break;
+        case MATERIAL:
+        {
+            QUuid materialID = static_cast<MaterialComponent*>(component)->GetMaterial();
+            osg::Material* material = wrapper->materials.value(materialID, nullptr);
+
+            if (material != nullptr) {
+                osg::StateSet* state = group->getOrCreateStateSet();
+                state->setAttribute(material, osg::StateAttribute::OVERRIDE);
+            }
+        }
+            break;
+        case LIGHT:
+        {
+            osg::Light* light = new osg::Light();
+            osg::LightSource* lightSource = new osg::LightSource();
+
+            LightComponent* lightComp = static_cast<LightComponent*>(component);
+
+            if (lightComp->GetLightSourceType() & AMBIENT) {
+                Color ambientColor = lightComp->GetAmbientColor();
+                light->setAmbient(osg::Vec4(ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a));
+            }
+
+            if (lightComp->GetLightSourceType() & DIFFUSE) {
+                Color diffuseColor = lightComp->GetDiffuseColor();
+                light->setDiffuse(osg::Vec4(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a));
+            } else if(lightComp->GetLightSourceType() & SPOT) {
+                Vector direction = lightComp->GetSpotlightDirection();
+                light->setDirection(osg::Vec3(direction.x, direction.y, direction.z));
+                Color diffuseColor = lightComp->GetDiffuseColor();
+                light->setDiffuse(osg::Vec4(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a));
+            }
+
+            if (lightComp->GetLightSourceType() & SPECULAR) {
+                Color specularColor = lightComp->GetSpecularColor();
+                light->setSpecular(osg::Vec4(specularColor.r, specularColor.g, specularColor.b, specularColor.a));
+            }
+
+            lightSource->setLight(light);
+            group->addChild(lightSource);
+        }
+            break;
+        case SHADER:
+            break;
+        case TEXTURE:
+        {
+            QUuid textureID = static_cast<TextureComponent*>(component)->GetTexture();
+            int textureIndex = static_cast<TextureComponent*>(component)->GetTextureIndex();
+            osg::Image* image = wrapper->textures.value(textureID, nullptr);
+
+            if (image != nullptr) {
+                osg::Texture2D* texture = new osg::Texture2D();
+                texture->setImage(image);
+
+                osg::StateSet* state = group->getOrCreateStateSet();
+                state->setTextureAttribute(textureIndex, texture, osg::StateAttribute::OVERRIDE);
+                state->setTextureMode(textureIndex, GL_TEXTURE_2D, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+            }
+        }
+            break;
+        case POSITION:
+        {
+            Vector pos = static_cast<PositionComponent*>(component)->GetPosition();
+            osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform();
+            pat->setPosition(osg::Vec3d(pos.x, pos.y, pos.z));
+            pat->addChild(rootNode);
+            rootNode = pat;
+        }
+            break;
+        default:
+            // ignore scripts + sound
+            break;
         }
     }
 

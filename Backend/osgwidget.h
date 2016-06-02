@@ -33,6 +33,8 @@ private:
     QHash<QUuid, osg::Node*> nodeMap;
     osg::ref_ptr<osg::Node> rootNode;
     OSGWrapper* wrapper;
+
+    osg::Node* buildNode(Entity* entity);
 };
 
 #endif // OSGWIDGET_H

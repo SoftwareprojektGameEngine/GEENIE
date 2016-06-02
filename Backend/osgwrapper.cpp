@@ -16,7 +16,7 @@ ResHandle OSGWrapper::CreateTexture(const TextureAsset &textureAsset) {
 
     if (image != nullptr) {
         image->ref();
-        textures.insert(image);
+        textures.insert(textureAsset.GetID(), image);
         return (ResHandle)image;
     }
 
@@ -26,7 +26,7 @@ ResHandle OSGWrapper::CreateTexture(const TextureAsset &textureAsset) {
 ResHandle OSGWrapper::UpdateTexture(ResHandle textureHandle, const TextureAsset &textureAsset) {
     osg::Image* texture = (osg::Image*)textureHandle;
 
-    if (textures.contains(texture)) {
+    if (texture != nullptr && !textures.key(texture).isNull()) {
         bool needsUpdate = texture->getFileName() != textureAsset.GetPath().toStdString();
 
         if (needsUpdate) {
@@ -42,8 +42,10 @@ ResHandle OSGWrapper::UpdateTexture(ResHandle textureHandle, const TextureAsset 
 
 bool OSGWrapper::DestroyTexture(ResHandle texture) {
     osg::Image* image = (osg::Image*)texture;
-    if (textures.contains(image)) {
-        textures.remove(image);
+    QUuid key = textures.key(image);
+
+    if (image != nullptr && !key.isNull()) {
+        textures.remove(key);
         image->unref();
 
         return true;
@@ -57,7 +59,7 @@ ResHandle OSGWrapper::CreateModel(const ModelAsset& modelAsset) {
 
     if (model != nullptr) {
         model->ref();
-        models.insert(model);
+        models.insert(modelAsset.GetID(), model);
         return (ResHandle)model;
     }
 
@@ -67,7 +69,7 @@ ResHandle OSGWrapper::CreateModel(const ModelAsset& modelAsset) {
 ResHandle OSGWrapper::UpdateModel(ResHandle modelHandle, const ModelAsset &modelAsset) {
     osg::Geode* model = (osg::Geode*)modelHandle;
 
-    if(model != nullptr && models.contains(model)) {
+    if(model != nullptr && !models.key(model).isNull()) {
         // TODO: find way to compare files
         DestroyModel(model);
         return CreateModel(modelAsset);
@@ -78,9 +80,10 @@ ResHandle OSGWrapper::UpdateModel(ResHandle modelHandle, const ModelAsset &model
 
 bool OSGWrapper::DestroyModel(ResHandle modelHandle) {
     osg::Geode* model = (osg::Geode*)modelHandle;
+    QUuid key = models.key(model);
 
-    if (model != nullptr && models.contains(model)) {
-        models.remove(model);
+    if (model != nullptr && !key.isNull()) {
+        models.remove(key);
         model->unref();
 
         return true;
@@ -94,14 +97,14 @@ ResHandle OSGWrapper::CreateMaterial(const MaterialAsset &materialAsset) {
 
     // TODO: initialise material
     material->ref();
-    materials.insert(material);
+    materials.insert(materialAsset.GetID(), material);
 
     return material;
 }
 
 ResHandle OSGWrapper::UpdateMaterial(ResHandle materialHandle, const MaterialAsset &materialAsset) {
     osg::Material* material = (osg::Material*)materialHandle;
-    if (material != nullptr && materials.contains(material)) {
+    if (material != nullptr && !materials.key(material).isNull()) {
         DestroyMaterial(material);
         return CreateMaterial(materialAsset);
     }
@@ -110,9 +113,10 @@ ResHandle OSGWrapper::UpdateMaterial(ResHandle materialHandle, const MaterialAss
 
 bool OSGWrapper::DestroyMaterial(ResHandle materialHandle) {
     osg::Material* material = (osg::Material*)materialHandle;
+    QUuid key = materials.key(material);
 
-    if (material != nullptr && materials.contains(material)) {
-        materials.remove(material);
+    if (material != nullptr && !key.isNull()) {
+        materials.remove(key);
         material->unref();
 
         return true;
