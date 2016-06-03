@@ -22,6 +22,7 @@ public:
 
     void setScriptType(Highlighter::Types type);
     void setScript(QString& script);
+    void setDockActionsChecked(EDockWidgetTypes type,bool checked);
 
     QTextDocument* scriptEditorDocument();
 
@@ -31,6 +32,7 @@ protected:
 signals:
     void saveSession();
     void changeScriptType(Highlighter::Types);
+    void toggleDock(EDockWidgetTypes,bool);
 
 private slots:
     void on_comboBox_currentIndexChanged(int index);
@@ -50,6 +52,14 @@ private slots:
      * \bug https://bugreports.qt.io/browse/QTBUG-52618
      */
     void on_saveScriptBtn_clicked();
+
+    void on_actionInspector_toggled(bool arg1);
+
+    void on_actionConsole_2_toggled(bool arg1);
+
+    void on_actionExplorer_toggled(bool arg1);
+
+    void on_actionAssets_toggled(bool arg1);
 
 private:
     Ui::GEENIEMainWindow *ui;

@@ -14,15 +14,6 @@ class Project;
 class Entity;
 class Component;
 
-enum class EDockWidgetTypes
-{
-    LoggerWidget,
-    InspectorWidget,
-    AssetsWidget,
-    EntitiesWidget,
-    ScriptEditorWidget
-};
-
 enum EInspectorTypes
 {
     None = 0,
@@ -56,6 +47,7 @@ private:
     void fillSceneExplorerWithEntities(SCENEID sceneId,Entity* e);
 
     QMap<EDockWidgetTypes, QDockWidget*> _dockWidgets;
+    QMap<EDockWidgetTypes, QRect> _dockWidgetsCoords;
     QMap<EDockWidgetTypes, QString> _dockWidgetsTitles;
     QVector<QWidget*> _inspectorWidgets;
 
@@ -74,6 +66,7 @@ private slots:
     void changeScriptType(Highlighter::Types type);
     void ExplorerClicked(QUuid id,se::ItemType);
     void ExplorerClicked(QUuid id,se::ItemType,QUuid parentId);
+    void toggleDock(EDockWidgetTypes type,bool show);
 
 signals:
 

@@ -131,3 +131,54 @@ void GEENIEMainWindow::on_saveScriptBtn_clicked()
         }
     }
 }
+
+void GEENIEMainWindow::setDockActionsChecked(EDockWidgetTypes type, bool checked)
+{
+    switch(type)
+    {
+    case EDockWidgetTypes::InspectorWidget:
+    {
+        ui->actionInspector->setChecked(checked);
+        break;
+    }
+    case EDockWidgetTypes::EntitiesWidget:
+    {
+        ui->actionExplorer->setChecked(checked);
+        break;
+    }
+    case EDockWidgetTypes::AssetsWidget:
+    {
+        ui->actionAssets->setChecked(checked);
+        break;
+    }
+    case EDockWidgetTypes::LoggerWidget:
+    {
+        ui->actionConsole_2->setChecked(checked);
+        break;
+    }
+    case EDockWidgetTypes::ScriptEditorWidget:
+    default: break;
+    }
+}
+
+#include <QDebug>
+
+void GEENIEMainWindow::on_actionInspector_toggled(bool arg1)
+{
+    emit toggleDock(EDockWidgetTypes::InspectorWidget,arg1);
+}
+
+void GEENIEMainWindow::on_actionConsole_2_toggled(bool arg1)
+{
+    emit toggleDock(EDockWidgetTypes::LoggerWidget,arg1);
+}
+
+void GEENIEMainWindow::on_actionExplorer_toggled(bool arg1)
+{
+    emit toggleDock(EDockWidgetTypes::EntitiesWidget,arg1);
+}
+
+void GEENIEMainWindow::on_actionAssets_toggled(bool arg1)
+{
+    emit toggleDock(EDockWidgetTypes::AssetsWidget,arg1);
+}

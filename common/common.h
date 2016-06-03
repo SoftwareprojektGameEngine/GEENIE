@@ -6,6 +6,16 @@
 #include <QDir>
 #include <QDateTime>
 
+
+enum class EDockWidgetTypes
+{
+    LoggerWidget,
+    InspectorWidget,
+    AssetsWidget,
+    EntitiesWidget,
+    ScriptEditorWidget
+};
+
 class COMMONSHARED_EXPORT Common
 {
 

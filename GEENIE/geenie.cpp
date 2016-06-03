@@ -228,6 +228,8 @@ GEENIE::GEENIE(QObject *parent) :
                      this,SLOT(saveSession()));
     QObject::connect(_mainWindow,SIGNAL(changeScriptType(Highlighter::Types)),
                      this,SLOT(changeScriptType(Highlighter::Types)));
+    QObject::connect(_mainWindow,SIGNAL(toggleDock(EDockWidgetTypes,bool)),
+                     this,SLOT(toggleDock(EDockWidgetTypes,bool)));
     QObject::connect(eWidget,SIGNAL(clicked(QUuid,se::ItemType)),this,SLOT(ExplorerClicked(QUuid,se::ItemType)));
     QObject::connect(eWidget,SIGNAL(clicked(QUuid,se::ItemType,QUuid)),this,SLOT(ExplorerClicked(QUuid,se::ItemType,QUuid)));
 
@@ -240,6 +242,18 @@ GEENIE::~GEENIE()
 {
     _saveTimer->stop();
     delete _saveTimer;
+}
+
+void GEENIE::toggleDock(EDockWidgetTypes type, bool show)
+{
+    if(show)
+    {
+        _dockWidgets.value(type)->show();
+    }
+    else
+    {
+        _dockWidgets.value(type)->hide();
+    }
 }
 
 void GEENIE::ExplorerClicked(QUuid id, se::ItemType)
@@ -431,6 +445,7 @@ void GEENIE::insertDockWidget(EDockWidgetTypes type, QWidget *widget, bool show,
 
         if(show)
         {
+            _mainWindow->setDockActionsChecked(type,show);
             dWidget->show();
         }
         else

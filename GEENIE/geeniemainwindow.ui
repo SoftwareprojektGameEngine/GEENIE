@@ -203,8 +203,9 @@
     <addaction name="actionPrevious_Window"/>
     <addaction name="actionLayout"/>
     <addaction name="actionInspector"/>
-    <addaction name="actionGame"/>
-    <addaction name="actionConsole"/>
+    <addaction name="actionConsole_2"/>
+    <addaction name="actionExplorer"/>
+    <addaction name="actionAssets"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -255,6 +256,9 @@
    </property>
   </action>
   <action name="actionInspector">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Inspector</string>
    </property>
@@ -362,6 +366,30 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionConsole_2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Console</string>
+   </property>
+  </action>
+  <action name="actionExplorer">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Explorer</string>
+   </property>
+  </action>
+  <action name="actionAssets">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Assets</string>
    </property>
   </action>
  </widget>
