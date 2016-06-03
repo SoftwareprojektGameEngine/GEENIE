@@ -240,7 +240,6 @@ GEENIE::~GEENIE()
 
 void GEENIE::ExplorerClicked(QUuid id, se::ItemType)
 {
-    qDebug() << _project->FindEntity(id);
     EntityToInspector(_project->FindEntity(id));
 }
 
@@ -287,17 +286,13 @@ void GEENIE::fillSceneExplorerWithEntities(SCENEID sceneId, Entity *e)
 void GEENIE::EntityToInspector(Entity *e)
 {
     InspectorWidget* in = dynamic_cast<InspectorWidget*>(_dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget());
-    qDebug() << __LINE__;
-    qDebug() << e;
-    qDebug() << in;
-    qDebug() << _inspectorWidgets;
     for(auto widget : _inspectorWidgets)
     {
         in->removeWidget(widget);
         delete widget;
     }
     _inspectorWidgets.clear();
-    InspectorTransformWidget* w = new InspectorTransformWidget(_mainWindow);
+    InspectorTransformWidget* w = new InspectorTransformWidget(_mainWindow, e->GetID());
     in->addWidget(w);
     _inspectorWidgets.append(w);
     QHashIterator<QUuid, Component*> it = e->GetComponents();
@@ -324,21 +319,21 @@ void GEENIE::ComponentToInspector(Component *c, bool sub)
     {
     case ComponentType::MODEL:
     {
-        InspectorTransformWidget* w = new InspectorTransformWidget(_mainWindow);
+        InspectorTransformWidget* w = new InspectorTransformWidget(_mainWindow, c->GetID());
         in->addWidget(w);
         _inspectorWidgets.append(w);
         break;
     }
     case ComponentType::MATERIAL:
     {
-        InspectorMaterialWidget* w = new InspectorMaterialWidget(_mainWindow);
+        InspectorMaterialWidget* w = new InspectorMaterialWidget(_mainWindow, c->GetID());
         in->addWidget(w);
         _inspectorWidgets.append(w);
         break;
     }
     case ComponentType::POSITION:
     {
-        InspectorTransformWidget* w = new InspectorTransformWidget(_mainWindow);
+        InspectorTransformWidget* w = new InspectorTransformWidget(_mainWindow, c->GetID());
         in->addWidget(w);
         _inspectorWidgets.append(w);
         break;
@@ -350,14 +345,14 @@ void GEENIE::ComponentToInspector(Component *c, bool sub)
     }
     case ComponentType::TEXTURE:
     {
-        InspectorTextureWidget* w = new InspectorTextureWidget(_mainWindow);
+        InspectorTextureWidget* w = new InspectorTextureWidget(_mainWindow, c->GetID());
         in->addWidget(w);
         _inspectorWidgets.append(w);
         break;
     }
     case ComponentType::SOUND:
     {
-        InspectorAudioWidget* w = new InspectorAudioWidget(_mainWindow);
+        InspectorAudioWidget* w = new InspectorAudioWidget(_mainWindow, c->GetID());
         in->addWidget(w);
         _inspectorWidgets.append(w);
         break;

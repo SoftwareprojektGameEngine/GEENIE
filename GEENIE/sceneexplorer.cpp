@@ -121,8 +121,6 @@ int SceneExplorer::DeleteComponent(SCENEID sceneId, ENTITYID entityId, COMPONENT
     return -2;
 }
 
-#include <QDebug>
-
 void SceneExplorer::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
 {
     if(column > 0)
@@ -136,7 +134,6 @@ void SceneExplorer::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
             return;
         }
     }
-    qDebug() << __LINE__;
     if(item->data(0,Qt::UserRole+1).toBool())
     {
         emit clicked(QUuid(item->data(0,Qt::UserRole).toByteArray()),se::ItemType::COMPONENT,QUuid(item->data(0,Qt::UserRole+2).toByteArray()));

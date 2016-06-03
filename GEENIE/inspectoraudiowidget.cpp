@@ -1,8 +1,8 @@
 #include "inspectoraudiowidget.h"
 #include "ui_inspectoraudiowidget.h"
 
-InspectorAudioWidget::InspectorAudioWidget(QWidget *parent) :
-    QWidget(parent),
+InspectorAudioWidget::InspectorAudioWidget(QWidget *parent, QUuid id) :
+    InspectorParentWidget(parent,id),
     ui(new Ui::InspectorAudioWidget)
 {
     ui->setupUi(this);

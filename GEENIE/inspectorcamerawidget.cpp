@@ -1,8 +1,8 @@
 #include "inspectorcamerawidget.h"
 #include "ui_inspectorcamerawidget.h"
 
-InspectorCameraWidget::InspectorCameraWidget(QWidget *parent) :
-    QWidget(parent),
+InspectorCameraWidget::InspectorCameraWidget(QWidget *parent, QUuid id) :
+    InspectorParentWidget(parent,id),
     ui(new Ui::InspectorCameraWidget)
 {
     ui->setupUi(this);

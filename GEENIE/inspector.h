@@ -1,18 +1,18 @@
 #ifndef INSPECTOR_H
 #define INSPECTOR_H
 
-#include <QWidget>
+#include "inspectorparentwidget.h"
 
 namespace Ui {
 class Inspector;
 }
 
-class Inspector : public QWidget
+class Inspector : public InspectorParentWidget
 {
     Q_OBJECT
 
 public:
-    explicit Inspector(QWidget *parent = 0);
+    explicit Inspector(QWidget *parent = 0, QUuid id = QUuid());
     ~Inspector();
 
 private:

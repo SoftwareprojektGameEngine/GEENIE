@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     sceneeditwidget.cpp \
     inspectorwidget.cpp \
     gdockwidget.cpp \
-    sceneexplorer.cpp
+    sceneexplorer.cpp \
+    inspectorparentwidget.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
@@ -57,7 +58,8 @@ HEADERS  += geeniemainwindow.h \
     sceneeditwidget.h \
     inspectorwidget.h \
     gdockwidget.h \
-    sceneexplorer.h
+    sceneexplorer.h \
+    inspectorparentwidget.h
 
 FORMS    += geeniemainwindow.ui \
     layoutform.ui \

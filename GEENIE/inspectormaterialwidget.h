@@ -1,18 +1,18 @@
 #ifndef INSPECTORMATERIALWIDGET_H
 #define INSPECTORMATERIALWIDGET_H
 
-#include <QWidget>
+#include "inspectorparentwidget.h"
 
 namespace Ui {
 class InspectorMaterialWidget;
 }
 
-class InspectorMaterialWidget : public QWidget
+class InspectorMaterialWidget : public InspectorParentWidget
 {
     Q_OBJECT
 
 public:
-    explicit InspectorMaterialWidget(QWidget *parent = 0);
+    explicit InspectorMaterialWidget(QWidget *parent = 0, QUuid id = QUuid());
     ~InspectorMaterialWidget();
 
 private:
