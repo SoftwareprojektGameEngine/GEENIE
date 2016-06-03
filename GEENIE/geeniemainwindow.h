@@ -37,6 +37,8 @@ private slots:
 
     void on_actionExit_triggered();
 
+    void on_openScriptBtn_clicked();
+
 private:
     Ui::GEENIEMainWindow *ui;
 };

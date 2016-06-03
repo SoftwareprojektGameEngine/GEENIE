@@ -96,3 +96,14 @@ void GEENIEMainWindow::on_actionExit_triggered()
 {
     close();
 }
+
+#include <QFileDialog>
+#include <QDir>
+#include <QDebug>
+
+
+//! \bug https://bugreports.qt.io/browse/QTBUG-52618
+void GEENIEMainWindow::on_openScriptBtn_clicked()
+{
+    QString file = QFileDialog::getOpenFileName(this,QString("Load Script ..."),QDir::homePath(),QString("Scripts (*.lua *.py)"));
+}
