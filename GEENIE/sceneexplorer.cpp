@@ -70,7 +70,7 @@ COMPONENTID SceneExplorer::AddComponent(QString componentName, SCENEID sceneInde
     itm->setText(0,componentName);
     itm->setData(0,Qt::UserRole,id.toByteArray());
     itm->setData(0,Qt::UserRole+1,true);
-    itm->setData(0,Qt::UserRole+2,entityId);
+    itm->setData(0,Qt::UserRole+2,entityId.toByteArray());
 
     if(componentName == "")
     {
