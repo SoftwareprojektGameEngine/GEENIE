@@ -37,7 +37,19 @@ private slots:
 
     void on_actionExit_triggered();
 
+    /*!
+     * \fn void on_openScriptBtn_clicked()
+     * \brief Load script on button click
+     * \bug https://bugreports.qt.io/browse/QTBUG-52618
+     */
     void on_openScriptBtn_clicked();
+
+    /*!
+     * \fn void on_saveScriptBtn_clicked()
+     * \brief Save script on button click
+     * \bug https://bugreports.qt.io/browse/QTBUG-52618
+     */
+    void on_saveScriptBtn_clicked();
 
 private:
     Ui::GEENIEMainWindow *ui;

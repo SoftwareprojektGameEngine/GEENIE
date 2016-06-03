@@ -149,6 +149,8 @@ GEENIE::GEENIE(QObject *parent) :
                     bool visible = true;
                     int height = 200;
                     int width = 200;
+                    int x = 0;
+                    int y = 0;
                     bool floating = false;
                     QWidget* widget = new QWidget();
                     Qt::DockWidgetArea area = Qt::BottomDockWidgetArea;
@@ -156,6 +158,8 @@ GEENIE::GEENIE(QObject *parent) :
                     TiXmlElement* visibleElement = dockable->FirstChildElement("visible");
                     dockable->QueryIntAttribute("height",&height);
                     dockable->QueryIntAttribute("width",&width);
+                    dockable->QueryIntAttribute("x",&x);
+                    dockable->QueryIntAttribute("y",&y);
                     if(QString(visibleElement->GetText()) == QString("true"))
                     {
                         visible = true;
@@ -210,7 +214,7 @@ GEENIE::GEENIE(QObject *parent) :
                         area = Qt::BottomDockWidgetArea;
                     }
                     INFO_MSG(QString("%1 has area %2.").arg(it.value()).arg(area));
-                    insertDockWidget(type,widget,visible,area,floating);
+                    insertDockWidget(type,widget,visible,area,floating,width,height,x,y);
                 }
             }
         }
@@ -391,13 +395,20 @@ void GEENIE::defaultSession(QWidget *inspector, QWidget *asset, QWidget *entitie
     insertDockWidget(EDockWidgetTypes::EntitiesWidget,entities,true,Qt::LeftDockWidgetArea);
 }
 
-void GEENIE::insertDockWidget(EDockWidgetTypes type, QWidget *widget, bool show, Qt::DockWidgetArea area, bool floating, int width, int height)
+void GEENIE::insertDockWidget(EDockWidgetTypes type, QWidget *widget, bool show, Qt::DockWidgetArea area, bool floating, int width, int height, int x, int y)
 {
     if(!_dockWidgets.contains(type))
     {
         GDockWidget* dWidget = new GDockWidget(_dockWidgetsTitles.value(type),_mainWindow);
         widget->setParent(dWidget);
-        dWidget->setGeometry(0,0,width,height);
+        if(floating)
+        {
+            dWidget->setGeometry(x,y,width,height);
+        }
+        else
+        {
+            dWidget->setGeometry(0,0,width,height);
+        }
         dWidget->setMinimumHeight(200);
         dWidget->setMinimumWidth(200);
         dWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
@@ -473,8 +484,9 @@ void GEENIE::saveSession()
             fileExt = QString(".lua");
         }
         QFile script(QString("%1\\%2%3").arg(Common::last_script_dir).arg(Common::last_script_file_name).arg(fileExt));
-        script.open(QIODevice::WriteOnly);
-        QTextStream ts(&script);
+        script.open(QIODevice::WriteOnly | QIODevice::Text);
+        QTextStream ts(new QString(),QIODevice::Text);
+        ts.setDevice(&script);
         ts << _highlighter->document()->toPlainText();
         script.close();
         scriptContent->LinkEndChild(new TiXmlText(QString("%1\\%2%3").arg(Common::last_script_dir).arg(Common::last_script_file_name).arg(fileExt).toUtf8().data()));
@@ -506,6 +518,8 @@ void GEENIE::saveSession()
 
         dockable->SetAttribute("width",dynamic_cast<QDockWidget*>(it.value())->geometry().width());
         dockable->SetAttribute("height",dynamic_cast<QDockWidget*>(it.value())->geometry().height());
+        dockable->SetAttribute("x",dynamic_cast<QDockWidget*>(it.value())->x());
+        dockable->SetAttribute("y",dynamic_cast<QDockWidget*>(it.value())->y());
 
         TiXmlElement* visible = new TiXmlElement("visible");
         if(dynamic_cast<QDockWidget*>(it.value())->isVisible())

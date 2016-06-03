@@ -40,7 +40,7 @@ public:
     explicit GEENIE(QObject *parent = 0);
     ~GEENIE();
 
-    void insertDockWidget(EDockWidgetTypes type, QWidget* widget, bool show = false, Qt::DockWidgetArea area = Qt::BottomDockWidgetArea, bool floating = false, int width = 200, int height = 200);
+    void insertDockWidget(EDockWidgetTypes type, QWidget* widget, bool show = false, Qt::DockWidgetArea area = Qt::BottomDockWidgetArea, bool floating = false, int width = 200, int height = 200, int x = 0, int y = 0);
 
 private:
 

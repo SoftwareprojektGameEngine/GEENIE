@@ -101,9 +101,33 @@ void GEENIEMainWindow::on_actionExit_triggered()
 #include <QDir>
 #include <QDebug>
 
-
-//! \bug https://bugreports.qt.io/browse/QTBUG-52618
 void GEENIEMainWindow::on_openScriptBtn_clicked()
 {
     QString file = QFileDialog::getOpenFileName(this,QString("Load Script ..."),QDir::homePath(),QString("Scripts (*.lua *.py)"));
+    if(!file.isEmpty())
+    {
+        QFile scriptFile(file);
+        if(scriptFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QString script = QString::fromUtf8(scriptFile.readAll());
+            setScript(script);
+            scriptFile.close();
+        }
+    }
+}
+
+void GEENIEMainWindow::on_saveScriptBtn_clicked()
+{
+    QString file = QFileDialog::getSaveFileName(this,QString("Save Script ..."),QDir::homePath(),QString("Scripts (*.lua *.py)"));
+    if(!file.isEmpty())
+    {
+        QFile scriptFile(file);
+        if(scriptFile.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            QTextStream ts(new QString(),QIODevice::Text);
+            ts.setDevice(&scriptFile);
+            ts << ui->scriptEditor->document()->toPlainText();
+            scriptFile.close();
+        }
+    }
 }
