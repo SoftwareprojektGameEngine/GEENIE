@@ -9,6 +9,8 @@ typedef  int SCENEID;
 typedef  int ENTITYID;
 typedef  int COMPONENTID;
 
+enum{SE_INVALID_NAME = -10, SE_INVALID_SCENEID, SE_INVALID_ENTITYID, SE_INVALID_COMPONENTID, SE_TAKE_ERROR};
+
 namespace Ui {
 class SceneExplorer;
 }
@@ -36,8 +38,8 @@ public:
     SCENEID AddEntity(QString entityName, SCENEID index, QUuid id);
     int DeleteEntity(SCENEID sceneId, ENTITYID entityId);
 
-    COMPONENTID AddComponent(QString componentName, ENTITYID index, QUuid id, QUuid entityId);
-    int DeleteComponent(SCENEID sceneId,ENTITYID entityId ,COMPONENTID componentId);
+    COMPONENTID AddComponent(QString componentName, SCENEID sceneIndex, ENTITYID entityIndex, QUuid id, QUuid entityId);
+    int DeleteComponent(SCENEID sceneIndex, ENTITYID entityIndex , COMPONENTID componentIndex);
 
     void setHeader(QString& name);
 
