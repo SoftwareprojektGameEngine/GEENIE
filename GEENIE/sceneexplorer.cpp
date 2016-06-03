@@ -20,6 +20,7 @@ SceneExplorer::~SceneExplorer()
     delete ui;
 }
 
+//!Sets the Title of the columns.
 void SceneExplorer::setHeader(QString &name)
 {
     ui->treeWidget->setHeaderLabel(name);
@@ -64,6 +65,7 @@ SCENEID SceneExplorer::AddEntity(QString entityName, SCENEID sceneId, QUuid id)
     return SE_INVALID_SCENEID;
 }
 
+//!Add component to Scene->Entity. Returns COMPONENTID if no error occurs.
 COMPONENTID SceneExplorer::AddComponent(QString componentName, SCENEID sceneIndex, ENTITYID entityIndex, QUuid id, QUuid entityId)
 {
     QTreeWidgetItem *itm = new QTreeWidgetItem();
@@ -125,6 +127,7 @@ int SceneExplorer::DeleteEntity(SCENEID sceneId, ENTITYID entityId)
     return SE_INVALID_SCENEID;
 }
 
+//!Deletes a component from Scene->Entity. Returns 0 if no error occurs.
 int SceneExplorer::DeleteComponent(SCENEID sceneIndex, ENTITYID entityIndex, COMPONENTID componentIndex)
 {
     if(ui->treeWidget->topLevelItemCount()>= sceneIndex && sceneIndex>=0)
