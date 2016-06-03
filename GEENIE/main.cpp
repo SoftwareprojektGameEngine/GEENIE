@@ -4,6 +4,8 @@
 
 int main(int argc, char *argv[])
 {
+    QApplication::setAttribute(Qt::AA_UseDesktopOpenGL, true);
+
     QApplication a(argc, argv);
     /*GEENIEMainWindow w;
     w.show();*/

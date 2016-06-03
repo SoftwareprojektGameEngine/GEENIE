@@ -26,6 +26,9 @@ public:
     void Undo();
 };
 
+/*!
+ * \brief The RemoveEntityAction class
+ */
 class SHARED_EXPORT RemoveEntityAction : public UserAction {
 private:
     Project& project;
@@ -39,6 +42,9 @@ public:
     void Undo();
 };
 
+/*!
+ * \brief The AddComponentAction class
+ */
 class SHARED_EXPORT AddComponentAction : public UserAction {
 private:
     Project& project;
@@ -53,6 +59,9 @@ public:
     void Undo();
 };
 
+/*!
+ * \brief The ModifyEntityAction class
+ */
 class SHARED_EXPORT ModifyEntityAction : public UserAction {
 private:
     Project& project;
@@ -68,6 +77,9 @@ public:
     void Undo();
 };
 
+/*!
+ * \brief The AddSceneAction class
+ */
 class SHARED_EXPORT AddSceneAction : public UserAction {
 private:
     Project& project;
@@ -81,6 +93,9 @@ public:
     void Undo();
 };
 
+/*!
+ * \brief The RemoveSceneAction class
+ */
 class SHARED_EXPORT RemoveSceneAction : public UserAction {
 private:
     Project& project;
@@ -94,6 +109,9 @@ public:
     void Undo();
 };
 
+/*!
+ * \brief The AddAssetAction class
+ */
 class SHARED_EXPORT AddAssetAction : public UserAction {
 private:
     Project& project;
@@ -107,6 +125,9 @@ public:
     void Undo();
 };
 
+/*!
+ * \brief The RemoveAssetAction class
+ */
 class SHARED_EXPORT RemoveAssetAction : public UserAction {
 private:
     Project& project;

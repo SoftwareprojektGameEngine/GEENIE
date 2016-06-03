@@ -6,6 +6,7 @@
 #include "logger.h"
 
 class QTextDocument;
+class Project;
 
 namespace Ui {
 class GEENIEMainWindow;
@@ -19,6 +20,9 @@ public:
     explicit GEENIEMainWindow(QWidget *parent = 0);
     ~GEENIEMainWindow();
 
+    void setScriptType(Highlighter::Types type);
+    void setScript(QString& script);
+
     QTextDocument* scriptEditorDocument();
 
 protected:
@@ -29,12 +33,11 @@ signals:
     void changeScriptType(Highlighter::Types);
 
 private slots:
-    void on_pushButton_clicked();
-
-    void on_pushButton_2_clicked();
-
-
     void on_comboBox_currentIndexChanged(int index);
+
+    void on_actionExit_triggered();
+
+    void on_openScriptBtn_clicked();
 
 private:
     Ui::GEENIEMainWindow *ui;

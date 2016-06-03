@@ -4,6 +4,7 @@
 
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QDebug>
 
 GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,18 +28,6 @@ GEENIEMainWindow::~GEENIEMainWindow()
     delete ui;
 }
 
-void GEENIEMainWindow::on_pushButton_clicked()
-{
-    DEBUG_MSG(QString("Test DEBUG"));
-    ERROR_MSG(QString("Test ERROR"));
-}
-
-void GEENIEMainWindow::on_pushButton_2_clicked()
-{
-    ERROR_MSG(QString("Test ERROR"));
-}
-
-
 void GEENIEMainWindow::closeEvent(QCloseEvent *event)
 {
     QMessageBox::StandardButton resBtn = QMessageBox::question( this, tr("GEENIE"),
@@ -49,15 +38,15 @@ void GEENIEMainWindow::closeEvent(QCloseEvent *event)
     {
         event->ignore();
     }
-    else if (resBtn == QMessageBox::Cancel)
+    else if (resBtn == QMessageBox::Yes)
     {
         emit saveSession();
         event->accept();
     }
     else if (resBtn == QMessageBox::No)
     {
-        ExitDialog* exitDialog = new ExitDialog(this);
-        if(exitDialog->exec() == QDialog::Accepted)
+        ExitDialog exitDialog;
+        if(exitDialog.exec() == QDialog::Accepted)
         {
             event->ignore();
         }
@@ -84,4 +73,37 @@ void GEENIEMainWindow::on_comboBox_currentIndexChanged(int index)
     {
         emit changeScriptType(Highlighter::Types::Lua);
     }
+}
+
+void GEENIEMainWindow::setScriptType(Highlighter::Types type)
+{
+    if(type == Highlighter::Types::Python)
+    {
+        ui->comboBox->setCurrentIndex(0);
+    }
+    else
+    {
+        ui->comboBox->setCurrentIndex(1);
+    }
+}
+
+void GEENIEMainWindow::setScript(QString &script)
+{
+    ui->scriptEditor->setText(script);
+}
+
+void GEENIEMainWindow::on_actionExit_triggered()
+{
+    close();
+}
+
+#include <QFileDialog>
+#include <QDir>
+#include <QDebug>
+
+
+//! \bug https://bugreports.qt.io/browse/QTBUG-52618
+void GEENIEMainWindow::on_openScriptBtn_clicked()
+{
+    QString file = QFileDialog::getOpenFileName(this,QString("Load Script ..."),QDir::homePath(),QString("Scripts (*.lua *.py)"));
 }

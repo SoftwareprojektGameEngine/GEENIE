@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       -= gui
+QT += opengl
 
 include(../global.pri)
 
@@ -14,11 +14,25 @@ TEMPLATE = lib
 DEFINES += BACKEND_LIBRARY
 
 SOURCES += \
-    osgwrapper.cpp
+    osgwrapper.cpp \
+    osgwidget.cpp \
+    viewerex.cpp \
+    cullvisitorex.cpp \
+    graphicswindowex.cpp \
+    renderstagecacheex.cpp \
+    renderstageex.cpp \
+    stateex.cpp
 
 HEADERS +=\
         backend_global.h \
-    osgwrapper.h
+    osgwrapper.h \
+    osgwidget.h \
+    viewerex.h \
+    renderstagecacheex.h \
+    stateex.h \
+    renderstageex.h \
+    cullvisitorex.h \
+    graphicswindowex.h
 
 DLLDESTDIR = $$OUT_PWD/../bin
 
@@ -48,13 +62,9 @@ else:unix: LIBS += -L$$OUT_PWD/../GEENIE_Core/ -lGEENIE_Core
 INCLUDEPATH += $$PWD/../GEENIE_Core
 DEPENDPATH += $$PWD/../GEENIE_Core
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../OpenScenegraph/lib/ -losg
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../OpenScenegraph/lib/ -losgd
-else:unix: LIBS += -L$$PWD/../OpenScenegraph/lib/ -losg
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../OpenScenegraph/lib/ -losgDB
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../OpenScenegraph/lib/ -losgDBd
-else:unix: LIBS += -L$$PWD/../OpenScenegraph/lib/ -losgDB
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../OpenScenegraph/lib/ -losg -losgDB -losgGA -losgViewer -losgUtil -lOpenThreads -lglut32 -lopengl32
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../OpenScenegraph/lib/ -losgd -losgDBd -losgGAd -losgViewerd -losgUtild -lOpenThreadsd -lglut32d -lopengl32
+else:unix: LIBS += -L$$PWD/../OpenScenegraph/lib/ -losg -losgDB -losgGA -losgViewer -losgUtil -lOpenThreads -lglut32 -lopengl32
 
 INCLUDEPATH += $$PWD/../OpenScenegraph/include
 DEPENDPATH += $$PWD/../OpenScenegraph/include

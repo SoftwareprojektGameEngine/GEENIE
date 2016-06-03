@@ -1,8 +1,8 @@
 #include "assets.h"
 
-TextureAsset::TextureAsset(QString path) {
+TextureAsset::TextureAsset(QString path, QUuid id) {
     this->path = path;
-    this->id = QUuid::createUuid();
+    this->id = id;
 }
 
 TextureAsset::~TextureAsset() {

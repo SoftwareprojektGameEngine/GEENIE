@@ -1,7 +1,7 @@
 #include "core.h"
 
-Entity::Entity(QUuid parentID) : parentID(parentID), components(), subEntities() {
-    this->id = QUuid::createUuid();
+Entity::Entity(QUuid parentID, QUuid id) : parentID(parentID), components(), subEntities() {
+    this->id = id;
 }
 
 Entity::~Entity() {
@@ -24,6 +24,11 @@ QUuid Entity::GetParentID() {
 
 Entity* Entity::GetSubEntity(const QUuid& entityID) {
     return this->subEntities.value(entityID, nullptr);
+}
+
+bool Entity::HasSubEntities()
+{
+    return !(this->subEntities.isEmpty());
 }
 
 QHashIterator<QUuid, Entity*> Entity::GetSubEntities() {
@@ -64,4 +69,9 @@ Component* Entity::RemoveComponent(const QUuid &componentID) {
         this->components.remove(componentID);
     }
     return component;
+}
+
+bool Entity::HasComponents()
+{
+    return !(this->components.isEmpty());
 }

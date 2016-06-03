@@ -160,5 +160,123 @@ void ProjectTest::testUndoRedo() {
     delete project;
 }
 
+#include <QDir>
+#include <QDebug>
+
+void ProjectTest::testLoadSave()
+{
+    Project* project = new Project(nullptr,QString("test"));
+    QVERIFY(project->name() == QString("test"));
+
+    Scene* scene = new Scene();
+    QUuid sceneID = scene->GetID();
+
+    project->AddScene(scene);
+    Entity* entity = new Entity(scene->GetID());
+    QUuid entityID = entity->GetID();
+    QUuid entityParent = entity->GetParentID();
+    Entity* entity2 = new Entity(scene->GetID());
+    QUuid entity2ID = entity2->GetID();
+    QUuid entity2Parent = entity2->GetParentID();
+    Entity* entity3 = new Entity(entity->GetID());
+    QUuid entity3ID = entity3->GetID();
+    QUuid entity3Parent = entity3->GetParentID();
+    Entity* entity4 = new Entity(entity->GetID());
+    QUuid entity4ID = entity4->GetID();
+    QUuid entity4Parent = entity4->GetParentID();
+    Entity* entity5 = new Entity(entity->GetID());
+    QUuid entity5ID = entity5->GetID();
+    QUuid entity5Parent = entity5->GetParentID();
+    Entity* entity6 = new Entity(entity->GetID());
+    QUuid entity6ID = entity6->GetID();
+    QUuid entity6Parent = entity6->GetParentID();
+    Entity* entity7 = new Entity(entity->GetID());
+    QUuid entity7ID = entity7->GetID();
+    QUuid entity7Parent = entity7->GetParentID();
+
+    project->AddEntity(entity);
+    project->AddEntity(entity2);
+    project->AddEntity(entity3);
+    project->AddEntity(entity4);
+    project->AddEntity(entity5);
+    project->AddEntity(entity6);
+    project->AddEntity(entity7);
+
+    project->save(QString("%1\\tmp.geenie").arg(QDir::tempPath()));
+    Project* project2 = new Project(nullptr);
+    project2->load(QString("%1\\tmp.geenie").arg(QDir::tempPath()));
+    QVERIFY(project2->name() == project->name());
+    QVERIFY(project2->GetScene(sceneID) != nullptr);
+    QVERIFY(project2->FindEntity(entityID) != nullptr);
+    QVERIFY(project2->FindEntity(entityID)->GetParentID() == entityParent);
+    QVERIFY(project2->FindEntity(entity2ID) != nullptr);
+    QVERIFY(project2->FindEntity(entity2ID)->GetParentID() == entity2Parent);
+    QVERIFY(project2->FindEntity(entity3ID) != nullptr);
+    QVERIFY(project2->FindEntity(entity3ID)->GetParentID() == entity3Parent);
+    QVERIFY(project2->FindEntity(entity4ID) != nullptr);
+    QVERIFY(project2->FindEntity(entity4ID)->GetParentID() == entity4Parent);
+    QVERIFY(project2->FindEntity(entity5ID) != nullptr);
+    QVERIFY(project2->FindEntity(entity5ID)->GetParentID() == entity5Parent);
+    QVERIFY(project2->FindEntity(entity6ID) != nullptr);
+    QVERIFY(project2->FindEntity(entity6ID)->GetParentID() == entity6Parent);
+    QVERIFY(project2->FindEntity(entity7ID) != nullptr);
+    QVERIFY(project2->FindEntity(entity7ID)->GetParentID() == entity7Parent);
+
+    delete project2;
+    delete project;
+}
+
+void ProjectTest::testAddScene() {
+    Project* project = new Project(nullptr);
+
+    Scene* scene = new Scene();
+    QVERIFY(project->GetScene(scene->GetID()) == nullptr);
+
+    project->AddScene(scene);
+    QVERIFY(project->GetScene(scene->GetID()) == scene);
+
+    delete project;
+}
+
+void ProjectTest::testRemoveScene() {
+    Project* project = new Project(nullptr);
+
+    Scene* scene = new Scene();
+    project->AddScene(scene);
+    QVERIFY(project->GetScene(scene->GetID()) == scene);
+
+    QVERIFY(project->RemoveScene(scene->GetID()) == scene);
+    QVERIFY(project->GetScene(scene->GetID()) == nullptr);
+
+    delete scene;
+    delete project;
+}
+
+void ProjectTest::testAddAsset() {
+    Project* project = new Project(nullptr);
+
+    Asset* testAsset = new ScriptAsset(QString("dummypath"));
+    QVERIFY(project->GetAsset(testAsset->GetID()) == nullptr);
+
+    project->AddAsset(testAsset);
+    QVERIFY(project->GetAsset(testAsset->GetID()) == testAsset);
+
+    delete project;
+}
+
+void ProjectTest::testRemoveAsset() {
+    Project* project = new Project(nullptr);
+
+    Asset* testAsset = new ScriptAsset(QString("dummypath"));
+    project->AddAsset(testAsset);
+    QVERIFY(project->GetAsset(testAsset->GetID()) == testAsset);
+
+    QVERIFY(project->RemoveAsset(testAsset->GetID()) == testAsset);
+    QVERIFY(project->GetAsset(testAsset->GetID()) == nullptr);
+
+    delete testAsset;
+    delete project;
+}
+
 //QTEST_APPLESS_MAIN(ProjectTest)
 //#include "project_test.moc"

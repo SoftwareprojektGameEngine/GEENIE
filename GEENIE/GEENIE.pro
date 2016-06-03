@@ -25,14 +25,19 @@ SOURCES += main.cpp\
     newprojectwidget.cpp \
     scripthighlighter.cpp \
     assetwidget.cpp \
-    entitievervaltung.cpp \
     inspector.cpp \
     inspectoraudiowidget.cpp \
     inspectorcamerawidget.cpp \
     inspectormaterialwidget.cpp \
     inspectortexturewidget.cpp \
     inspectortransformwidget.cpp \
-    exitdialog.cpp
+    exitdialog.cpp \
+    toolbar.cpp \
+    sceneeditwidget.cpp \
+    inspectorwidget.cpp \
+    gdockwidget.cpp \
+    sceneexplorer.cpp \
+    inspectorparentwidget.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
@@ -42,27 +47,35 @@ HEADERS  += geeniemainwindow.h \
     newprojectwidget.h \
     scripthighlighter.h \
     assetwidget.h \
-    entitievervaltung.h \
     inspector.h \
     inspectoraudiowidget.h \
     inspectorcamerawidget.h \
     inspectormaterialwidget.h \
     inspectortexturewidget.h \
     inspectortransformwidget.h \
-    exitdialog.h
+    exitdialog.h \
+    toolbar.h \
+    sceneeditwidget.h \
+    inspectorwidget.h \
+    gdockwidget.h \
+    sceneexplorer.h \
+    inspectorparentwidget.h
 
 FORMS    += geeniemainwindow.ui \
     layoutform.ui \
     newprojectwidget.ui \
     assetwidget.ui \
-    entitievervaltung.ui \
     inspector.ui \
     inspectoraudiowidget.ui \
     inspectorcamerawidget.ui \
     inspectormaterialwidget.ui \
     inspectortexturewidget.ui \
     inspectortransformwidget.ui \
-    exitdialog.ui
+    exitdialog.ui \
+    toolbar.ui \
+    sceneeditwidget.ui \
+    inspectorwidget.ui \
+    sceneexplorer.ui
 
 
 win32: DESTDIR = $$OUT_PWD/../bin

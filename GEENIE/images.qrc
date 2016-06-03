@@ -2,4 +2,7 @@
     <qresource prefix="/other">
         <file alias="exit.gif">resources/images/other/onExitCat.gif</file>
     </qresource>
+    <qresource prefix="/icons">
+        <file alias="icon.png">resources/images/icons/icon.png</file>
+    </qresource>
 </RCC>

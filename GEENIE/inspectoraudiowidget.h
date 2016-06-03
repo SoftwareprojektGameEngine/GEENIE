@@ -1,18 +1,18 @@
 #ifndef INSPECTORAUDIOWIDGET_H
 #define INSPECTORAUDIOWIDGET_H
 
-#include <QWidget>
+#include "inspectorparentwidget.h"
 
 namespace Ui {
 class InspectorAudioWidget;
 }
 
-class InspectorAudioWidget : public QWidget
+class InspectorAudioWidget : public InspectorParentWidget
 {
     Q_OBJECT
 
 public:
-    explicit InspectorAudioWidget(QWidget *parent = 0);
+    explicit InspectorAudioWidget(QWidget *parent = 0, QUuid id = QUuid());
     ~InspectorAudioWidget();
 
 private:

@@ -1,18 +1,18 @@
 #ifndef INSPECTORTRANSFORMWIDGET_H
 #define INSPECTORTRANSFORMWIDGET_H
 
-#include <QWidget>
+#include "inspectorparentwidget.h"
 
 namespace Ui {
 class InspectorTransformWidget;
 }
 
-class InspectorTransformWidget : public QWidget
+class InspectorTransformWidget : public InspectorParentWidget
 {
     Q_OBJECT
 
 public:
-    explicit InspectorTransformWidget(QWidget *parent = 0);
+    explicit InspectorTransformWidget(QWidget *parent = 0, QUuid id = QUuid());
     ~InspectorTransformWidget();
 
 private:

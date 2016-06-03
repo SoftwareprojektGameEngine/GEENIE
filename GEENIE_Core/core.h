@@ -16,6 +16,21 @@ enum ComponentType {
     MODEL,
     MATERIAL,
     POSITION,
+    LIGHT,
+    TEXTURE,
+    SOUND,
+    SHADER,
+    SCRIPT
+};
+
+/*!
+ * \brief The LightSourceType enum
+ */
+enum LightSourceType {
+    AMBIENT, //!< The light source contains ambient light information
+    DIFFUSE, //!< The light source contains diffuse light information
+    SPOT,  //!< The light source contains spot light information
+    SPECULAR, //!< The light source contains specular light information
 };
 
 /*!
@@ -43,60 +58,173 @@ public:
  */
 class SHARED_EXPORT Component {
 public:
+    //! The constructor
     Component() {}
+    //! The destructor
     virtual ~Component() {}
 
+    //! GetID returns the component's ID
     virtual QUuid GetID() = 0;
+    //! GetType returns the component's type
     virtual ComponentType GetType() = 0;
+    virtual QString GetTypeName() = 0;
 };
 
+/*!
+ * \brief The Entity class
+ */
 class SHARED_EXPORT Entity {
 private:
+    //! id is the id of the entity
     QUuid id;
+    //! parentID is the id of the parent of the entity
     QUuid parentID;
 
+    //! components contains all the components associated with this entity
     QHash<QUuid, Component*> components;
+    //! subEntities contains all direct subentities of this entity
     QHash<QUuid, Entity*> subEntities;
 public:
-    Entity(QUuid parentID);
+    /*!
+     * \brief Entity
+     * \param parentID the id of the parent entity
+     * \param id the id of this entity (for serialization purposes)
+     */
+    Entity(QUuid parentID, QUuid id = QUuid::createUuid());
+    //! The destructor
     ~Entity();
 
+    //! GetID returns the id of this entity
     QUuid GetID();
+    //! GetParentID returns the id of the parent entity
     QUuid GetParentID();
 
+    /*!
+     * \brief GetSubEntity tries to find a subentity by its id
+     * \param entityID the id of the subentity
+     * \return the subentity if found, otherwise nullptr
+     */
     Entity* GetSubEntity(const QUuid& entityID);
+    /*!
+     * \brief GetSubEntities
+     * \return a java-style iterator over all subEntities
+     */
     QHashIterator<QUuid, Entity*> GetSubEntities();
+    /*!
+     * \brief HasSubEntities
+     * \return true if this entity has subentities
+     */
+    bool HasSubEntities();
+    /*!
+     * \brief AddSubEntity adds a subentity to this entity
+     * \param entity the subentity to be added
+     */
     void AddSubEntity(Entity* entity);
+    /*!
+     * \brief RemoveSubEntity removes a subentity from this entity
+     * \param entityID the id of the subentity to be removed
+     * \return the removed entity
+     */
     Entity* RemoveSubEntity(const QUuid& entityID);
 
+    /*!
+     * \brief GetComponent tries to find a component of this entity by id
+     * \param componentID the component's id
+     * \return the component if found, otherwise nullptr
+     */
     Component* GetComponent(const QUuid& componentID);
+    /*!
+     * \brief GetComponents
+     * \return a java-style iterator over all components of this entity
+     */
     QHashIterator<QUuid, Component*> GetComponents();
+    /*!
+     * \brief AddComponent adds a component to this entity
+     * \param component the component to be added
+     */
     void AddComponent(Component* component);
+    /*!
+     * \brief RemoveComponent removes a component from this entity
+     * \param componentID the component's id
+     * \return the removed component
+     */
     Component* RemoveComponent(const QUuid& componentID);
+    /*!
+     * \brief HasComponents
+     * \return true if this entity has any components
+     */
+    bool HasComponents();
 };
 
+/*!
+ * \brief The Scene class
+ */
 class SHARED_EXPORT Scene {
 private:
+    /*!
+     * \brief id
+     */
     QUuid id;
+    /*!
+     * \brief entities
+     */
     QHash<QUuid, Entity*> entities;
 public:
-    Scene();
+    /*!
+     * \brief Scene
+     * \param id
+     */
+    Scene(QUuid id = QUuid::createUuid());
+    //! The destructor
     ~Scene();
 
+    /*!
+     * \brief GetID
+     * \return
+     */
     QUuid GetID();
 
+    /*!
+     * \brief GetEntity
+     * \param entityID
+     * \return
+     */
     Entity* GetEntity(const QUuid& entityID);
+    /*!
+     * \brief GetEntities
+     * \return
+     */
     QHashIterator<QUuid, Entity*> GetEntities();
+    /*!
+     * \brief AddEntity
+     * \param entity
+     */
     void AddEntity(Entity* entity);
+    /*!
+     * \brief RemoveEntity
+     * \param entityID
+     * \return
+     */
     Entity* RemoveEntity(const QUuid& entityID);
+    /*!
+     * \brief HasEntities
+     * \return
+     */
+    bool HasEntities();
 };
 
 #include "enginewrapper.h"
+#include <QObject>
+
+class TiXmlElement;
 
 /*!
   The Project class. Used to contain all state of a project.
   */
-class SHARED_EXPORT Project {
+class SHARED_EXPORT Project : public QObject {
+
+    Q_OBJECT
+
 private:
     //! Ringbuffer structure of UserActions
     UserAction* userActions[MAX_NUM_USERACTIONS + 1];
@@ -111,14 +239,33 @@ private:
     //! The collection of assets.
     QHash<QUuid, Asset*> assets;
     EngineWrapper* engine;
+    //! The project name
+    QString projectName;
+    //! Helper function for subentities
+    TiXmlElement *SubEntitiesToXml(Entity* entity);
+    //! Helper function for components
+    void AddComponentInformationToXml(TiXmlElement* componentNode, Component* component);
+    //! Helper function for vectors
+    void VectorToXml(TiXmlElement* parent, Vector vector, QString& name);
+    //! Helper function for colors
+    void ColorToXml(TiXmlElement* parent, Color color, QString& name);
+    //! Helper function for loading entities
+    void XmlToEntity(TiXmlElement* e);
+    //! Helper function for loading components
+    void XmlToComponent(TiXmlElement* c, Entity* e);
+    //! Helper function for loading vectors
+    Vector XmlToVector(TiXmlElement* parent, QString& name);
+    //! Helper function for loading colors
+    Color XmlToColor(TiXmlElement* parent, QString& name);
 
 public:
     //! The project constructor.
-    Project(EngineWrapper* engine);
+    Project(EngineWrapper* engine, QString name = QString("untitled"));
     //! The project destructor.
     ~Project();
 
     //! Adds a UserAction.
+    //! \param newAction the action to be added
     void AddUserAction(UserAction* newAction);
     //! Signals whether a UserAction can be undone.
     bool CanUndo();
@@ -130,17 +277,25 @@ public:
     void Undo();
 
     //! Adds an entity to the project.
+    //! \param entity the entity to be added
     void AddEntity(Entity* entity);
     //! Removes the specified entity from the project.
+    //! \param entityID the id of the entity to be removed
     Entity* RemoveEntity(const QUuid& entityID);
     //! Searches the specified entity in the project.
+    //! \param entityID the id of the entity
     Entity* FindEntity(const QUuid& entityID);
 
     //! Adds a scene to the project.
+    //! \param scene a pointer to the scene
     void AddScene(Scene* scene);
     //! Returns the specified scene.
+    //! \param sceneID the id of the scene
+    //! \return a pointer to the scene if found, nullptr otherwise
     Scene* GetScene(const QUuid& sceneID);
     //! Removes the specified scene from the project.
+    //! \param sceneID the id of the scene object
+    //! \return a pointer to the removed scene
     Scene* RemoveScene(const QUuid& sceneID);
     //! Returns an iterator over all scenes.
     QHashIterator<QUuid, Scene*> GetScenes();
@@ -153,6 +308,16 @@ public:
     Asset* RemoveAsset(const QUuid& assetID);
     //! Returns an iterator over all assets.
     QHashIterator<QUuid, Asset*> GetAssets();
+    //! Loads project from specified file
+    void load(QString& file);
+    //! Saves project to specified file
+    void save(QString& file);
+    //! Returns project name
+    QString name();
+
+public slots:
+private slots:
+signals:
 };
 
 #endif // CORE_H

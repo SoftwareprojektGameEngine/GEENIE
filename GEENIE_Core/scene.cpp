@@ -1,7 +1,7 @@
 #include "core.h"
 
-Scene::Scene() : entities() {
-    this->id = QUuid::createUuid();
+Scene::Scene(QUuid id) : entities() {
+    this->id = id;
 }
 
 Scene::~Scene() {
@@ -36,4 +36,9 @@ Entity* Scene::RemoveEntity(const QUuid& entityID) {
     }
 
     return entity;
+}
+
+bool Scene::HasEntities()
+{
+    return !(this->entities.isEmpty());
 }

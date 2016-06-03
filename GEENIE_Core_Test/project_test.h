@@ -14,7 +14,12 @@ private Q_SLOTS:
     void testAddMultipleUserActions();
     void testCanUndoRedo();
     void testUndoRedo();
+    void testLoadSave();
     //void TestUserActionEdgeCases();
+    void testAddScene();
+    void testRemoveScene();
+    void testAddAsset();
+    void testRemoveAsset();
 };
 
 #endif // PROJECT_TEST_H
