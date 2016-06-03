@@ -283,7 +283,7 @@ void GEENIE::fillSceneExplorerWithEntities(SCENEID sceneId, Entity *e)
     while(cit.hasNext())
     {
         cit.next();
-        s->AddComponent(cit.value()->GetTypeName(),id,cit.value()->GetID(),e->GetID());
+        s->AddComponent(cit.value()->GetTypeName(),sceneId,id,cit.value()->GetID(),e->GetID());
     }
 }
 
