@@ -1,9 +1,16 @@
 #include "assetwidget.h"
 #include "ui_assetwidget.h"
 #include <qfiledialog.h>
+#include <core.h>
+#include <components.h>
 
 QString Path;
-QList<QString> FileList;
+QList<QString> MaterialList;
+QList<QString> TextureList;
+QList<QString> ModelList;
+QList<QString> ScriptList;
+QList<QString> AudioList;
+QList<QString> VideoList;
 
 AssetWidget::AssetWidget(QWidget *parent) :
     QWidget(parent),
@@ -23,43 +30,43 @@ void AssetWidget::on_LoadButton_clicked()
     switch (TabName) {
     case 0:
         Path = QFileDialog::getOpenFileName(this, tr("Load Material"), "C:/", "All Files (*.*)");
-        FileList.append(Path);
-        foreach (QString item, FileList) {
+        MaterialList.append(Path);
+        foreach (QString item, MaterialList) {
             ui->MaterialListWidget->addItem(item);
         }
         break;
     case 1:
         Path = QFileDialog::getOpenFileName(this, tr("Load Texture"), "C:/", "All Files (*.*)");
-        FileList.append(Path);
-        foreach (QString item, FileList) {
+        TextureList.append(Path);
+        foreach (QString item, TextureList) {
             ui->TextureListWidget->addItem(item);
         }
         break;
     case 2:
         Path = QFileDialog::getOpenFileName(this, tr("Load Model"), "C:/", "All Files (*.*)");
-        FileList.append(Path);
-        foreach (QString item, FileList) {
+        ModelList.append(Path);
+        foreach (QString item, ModelList) {
             ui->ModelListWidget->addItem(item);
         }
         break;
     case 3:
         Path = QFileDialog::getOpenFileName(this, tr("Load Script"), "C:/", "All Files (*.*)");
-        FileList.append(Path);
-        foreach (QString item, FileList) {
+        ScriptList.append(Path);
+        foreach (QString item, ScriptList) {
             ui->ScriptListWidget->addItem(item);
         }
         break;
     case 4:
         Path = QFileDialog::getOpenFileName(this, tr("Load Audio"), "C:/", "All Files (*.*)");
-        FileList.append(Path);
-        foreach (QString item, FileList) {
+        AudioList.append(Path);
+        foreach (QString item, AudioList) {
             ui->AudioListWidget->addItem(item);
         }
         break;
     case 5:
         Path = QFileDialog::getOpenFileName(this, tr("Load Video"), "C:/", "All Files (*.*)");
-        FileList.append(Path);
-        foreach (QString item, FileList) {
+        VideoList.append(Path);
+        foreach (QString item, VideoList) {
             ui->VideoListWidget->addItem(item);
         }
         break;
@@ -79,18 +86,32 @@ void AssetWidget::on_DeleteButton_clicked()
     ui->listWidget->update();
 */}
 
-void AssetWidget::FillTreeView(QString _path){
-    /*
-    //filling the tree view with the root path
-    QString _path;//root path of the project
-    QString mPath;
-    if(path==''){
-        mPath = "C:/";
-    }else{
-        mPath = _path;
-    }
-    dirModel = new QFileSystemModel(this);
-    dirModel->setRootPath(mPath);
-    ui->treeView->setModel(dirModel);
-    */
+void AssetWidget::FillAssetLists(){
+    Project *CurrentProject;
+    /*QList<Asset> iterator = CurrentProject->GetAssets();
+
+    foreach (Asset item, iterator) {
+        switch (item.GetType()) {
+        case "Model":
+            ModelList.append(item.GetPath());
+            break;
+        case "Material":
+            MaterialList.append(item.GetPath());
+            break;
+        case "Texture":
+            TextureList.append(item.GetPath());
+            break;
+        case "Audio":
+            AudioList.append(item.GetPath());
+            break;
+        case "Video":
+            VideoList.append(item.GetPath());
+            break;
+        case "Script":
+            ScriptList.append(item.GetPath());
+            break;
+        default:
+            break;
+        }
+    }*/
 }

@@ -34,7 +34,7 @@ public:
      * \brief Fills asset widget with information from path
      * \param _path
      */
-    void FillTreeView(QString _path);
+    void FillAssetLists();
 
 private slots:
     /*!
