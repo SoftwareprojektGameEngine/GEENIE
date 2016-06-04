@@ -8,6 +8,7 @@
 #include <QTimer>
 #include "osgwrapper.h"
 
+
 class BACKEND_EXPORT OSGWidget : public QOpenGLWidget, public EngineWidgetWrapper {
     Q_OBJECT
 public:
