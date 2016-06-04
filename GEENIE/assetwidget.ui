@@ -14,6 +14,73 @@
    <string>AssetWidget</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="3">
+    <widget class="QTabWidget" name="AssetTabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="MaterialsTab">
+      <attribute name="title">
+       <string>Materials</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QListWidget" name="MaterialListWidget"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="TexturesTab">
+      <attribute name="title">
+       <string>Textures</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QListWidget" name="TextureListWidget"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="ModelsTab">
+      <attribute name="title">
+       <string>Models</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QListWidget" name="ModelListWidget"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="ScriptsTab">
+      <attribute name="title">
+       <string>Scripts</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QListWidget" name="ScriptListWidget"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="AudioTab">
+      <attribute name="title">
+       <string>Audio</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
+        <widget class="QListWidget" name="AudioListWidget"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="VideoTab">
+      <attribute name="title">
+       <string>Video</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_7">
+       <item row="0" column="0">
+        <widget class="QListWidget" name="VideoListWidget"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QPushButton" name="LoadButton">
      <property name="text">
@@ -40,16 +107,6 @@
       <string>Delete</string>
      </property>
     </widget>
-   </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QListWidget" name="listWidget">
-     <property name="dragDropMode">
-      <enum>QAbstractItemView::DragDrop</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QTreeView" name="treeView"/>
    </item>
   </layout>
  </widget>

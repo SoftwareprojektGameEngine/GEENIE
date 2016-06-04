@@ -49,12 +49,6 @@ private slots:
      */
     void on_DeleteButton_clicked();
 
-    /*!
-     * \fn void on_treeView_clicked()
-     * \brief slot called when the asset view is clicked
-     */
-    void on_treeView_clicked(const QModelIndex &index);
-
 private:
     Ui::AssetWidget *ui;
 };
