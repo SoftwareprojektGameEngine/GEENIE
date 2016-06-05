@@ -11,6 +11,7 @@ QList<QString> ModelList;
 QList<QString> ScriptList;
 QList<QString> AudioList;
 QList<QString> VideoList;
+Project *CurrentProject;
 
 AssetWidget::AssetWidget(QWidget *parent) :
     QWidget(parent),
@@ -26,11 +27,13 @@ AssetWidget::~AssetWidget()
 
 void AssetWidget::on_LoadButton_clicked()
 {
+    //TODO: datei in richtigen ordner kopieren, asset registrieren
     int TabName = ui->AssetTabWidget->currentIndex();
     switch (TabName) {
     case 0:
         Path = QFileDialog::getOpenFileName(this, tr("Load Material"), "C:/", "All Files (*.*)");
         MaterialList.append(Path);
+        //QFile.copy(Path, );
         ui->MaterialListWidget->clear();
         foreach (QString item, MaterialList) {
             ui->MaterialListWidget->addItem(item);
@@ -93,31 +96,33 @@ void AssetWidget::on_DeleteButton_clicked()
 */}
 
 void AssetWidget::FillAssetLists(){
-    Project *CurrentProject;
-    /*QList<Asset> iterator = CurrentProject->GetAssets();
+    QHashIterator<QUuid, Asset*> iterator = CurrentProject->GetAssets();
 
-    foreach (Asset item, iterator) {
-        switch (item.GetType()) {
-        case "Model":
-            ModelList.append(item.GetPath());
+    while(iterator.hasNext())
+    {
+        iterator.next();
+        switch(iterator.value()->GetType())
+        {
+        case MODEL_ASSET:
+            ModelList.append(iterator.value()->GetPath());
             break;
-        case "Material":
-            MaterialList.append(item.GetPath());
+        case MATERIAL_ASSET:
+            MaterialList.append(iterator.value()->GetPath());
             break;
-        case "Texture":
-            TextureList.append(item.GetPath());
+        case TEXTURE_ASSET:
+            TextureList.append(iterator.value()->GetPath());
             break;
-        case "Audio":
-            AudioList.append(item.GetPath());
+        case AUDIO_ASSET:
+            AudioList.append(iterator.value()->GetPath());
             break;
-        case "Video":
-            VideoList.append(item.GetPath());
+        case VIDEO_ASSET:
+            VideoList.append(iterator.value()->GetPath());
             break;
-        case "Script":
-            ScriptList.append(item.GetPath());
+        case SCRIPT_ASSET:
+            ScriptList.append(iterator.value()->GetPath());
             break;
         default:
             break;
         }
-    }*/
+    }
 }

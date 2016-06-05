@@ -13,6 +13,8 @@ enum AssetType {
     MODEL_ASSET,
     MATERIAL_ASSET,
     SCRIPT_ASSET,
+    AUDIO_ASSET,
+    VIDEO_ASSET
 };
 
 /*!
