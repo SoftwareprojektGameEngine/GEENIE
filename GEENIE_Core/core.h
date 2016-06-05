@@ -337,6 +337,8 @@ public:
 public slots:
 private slots:
 signals:
+    void CanRedoSignal(bool);
+    void CanUndoSignal(bool);
 };
 
 #endif // CORE_H

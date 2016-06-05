@@ -10,6 +10,8 @@ Project::Project(EngineWrapper* engine, QString name) : fastEntityLookup(), scen
     this->currentActionIndex = 0;
 
     this->engine = engine;
+    emit CanUndoSignal(this->CanUndo());
+    emit CanRedoSignal(this->CanRedo());
 }
 
 Project::~Project() {
@@ -51,6 +53,8 @@ void Project::AddUserAction(UserAction *newAction) {
         this->firstActionIndex = CALC_INDEX(this->firstActionIndex + 1);
     }
     newAction->Do();
+    emit CanUndoSignal(this->CanUndo());
+    emit CanRedoSignal(this->CanRedo());
 }
 
 bool Project::CanUndo() {
@@ -68,6 +72,8 @@ void Project::Undo() {
         this->userActions[this->currentActionIndex]->Undo();
         this->currentActionIndex = CALC_INDEX(this->currentActionIndex - 1);
     }
+    emit CanUndoSignal(this->CanUndo());
+    emit CanRedoSignal(this->CanRedo());
 }
 
 void Project::Redo() {
@@ -75,6 +81,8 @@ void Project::Redo() {
         this->currentActionIndex = CALC_INDEX(this->currentActionIndex + 1);
         this->userActions[this->currentActionIndex]->Do();
     }
+    emit CanUndoSignal(this->CanUndo());
+    emit CanRedoSignal(this->CanRedo());
 }
 
 void Project::AddEntity(Entity* entity) {

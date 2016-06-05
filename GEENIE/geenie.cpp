@@ -247,6 +247,8 @@ GEENIE::GEENIE(QObject *parent) :
     UnsetInspector();
     fillSceneExplorer();
     _mainWindow->show();
+    QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
+    QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
 }
 
 GEENIE::~GEENIE()

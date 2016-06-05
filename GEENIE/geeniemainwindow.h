@@ -34,6 +34,10 @@ signals:
     void changeScriptType(Highlighter::Types);
     void toggleDock(EDockWidgetTypes,bool);
 
+public slots:
+    void CanUndo(bool undo);
+    void CanRedo(bool redo);
+
 private slots:
     void on_comboBox_currentIndexChanged(int index);
 
@@ -60,6 +64,10 @@ private slots:
     void on_actionExplorer_toggled(bool arg1);
 
     void on_actionAssets_toggled(bool arg1);
+
+    void on_actionRedo_triggered();
+
+    void on_actionUndo_triggered();
 
 private:
     Ui::GEENIEMainWindow *ui;

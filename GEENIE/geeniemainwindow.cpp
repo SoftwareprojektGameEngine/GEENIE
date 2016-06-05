@@ -21,6 +21,8 @@ GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
     ui->comboBox->addItem(QString("Python"));
     ui->comboBox->addItem(QString("Lua"));
     ui->comboBox->setCurrentIndex(0);
+    ui->actionUndo->setEnabled(false);
+    ui->actionRedo->setEnabled(false);
 }
 
 GEENIEMainWindow::~GEENIEMainWindow()
@@ -181,4 +183,24 @@ void GEENIEMainWindow::on_actionExplorer_toggled(bool arg1)
 void GEENIEMainWindow::on_actionAssets_toggled(bool arg1)
 {
     emit toggleDock(EDockWidgetTypes::AssetsWidget,arg1);
+}
+
+void GEENIEMainWindow::on_actionRedo_triggered()
+{
+
+}
+
+void GEENIEMainWindow::on_actionUndo_triggered()
+{
+
+}
+
+void GEENIEMainWindow::CanRedo(bool redo)
+{
+    ui->actionRedo->setEnabled(redo);
+}
+
+void GEENIEMainWindow::CanUndo(bool undo)
+{
+    ui->actionUndo->setEnabled(undo);
 }
