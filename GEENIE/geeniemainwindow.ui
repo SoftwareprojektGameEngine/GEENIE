@@ -262,6 +262,9 @@
    <property name="text">
     <string>Inspector</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
   </action>
   <action name="actionGame">
    <property name="text">
@@ -375,6 +378,9 @@
    <property name="text">
     <string>Console</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
   </action>
   <action name="actionExplorer">
    <property name="checkable">
@@ -383,6 +389,9 @@
    <property name="text">
     <string>Explorer</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
   </action>
   <action name="actionAssets">
    <property name="checkable">
@@ -390,6 +399,9 @@
    </property>
    <property name="text">
     <string>Assets</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
  </widget>
