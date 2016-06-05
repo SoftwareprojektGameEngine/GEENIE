@@ -182,3 +182,73 @@ void SceneExplorer::clear()
 {
     ui->treeWidget->clear();
 }
+
+#include <QMenu>
+void SceneExplorer::on_treeWidget_customContextMenuRequested(const QPoint &pos)
+{
+    QTreeWidgetItem* item = ui->treeWidget->itemAt(pos);
+    QMenu* menu = new QMenu(this);
+    bool top = false;
+    for(int i = 0; i < ui->treeWidget->topLevelItemCount(); i++)
+    {
+        if(item == ui->treeWidget->topLevelItem(i))
+        {
+            top = true;
+        }
+    }
+    if(top)
+    {
+        menu->addAction(QString("Add entity"),this,SLOT(ContextMenuAddEntityToScene()));
+        menu->addAction(QString("Preview scene"),this,SLOT(ContextMenuPreviewScene()));
+        menu->addAction(QString("Delete scene"),this,SLOT(ContextMenuDeleteScene()));
+        menu->addAction(QString("Rename scene"),this,SLOT(ContextMenuRenameScene()));
+    }
+    else
+    {
+        if(item->data(0,Qt::UserRole+1).toBool())
+        {
+            menu->addAction(QString("Delete component"),this,SLOT(ContextMenuDeleteComponent()));
+        }
+        else
+        {
+            menu->addAction(QString("Add entity"),this,SLOT(ContextMenuAddEntityToEntity()));
+            menu->addAction(QString("Add Component"),this,SLOT(ContextMenuAddComponent()));
+        }
+    }
+    menu->popup(ui->treeWidget->viewport()->mapToGlobal(pos));
+}
+
+void SceneExplorer::ContextMenuAddEntityToScene()
+{
+    emit CMAddEntity(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()),se::ItemType::SCENE);
+}
+
+void SceneExplorer::ContextMenuAddEntityToEntity()
+{
+    emit CMAddEntity(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()),se::ItemType::ENTITY);
+}
+
+void SceneExplorer::ContextMenuRenameScene()
+{
+    emit CMRenameScene(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()));
+}
+
+void SceneExplorer::ContextMenuDeleteScene()
+{
+    emit CMDeleteScene(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()));
+}
+
+void SceneExplorer::ContextMenuDeleteComponent()
+{
+    emit CMDeleteComponent(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()),QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole+2).toByteArray()));
+}
+
+void SceneExplorer::ContextMenuAddComponent()
+{
+    emit CMAddComponent(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole+2).toByteArray()));
+}
+
+void SceneExplorer::ContextMenuPreviewScene()
+{
+    emit CMPreviewScene(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()));
+}

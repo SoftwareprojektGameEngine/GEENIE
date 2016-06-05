@@ -17,6 +17,7 @@ class SceneExplorer;
 
 namespace se {
     enum ItemType {
+        SCENE,
         ENTITY,
         COMPONENT
     };
@@ -50,9 +51,24 @@ public slots:
 private slots:
     void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
 
+    void on_treeWidget_customContextMenuRequested(const QPoint &pos);
+    void ContextMenuPreviewScene();
+    void ContextMenuRenameScene();
+    void ContextMenuDeleteScene();
+    void ContextMenuAddEntityToScene();
+    void ContextMenuAddEntityToEntity();
+    void ContextMenuAddComponent();
+    void ContextMenuDeleteComponent();
+
 signals:
     void clicked(QUuid id, se::ItemType type);
     void clicked(QUuid id, se::ItemType type, QUuid parentId);
+    void CMPreviewScene(QUuid);
+    void CMRenameScene(QUuid);
+    void CMDeleteScene(QUuid);
+    void CMAddEntity(QUuid, se::ItemType);
+    void CMAddComponent(QUuid);
+    void CMDeleteComponent(QUuid,QUuid);
     void sceneClicked();
 
 private:
