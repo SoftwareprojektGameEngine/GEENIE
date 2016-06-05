@@ -34,6 +34,7 @@ void AssetWidget::on_LoadButton_clicked()
         Path = QFileDialog::getOpenFileName(this, tr("Load Material"), "C:/", "All Files (*.*)");
         MaterialList.append(Path);
         //QFile.copy(Path, );
+        //CurrentProject->AddAsset();
         ui->MaterialListWidget->clear();
         foreach (QString item, MaterialList) {
             ui->MaterialListWidget->addItem(item);
@@ -86,14 +87,49 @@ void AssetWidget::on_LoadButton_clicked()
 
 void AssetWidget::on_DeleteButton_clicked()
 {
-    //qDeleteAll(ui->listWidget->selectedItems());
-    /*int count = ui->listWidget->selectedItems().count();
-    for(int i=0; i<count;i++)
+    QListWidget *view;
+    QList<QString> *list;
+    int row = 0;
+    switch(ui->AssetTabWidget->currentIndex())
     {
-        FileList.removeAt(ui->listWidget->selectionModel()->selectedIndexes()[i].row());
+    case 0:
+        view = ui->MaterialListWidget;
+        list = &MaterialList;
+        row = view->selectionModel()->selectedRows(0).at(0).row();
+        break;
+    case 1:
+        view = ui->TextureListWidget;
+        list = &TextureList;
+        row = view->selectionModel()->selectedRows(1).at(1).row();
+        break;
+    case 2:
+        view = ui->ModelListWidget;
+        list = &ModelList;
+        row = view->selectionModel()->selectedRows(2).at(2).row();
+        break;
+    case 3:
+        view = ui->ScriptListWidget;
+        list = &ScriptList;
+        row = view->selectionModel()->selectedRows(3).at(3).row();
+        break;
+    case 4:
+        view = ui->AudioListWidget;
+        list = &AudioList;
+        row = view->selectionModel()->selectedRows(4).at(4).row();
+        break;
+    case 5:
+        view = ui->VideoListWidget;
+        list = &VideoList;
+        row = view->selectionModel()->selectedRows(5).at(5).row();
+        break;
+    default:
+        break;
     }
-    ui->listWidget->update();
-*/}
+    qDeleteAll(view->selectedItems());
+    list->removeAt(row);
+    view->update();
+
+}
 
 void AssetWidget::FillAssetLists(){
     QHashIterator<QUuid, Asset*> iterator = CurrentProject->GetAssets();
