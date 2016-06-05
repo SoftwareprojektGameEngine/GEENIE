@@ -2,11 +2,14 @@
 #define RENDERSTAGECACHEEX_H
 
 #include "osgUtil/CullVisitor"
-
+//!Extends and combines the functionality of osg::Object and osg::Observer.
 class RenderStageCacheEx : public osg::Object, public osg::Observer {
 public:
+    //!Constructor of RenderStageCacheEx.
     RenderStageCacheEx();
+    //!Copyconstructor of RenderStageCacheEx.
     RenderStageCacheEx(const RenderStageCacheEx&, const osg::CopyOp&);
+    //!Cleans the used storage and ends all open threads of the RenderStageMap object.
     virtual ~RenderStageCacheEx();
 
     META_Object(Ex, RenderStageCacheEx)

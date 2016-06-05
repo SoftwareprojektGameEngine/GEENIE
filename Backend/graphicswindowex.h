@@ -16,12 +16,12 @@ public:
 
     //!Tests if the input Object, is an instance with type GraphicsWindowEx. Returns true if it is.
     virtual bool isSameKindAs(const osg::Object* object) const { return dynamic_cast<const GraphicsWindowEx *>(object) != 0; }
-    //!Returns a const char*,which contains the library name;
+    //!Returns an empty string.;
     virtual const char* libraryName() const { return ""; }
     //!Returns a const char*, which contains the name of the Class.
     virtual const char* className() const { return "GraphicsWindowEx"; }
 
-    //!//Dummy implementation, assume that graphics context is "always" current and valid. Returns true.
+    //!Dummy implementation, assume that graphics context is "always" current and valid. Returns true.
     virtual bool valid() const { return true; }
     //Dummy implementation, assume that graphics context is "always" current and valid. Returns true.
     virtual bool realizeImplementation() { return true; }
