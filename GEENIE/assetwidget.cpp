@@ -3,6 +3,7 @@
 #include <qfiledialog.h>
 #include <core.h>
 #include <components.h>
+#include <useractions.h>
 
 QString Path;
 QList<QString> MaterialList;
@@ -34,7 +35,8 @@ void AssetWidget::on_LoadButton_clicked()
         Path = QFileDialog::getOpenFileName(this, tr("Load Material"), "C:/", "All Files (*.*)");
         MaterialList.append(Path);
         //QFile.copy(Path, );
-        //CurrentProject->AddAsset();
+        //MaterialAsset* asset = new MaterialAsset(Path);
+        //CurrentProject->AddUserAction(new AddAssetAction(CurrentProject, asset));
         ui->MaterialListWidget->clear();
         foreach (QString item, MaterialList) {
             ui->MaterialListWidget->addItem(item);
