@@ -43,6 +43,8 @@ public:
 
     void setHeader(QString& name);
 
+    void clear();
+
 public slots:
 
 private slots:
@@ -51,6 +53,7 @@ private slots:
 signals:
     void clicked(QUuid id, se::ItemType type);
     void clicked(QUuid id, se::ItemType type, QUuid parentId);
+    void sceneClicked();
 
 private:
 

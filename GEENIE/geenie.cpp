@@ -5,11 +5,14 @@
 #include "sceneexplorer.h"
 #include "../tinyxml/tinyxml.h"
 #include "inspector.h"
-#include "inspectoraudiowidget.h"
-#include "inspectorcamerawidget.h"
+#include "inspectorlightwidget.h"
 #include "inspectormaterialwidget.h"
+#include "inspectormodelwidget.h"
+#include "inspectorpositionwidget.h"
+#include "inspectorscriptcomponent.h"
+#include "inspectorshaderwidget.h"
+#include "inspectorsoundwidget.h"
 #include "inspectortexturewidget.h"
-#include "inspectortransformwidget.h"
 #include "inspectorwidget.h"
 #include "core.h"
 #include "components.h"
@@ -41,9 +44,16 @@ GEENIE::GEENIE(QObject *parent) :
         Entity* entity = new Entity(scene->GetID());
         exEntityId = entity->GetID();
         _project->AddEntity(entity);
-        entity->AddComponent(new SoundComponent(QUuid::createUuid()));
-        entity->AddComponent(new TextureComponent(QUuid::createUuid(),0));
-        entity->AddComponent(new ModelComponent(QUuid::createUuid()));
+        entity->AddComponent(new SoundComponent(QUuid::createUuid(), QString("Sound 1")));
+        entity->AddComponent(new TextureComponent(QUuid::createUuid(),0,QUuid::createUuid(),QString("Texture 1")));
+        entity->AddComponent(new ModelComponent(QUuid::createUuid(),QUuid::createUuid(),QString("Model 1")));
+        entity->AddComponent(new LightComponent(LightSourceType::AMBIENT,
+                                                Color(0,0,0,0),
+                                                Color(0,0,0,0),
+                                                Color(0,0,0,0),
+                                                Vector(),
+                                                QUuid::createUuid(),
+                                                QString("Light 1")));
     }
     //EXAMPLE PROJECT
     createDockWidgetTitles();
@@ -232,6 +242,7 @@ GEENIE::GEENIE(QObject *parent) :
                      this,SLOT(toggleDock(EDockWidgetTypes,bool)));
     QObject::connect(eWidget,SIGNAL(clicked(QUuid,se::ItemType)),this,SLOT(ExplorerClicked(QUuid,se::ItemType)));
     QObject::connect(eWidget,SIGNAL(clicked(QUuid,se::ItemType,QUuid)),this,SLOT(ExplorerClicked(QUuid,se::ItemType,QUuid)));
+    QObject::connect(eWidget,SIGNAL(sceneClicked()),this,SLOT(UnsetInspector()));
 
     UnsetInspector();
     fillSceneExplorer();
@@ -263,17 +274,18 @@ void GEENIE::ExplorerClicked(QUuid id, se::ItemType)
 
 void GEENIE::ExplorerClicked(QUuid id, se::ItemType, QUuid parentId)
 {
-    ComponentToInspector(_project->FindEntity(parentId)->GetComponent(id));
+    ComponentToInspector(_project->FindEntity(parentId)->GetComponent(id),parentId);
 }
 
 void GEENIE::fillSceneExplorer()
 {
+    SceneExplorer *s = dynamic_cast<SceneExplorer*>(_dockWidgets.value(EDockWidgetTypes::EntitiesWidget)->widget());
+    s->clear();
     QHashIterator<QUuid, Scene*> it = _project->GetScenes();
     while(it.hasNext())
     {
         it.next();
-        SceneExplorer *s = dynamic_cast<SceneExplorer*>(_dockWidgets.value(EDockWidgetTypes::EntitiesWidget)->widget());
-        SCENEID id = s->AddScene("Scene",it.key());
+        SCENEID id = s->AddScene(it.value()->name(),it.key());
         QHashIterator<QUuid, Entity*> eit = it.value()->GetEntities();
         while(eit.hasNext())
         {
@@ -286,7 +298,7 @@ void GEENIE::fillSceneExplorer()
 void GEENIE::fillSceneExplorerWithEntities(SCENEID sceneId, Entity *e)
 {
     SceneExplorer *s = dynamic_cast<SceneExplorer*>(_dockWidgets.value(EDockWidgetTypes::EntitiesWidget)->widget());
-    ENTITYID id = s->AddEntity("Entity",sceneId,e->GetID());
+    ENTITYID id = s->AddEntity(e->name(),sceneId,e->GetID());
     QHashIterator<QUuid, Entity*> it = e->GetSubEntities();
     while(it.hasNext())
     {
@@ -297,7 +309,7 @@ void GEENIE::fillSceneExplorerWithEntities(SCENEID sceneId, Entity *e)
     while(cit.hasNext())
     {
         cit.next();
-        s->AddComponent(cit.value()->GetTypeName(),sceneId,id,cit.value()->GetID(),e->GetID());
+        s->AddComponent(cit.value()->name(),sceneId,id,cit.value()->GetID(),e->GetID());
     }
 }
 
@@ -310,18 +322,15 @@ void GEENIE::EntityToInspector(Entity *e)
         delete widget;
     }
     _inspectorWidgets.clear();
-    InspectorTransformWidget* w = new InspectorTransformWidget(_mainWindow, e->GetID());
-    in->addWidget(w);
-    _inspectorWidgets.append(w);
     QHashIterator<QUuid, Component*> it = e->GetComponents();
     while(it.hasNext())
     {
         it.next();
-        ComponentToInspector(it.value(),true);
+        ComponentToInspector(it.value(),e->GetID(),true);
     }
 }
 
-void GEENIE::ComponentToInspector(Component *c, bool sub)
+void GEENIE::ComponentToInspector(Component *c, QUuid parent, bool sub)
 {
     InspectorWidget* in = dynamic_cast<InspectorWidget*>(_dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget());
     if(!sub)
@@ -337,50 +346,64 @@ void GEENIE::ComponentToInspector(Component *c, bool sub)
     {
     case ComponentType::MODEL:
     {
-        InspectorTransformWidget* w = new InspectorTransformWidget(_mainWindow, c->GetID());
+        InspectorModelWidget* w = new InspectorModelWidget(_mainWindow, c->GetID(),parent,c->name());
         in->addWidget(w);
         _inspectorWidgets.append(w);
         break;
     }
     case ComponentType::MATERIAL:
     {
-        InspectorMaterialWidget* w = new InspectorMaterialWidget(_mainWindow, c->GetID());
+        InspectorMaterialWidget* w = new InspectorMaterialWidget(_mainWindow, c->GetID(),parent,c->name());
         in->addWidget(w);
         _inspectorWidgets.append(w);
         break;
     }
     case ComponentType::POSITION:
     {
-        InspectorTransformWidget* w = new InspectorTransformWidget(_mainWindow, c->GetID());
+        PositionComponent* pc = dynamic_cast<PositionComponent*>(c);
+        InspectorPositionWidget* w = new InspectorPositionWidget(_mainWindow,pc->GetPosition(), c->GetID(),parent,c->name());
+        QObject::connect(w,SIGNAL(applyPosition(Vector,QUuid,QUuid,QString)),
+                         this,SLOT(applyPosition(Vector,QUuid,QUuid,QString)));
         in->addWidget(w);
         _inspectorWidgets.append(w);
         break;
     }
     case ComponentType::LIGHT:
     {
-
+        LightComponent* lc = dynamic_cast<LightComponent*>(c);
+        InspectorLightWidget* w = new InspectorLightWidget(_mainWindow,c->GetID(),parent,lc->GetAmbientColor(),lc->GetDiffuseColor(),lc->GetSpecularColor(),lc->GetSpotlightDirection(),lc->GetLightSourceType(),c->name());
+        QObject::connect(w,SIGNAL(applyColor(Color,Color,Color,Vector,LightSourceType,QUuid,QUuid,QString)),
+                         this,SLOT(applyColor(Color,Color,Color,Vector,LightSourceType,QUuid,QUuid,QString)));
+        in->addWidget(w);
+        _inspectorWidgets.append(w);
         break;
     }
     case ComponentType::TEXTURE:
     {
-        InspectorTextureWidget* w = new InspectorTextureWidget(_mainWindow, c->GetID());
+        InspectorTextureWidget* w = new InspectorTextureWidget(_mainWindow, c->GetID(),parent,c->name());
         in->addWidget(w);
         _inspectorWidgets.append(w);
         break;
     }
     case ComponentType::SOUND:
     {
-        InspectorAudioWidget* w = new InspectorAudioWidget(_mainWindow, c->GetID());
+        InspectorSoundWidget* w = new InspectorSoundWidget(_mainWindow, c->GetID(),parent,c->name());
         in->addWidget(w);
         _inspectorWidgets.append(w);
         break;
     }
     case ComponentType::SHADER:
     {
+        InspectorShaderWidget* w = new InspectorShaderWidget(_mainWindow, c->GetID(),parent,c->name());
+        in->addWidget(w);
+        _inspectorWidgets.append(w);
         break;
     }
     case ComponentType::SCRIPT:
     {
+        InspectorScriptComponent* w = new InspectorScriptComponent(_mainWindow, c->GetID(),parent,c->name());
+        in->addWidget(w);
+        _inspectorWidgets.append(w);
         break;
     }
     }
@@ -466,7 +489,7 @@ void GEENIE::createDockWidgetTitles()
     _dockWidgetsTitles.insert(EDockWidgetTypes::LoggerWidget,QString("Logger"));
     _dockWidgetsTitles.insert(EDockWidgetTypes::InspectorWidget,QString("Inspector"));
     _dockWidgetsTitles.insert(EDockWidgetTypes::AssetsWidget,QString("Assets"));
-    _dockWidgetsTitles.insert(EDockWidgetTypes::EntitiesWidget,QString("Entities"));
+    _dockWidgetsTitles.insert(EDockWidgetTypes::EntitiesWidget,QString("Explorer"));
 }
 
 void GEENIE::saveSession()
@@ -568,4 +591,22 @@ void GEENIE::saveSession()
 void GEENIE::changeScriptType(Highlighter::Types type)
 {
     _highlighter->changeType(type);
+}
+
+#include "useractions.h"
+
+void GEENIE::applyColor(Color ambient, Color diffuse, Color specular, Vector spot, LightSourceType type, QUuid id, QUuid parentId, QString name)
+{
+    LightComponent* lc = new LightComponent(type,ambient,diffuse,specular,spot,id,name);
+    ModifyEntityAction* mea = new ModifyEntityAction((*_project),parentId,id,lc);
+    _project->AddUserAction(mea);
+    fillSceneExplorer();
+}
+
+void GEENIE::applyPosition(Vector position, QUuid id, QUuid parentId, QString name)
+{
+    PositionComponent* pc = new PositionComponent(position,id,name);
+    ModifyEntityAction* mea = new ModifyEntityAction((*_project),parentId,id,pc);
+    _project->AddUserAction(mea);
+    fillSceneExplorer();
 }

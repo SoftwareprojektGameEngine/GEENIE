@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>InspectorMaterialWidget</class>
- <widget class="QWidget" name="InspectorMaterialWidget">
+ <class>InspectorSoundWidget</class>
+ <widget class="QWidget" name="InspectorSoundWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

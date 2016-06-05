@@ -15,9 +15,11 @@ private:
     Vector _position;
     //!< The position component identifier
     QUuid _id;
+    //!< The position component name
+    QString _name;
 public:
     //! The position component constructor
-    PositionComponent(Vector pos, QUuid id = QUuid::createUuid());
+    PositionComponent(Vector pos, QUuid id = QUuid::createUuid(), QString name = QString("Position"));
     //! The position component destructor
     ~PositionComponent();
 
@@ -29,6 +31,8 @@ public:
     Vector GetPosition();
     //! Method to get type name, for entityview
     QString GetTypeName();
+    //! Method to get component name
+    QString name(){return _name;}
 };
 
 //! A light component.
@@ -50,9 +54,11 @@ private:
     Color _specularColor;
     //!< The spotlight direction vector
     Vector _spotlightDirection;
+    //!< The light component name
+    QString _name;
 public:
     //! The light component constructor
-    LightComponent(LightSourceType lightType, Color ambient, Color diffuse, Color specular, Vector spotlightDir = Vector{0.0f,0.0f,0.0f,0.0f}, QUuid id = QUuid::createUuid());
+    LightComponent(LightSourceType lightType, Color ambient, Color diffuse, Color specular, Vector spotlightDir = Vector{0.0f,0.0f,0.0f,0.0f}, QUuid id = QUuid::createUuid(), QString name = QString("Light"));
     ~LightComponent();
 
     //! Method to get the light component identifier
@@ -71,6 +77,8 @@ public:
     LightSourceType GetLightSourceType();
     //! Method to get type name, for entityview
     QString GetTypeName();
+    //! Method to get component name
+    QString name(){return _name;}
 };
 
 //! A model component.
@@ -84,9 +92,11 @@ private:
     QUuid _id;
     //!< The model identifier
     QUuid _modelID;
+    //!< The model component name
+    QString _name;
 public:
     //! Constructor of the model components
-    ModelComponent(QUuid modelID, QUuid id = QUuid::createUuid());
+    ModelComponent(QUuid modelID, QUuid id = QUuid::createUuid(), QString name = QString("Model"));
     ~ModelComponent();
 
     //! Method to get the model component id
@@ -97,6 +107,8 @@ public:
     QUuid GetModel();
     //! Method to get type name, for entityview
     QString GetTypeName();
+    //! Method to get component name
+    QString name(){return _name;}
 };
 
 //! A material component.
@@ -112,9 +124,11 @@ private:
     QUuid _materialID;
     //!< The material index
     int _materialIndex;
+    //!< The material component name
+    QString _name;
 public:
     //! Constructor of the material components
-    MaterialComponent(QUuid matID, int matIndex, QUuid id = QUuid::createUuid());
+    MaterialComponent(QUuid matID, int matIndex, QUuid id = QUuid::createUuid(), QString name = QString("Material"));
     ~MaterialComponent();
 
     //! Method to get the material component id
@@ -127,6 +141,8 @@ public:
     int GetMaterialIndex();
     //! Method to get type name, for entityview
     QString GetTypeName();
+    //! Method to get component name
+    QString name(){return _name;}
 };
 
 //! A shader component.
@@ -140,9 +156,11 @@ private:
     QUuid _id;
     //!< The shader id
     QUuid _shaderID;
+    //!< The shader component name
+    QString _name;
 public:
     //! The constructor of the shader components
-    ShaderComponent(QUuid shaderId,QUuid id = QUuid::createUuid());
+    ShaderComponent(QUuid shaderId,QUuid id = QUuid::createUuid(), QString name = QString("Shader"));
     ~ShaderComponent();
 
     //! Method to get the shader components id
@@ -153,6 +171,8 @@ public:
     QUuid GetShader();
     //! Method to get type name, for entityview
     QString GetTypeName();
+    //! Method to get component name
+    QString name(){return _name;}
 };
 
 //! A texture component.
@@ -168,9 +188,11 @@ private:
     QUuid _textureID;
     //!< The texture index
     int _textureIndex;
+    //!< The texture component name
+    QString _name;
 public:
     //! Constructor of the texture components
-    TextureComponent(QUuid texID, int texIndex, QUuid id = QUuid::createUuid());
+    TextureComponent(QUuid texID, int texIndex, QUuid id = QUuid::createUuid(),QString name = QString("Texture"));
     ~TextureComponent();
 
     //! Method to get the texture components id
@@ -183,6 +205,8 @@ public:
     int GetTextureIndex();
     //! Method to get type name, for entityview
     QString GetTypeName();
+    //! Method to get component name
+    QString name(){return _name;}
 };
 
 enum ScriptTrigger {
@@ -202,9 +226,11 @@ private:
     ScriptTrigger _trigger;
     //!< The script-trigger id
     QUuid _scriptID;
+    //!< The script trigger component name
+    QString _name;
 public:
     //! Constructor of the script-trigger components
-    ScriptTriggerComponent(ScriptTrigger trigger, QUuid scriptID, QUuid id = QUuid::createUuid());
+    ScriptTriggerComponent(ScriptTrigger trigger, QUuid scriptID, QUuid id = QUuid::createUuid(), QString name = QString("Script"));
     ~ScriptTriggerComponent();
 
     //! Method to get the script-trigger components id
@@ -217,6 +243,8 @@ public:
     QUuid GetScript();
     //! Method to get type name, for entityview
     QString GetTypeName();
+    //! Method to get component name
+    QString name(){return _name;}
 };
 
 //! A sound component.
@@ -230,9 +258,11 @@ private:
     QUuid _id;
     //!< The sound id
     QUuid _soundID;
+    //!< The sound component name
+    QString _name;
 public:
     //!< Constructor of the sound components
-    SoundComponent(QUuid sound, QUuid id = QUuid::createUuid());
+    SoundComponent(QUuid sound, QUuid id = QUuid::createUuid(), QString name = QString("Sound"));
     ~SoundComponent();
 
     //! Method to get the sound components id
@@ -243,6 +273,8 @@ public:
     QUuid GetSound();
     //! Method to get type name, for entityview
     QString GetTypeName();
+    //! Method to get component name
+    QString name(){return _name;}
 };
 
 #endif // COMPONENTS_H

@@ -12,7 +12,7 @@ class Inspector : public InspectorParentWidget
     Q_OBJECT
 
 public:
-    explicit Inspector(QWidget *parent = 0, QUuid id = QUuid());
+    explicit Inspector(QWidget *parent = 0, QUuid id = QUuid(), QUuid parentId = QUuid());
     ~Inspector();
 
 private:

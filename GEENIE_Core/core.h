@@ -67,7 +67,10 @@ public:
     virtual QUuid GetID() = 0;
     //! GetType returns the component's type
     virtual ComponentType GetType() = 0;
+    //! GetTypeName returns the component's type name
     virtual QString GetTypeName() = 0;
+    //! name returns the component's name
+    virtual QString name() = 0;
 };
 
 /*!
@@ -84,13 +87,15 @@ private:
     QHash<QUuid, Component*> components;
     //! subEntities contains all direct subentities of this entity
     QHash<QUuid, Entity*> subEntities;
+    //! name contains entity name
+    QString _name;
 public:
     /*!
      * \brief Entity
      * \param parentID the id of the parent entity
      * \param id the id of this entity (for serialization purposes)
      */
-    Entity(QUuid parentID, QUuid id = QUuid::createUuid());
+    Entity(QUuid parentID, QUuid id = QUuid::createUuid(), QString name = QString("Entity"));
     //! The destructor
     ~Entity();
 
@@ -154,6 +159,11 @@ public:
      * \return true if this entity has any components
      */
     bool HasComponents();
+    /*!
+     * \brief name
+     * \return
+     */
+    QString name(){return _name;}
 };
 
 /*!
@@ -169,12 +179,16 @@ private:
      * \brief entities
      */
     QHash<QUuid, Entity*> entities;
+    /*!
+     * \brief _name
+     */
+    QString _name;
 public:
     /*!
      * \brief Scene
      * \param id
      */
-    Scene(QUuid id = QUuid::createUuid());
+    Scene(QUuid id = QUuid::createUuid(), QString name = QString("Scene"));
     //! The destructor
     ~Scene();
 
@@ -211,6 +225,11 @@ public:
      * \return
      */
     bool HasEntities();
+    /*!
+     * \brief name
+     * \return
+     */
+    QString name(){return _name;}
 };
 
 #include "enginewrapper.h"

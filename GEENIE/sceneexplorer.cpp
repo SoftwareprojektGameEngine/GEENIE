@@ -10,8 +10,6 @@ SceneExplorer::SceneExplorer(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->treeWidget->setColumnCount(1);
-    //TODO: Connect the UserAction with the Core. (Extra Useractionclass in core?)
-    //connect(ui->treeWidget,ui->treeWidget->itemClicked,)
 }
 
 //!Cleans the used Storage.
@@ -39,6 +37,8 @@ SCENEID SceneExplorer::AddScene(QString sceneName, QUuid id)
     itm->setData(0,Qt::UserRole,id.toByteArray());
     ui->treeWidget->addTopLevelItem(itm);
 
+    ui->treeWidget->expandAll();
+
     return ui->treeWidget->indexOfTopLevelItem(itm);
 }
 
@@ -59,9 +59,10 @@ SCENEID SceneExplorer::AddEntity(QString entityName, SCENEID sceneId, QUuid id)
     {
         QTreeWidgetItem *parent = ui->treeWidget->topLevelItem(sceneId);
         parent->addChild(itm);
+        ui->treeWidget->expandAll();
         return parent->indexOfChild(itm);
     }
-
+    ui->treeWidget->expandAll();
     return SE_INVALID_SCENEID;
 }
 
@@ -76,6 +77,7 @@ COMPONENTID SceneExplorer::AddComponent(QString componentName, SCENEID sceneInde
 
     if(componentName == "")
     {
+        ui->treeWidget->expandAll();
         return SE_INVALID_NAME;
     }
 
@@ -84,10 +86,13 @@ COMPONENTID SceneExplorer::AddComponent(QString componentName, SCENEID sceneInde
         if(ui->treeWidget->topLevelItem(sceneIndex)->childCount()>= entityIndex && entityIndex >=0)
         {
             ui->treeWidget->topLevelItem(sceneIndex)->child(entityIndex)->addChild(itm);
+            ui->treeWidget->expandAll();
             return ui->treeWidget->topLevelItem(sceneIndex)->child(entityIndex)->indexOfChild(itm);
         }
+        ui->treeWidget->expandAll();
         return SE_INVALID_ENTITYID;
     }
+    ui->treeWidget->expandAll();
     return SE_INVALID_SCENEID;
 }
 
@@ -159,6 +164,7 @@ void SceneExplorer::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
     {
         if(item == ui->treeWidget->topLevelItem(i))
         {
+            emit sceneClicked();
             return;
         }
     }
@@ -170,4 +176,9 @@ void SceneExplorer::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
     {
         emit clicked(QUuid(item->data(0,Qt::UserRole).toByteArray()),se::ItemType::ENTITY);
     }
+}
+
+void SceneExplorer::clear()
+{
+    ui->treeWidget->clear();
 }

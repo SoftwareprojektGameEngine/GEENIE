@@ -24,7 +24,7 @@ Project::~Project() {
         delete scene;
     }
 }
-
+#include <QDebug>
 void Project::AddUserAction(UserAction *newAction) {
     // clear useractions in front (if any)
     if (this->CanRedo()) {
@@ -39,7 +39,6 @@ void Project::AddUserAction(UserAction *newAction) {
             index = CALC_INDEX(index - 1);
         }
     }
-
     // advance current index to next slot
     this->currentActionIndex = CALC_INDEX(this->currentActionIndex + 1);
     // add action in current slot
@@ -51,7 +50,6 @@ void Project::AddUserAction(UserAction *newAction) {
         this->userActions[nextIndex] = nullptr;
         this->firstActionIndex = CALC_INDEX(this->firstActionIndex + 1);
     }
-
     newAction->Do();
 }
 

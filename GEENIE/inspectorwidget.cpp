@@ -19,6 +19,7 @@ InspectorWidget::~InspectorWidget()
 void InspectorWidget::addWidget(QWidget *widget)
 {
     widget->setParent(ui->scrollAreaWidgetContents);
+    widget->setGeometry(widget->x(),widget->y(),ui->scrollAreaWidgetContents->width(),widget->height());
     ui->scrollAreaWidgetContents->layout()->addWidget(widget);
 }
 void InspectorWidget::removeWidget(QWidget* widget)

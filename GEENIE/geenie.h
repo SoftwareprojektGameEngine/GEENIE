@@ -7,12 +7,13 @@
 #include "common.h"
 #include "scripthighlighter.h"
 #include "sceneexplorer.h"
+#include "components.h"
+
 
 class GEENIEMainWindow;
 class QDockWidget;
 class Project;
 class Entity;
-class Component;
 
 enum EInspectorTypes
 {
@@ -37,8 +38,7 @@ private:
 
 
     void EntityToInspector(Entity* e);
-    void ComponentToInspector(Component* c, bool sub = false);
-    void UnsetInspector();
+    void ComponentToInspector(Component* c, QUuid parent, bool sub = false);
 
     void defaultSession(QWidget* inspector, QWidget* asset, QWidget* entities);
     void createDockWidgetTitles();
@@ -63,10 +63,13 @@ private:
 
 private slots:
     void saveSession();
+    void UnsetInspector();
     void changeScriptType(Highlighter::Types type);
     void ExplorerClicked(QUuid id,se::ItemType);
     void ExplorerClicked(QUuid id,se::ItemType,QUuid parentId);
     void toggleDock(EDockWidgetTypes type,bool show);
+    void applyColor(Color ambient,Color diffuse,Color specular,Vector spot,LightSourceType type,QUuid id,QUuid parentId,QString name);
+    void applyPosition(Vector position,QUuid id,QUuid parentId,QString name);
 
 signals:
 

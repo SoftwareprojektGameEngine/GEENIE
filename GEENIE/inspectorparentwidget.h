@@ -7,13 +7,17 @@ class InspectorParentWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit InspectorParentWidget(QWidget *parent = 0, QUuid id = QUuid());
+    explicit InspectorParentWidget(QWidget *parent = 0, QUuid id = QUuid(), QUuid parentId = QUuid(),QString name = QString());
 
     QUuid getID();
     void setID(QUuid id);
+    QUuid getParentID();
+    void setParentID(QUuid id);
 
-private:
+protected:
     QUuid _id;
+    QUuid _parentId;
+    QString _name;
 
 signals:
 
