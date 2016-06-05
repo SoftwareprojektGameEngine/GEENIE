@@ -31,6 +31,7 @@ void AssetWidget::on_LoadButton_clicked()
     case 0:
         Path = QFileDialog::getOpenFileName(this, tr("Load Material"), "C:/", "All Files (*.*)");
         MaterialList.append(Path);
+        ui->MaterialListWidget->clear();
         foreach (QString item, MaterialList) {
             ui->MaterialListWidget->addItem(item);
         }
@@ -38,6 +39,7 @@ void AssetWidget::on_LoadButton_clicked()
     case 1:
         Path = QFileDialog::getOpenFileName(this, tr("Load Texture"), "C:/", "All Files (*.*)");
         TextureList.append(Path);
+        ui->TextureListWidget->clear();
         foreach (QString item, TextureList) {
             ui->TextureListWidget->addItem(item);
         }
@@ -45,6 +47,7 @@ void AssetWidget::on_LoadButton_clicked()
     case 2:
         Path = QFileDialog::getOpenFileName(this, tr("Load Model"), "C:/", "All Files (*.*)");
         ModelList.append(Path);
+        ui->ModelListWidget->clear();
         foreach (QString item, ModelList) {
             ui->ModelListWidget->addItem(item);
         }
@@ -52,6 +55,7 @@ void AssetWidget::on_LoadButton_clicked()
     case 3:
         Path = QFileDialog::getOpenFileName(this, tr("Load Script"), "C:/", "All Files (*.*)");
         ScriptList.append(Path);
+        ui->ScriptListWidget->clear();
         foreach (QString item, ScriptList) {
             ui->ScriptListWidget->addItem(item);
         }
@@ -59,6 +63,7 @@ void AssetWidget::on_LoadButton_clicked()
     case 4:
         Path = QFileDialog::getOpenFileName(this, tr("Load Audio"), "C:/", "All Files (*.*)");
         AudioList.append(Path);
+        ui->AudioListWidget->clear();
         foreach (QString item, AudioList) {
             ui->AudioListWidget->addItem(item);
         }
@@ -66,6 +71,7 @@ void AssetWidget::on_LoadButton_clicked()
     case 5:
         Path = QFileDialog::getOpenFileName(this, tr("Load Video"), "C:/", "All Files (*.*)");
         VideoList.append(Path);
+        ui->VideoListWidget->clear();
         foreach (QString item, VideoList) {
             ui->VideoListWidget->addItem(item);
         }
