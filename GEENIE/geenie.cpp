@@ -220,7 +220,7 @@ GEENIE::GEENIE(QObject *parent) :
         }
     }
     _saveTimer = new QTimer(0);
-    _saveTimer->setInterval(60000);
+    _saveTimer->setInterval(300000);
     QObject::connect(_saveTimer,SIGNAL(timeout()),this,SLOT(saveSession()));
     _saveTimer->start();
 
