@@ -22,7 +22,6 @@ SOURCES += main.cpp\
     ../tinyxml/tinyxmlerror.cpp \
     ../tinyxml/tinyxmlparser.cpp \
     layoutform.cpp \
-    newprojectwidget.cpp \
     scripthighlighter.cpp \
     assetwidget.cpp \
     inspector.cpp \
@@ -43,14 +42,16 @@ SOURCES += main.cpp\
     addcomponentdialog.cpp \
     addentitydialog.cpp \
     renamescenedialog.cpp \
-    renameentitydialog.cpp
+    renameentitydialog.cpp \
+    newdialog.cpp \
+    newprojectdialog.cpp \
+    addscenedialog.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
     ../tinyxml/tinystr.h \
     ../tinyxml/tinyxml.h \
     layoutform.h \
-    newprojectwidget.h \
     scripthighlighter.h \
     assetwidget.h \
     inspector.h \
@@ -71,11 +72,13 @@ HEADERS  += geeniemainwindow.h \
     addcomponentdialog.h \
     addentitydialog.h \
     renamescenedialog.h \
-    renameentitydialog.h
+    renameentitydialog.h \
+    newdialog.h \
+    newprojectdialog.h \
+    addscenedialog.h
 
 FORMS    += geeniemainwindow.ui \
     layoutform.ui \
-    newprojectwidget.ui \
     assetwidget.ui \
     inspector.ui \
     exitdialog.ui \
@@ -93,7 +96,10 @@ FORMS    += geeniemainwindow.ui \
     addcomponentdialog.ui \
     addentitydialog.ui \
     renamescenedialog.ui \
-    renameentitydialog.ui
+    renameentitydialog.ui \
+    newdialog.ui \
+    newprojectdialog.ui \
+    addscenedialog.ui
 
 
 win32: DESTDIR = $$OUT_PWD/../bin

@@ -36,25 +36,7 @@ GEENIE::GEENIE(QObject *parent) :
     _highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
 {
     //EXAMPLE PROJECT
-    _project = new Project(0,QString("untitled"));
-    QUuid exEntityId;
-    {
-        Scene* scene = new Scene();
-        _project->AddScene(scene);
-        Entity* entity = new Entity(scene->GetID());
-        exEntityId = entity->GetID();
-        _project->AddEntity(entity);
-        entity->AddComponent(new SoundComponent(QUuid::createUuid(), QString("Sound 1")));
-        entity->AddComponent(new TextureComponent(QUuid::createUuid(),0,QUuid::createUuid(),QString("Texture 1")));
-        entity->AddComponent(new ModelComponent(QUuid::createUuid(),QUuid::createUuid(),QString("Model 1")));
-        entity->AddComponent(new LightComponent(LightSourceType::AMBIENT,
-                                                Color(0,0,0,0),
-                                                Color(0,0,0,0),
-                                                Color(0,0,0,0),
-                                                Vector(),
-                                                QUuid::createUuid(),
-                                                QString("Light 1")));
-    }
+    _project = new Project(0,QString("(No project configured)"));
     //EXAMPLE PROJECT
     createDockWidgetTitles();
     QDir dir;
@@ -263,6 +245,8 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
     QObject::connect(_mainWindow,SIGNAL(redo()),this,SLOT(redo()));
     QObject::connect(_mainWindow,SIGNAL(undo()),this,SLOT(undo()));
+    QObject::connect(_mainWindow,SIGNAL(newProject()),this,SLOT(NewProject()));
+    QObject::connect(_mainWindow,SIGNAL(newScene()),this,SLOT(AddScene()));
 }
 
 GEENIE::~GEENIE()
@@ -329,6 +313,7 @@ void GEENIE::fillSceneExplorer()
 {
     SceneExplorer *s = dynamic_cast<SceneExplorer*>(_dockWidgets.value(EDockWidgetTypes::EntitiesWidget)->widget());
     s->clear();
+    s->setHeader(_project->name());
     QHashIterator<QUuid, Scene*> it = _project->GetScenes();
     while(it.hasNext())
     {
@@ -925,7 +910,39 @@ void GEENIE::applyPosition(Vector position, QUuid id, QUuid parentId, QString na
 #include "addentitydialog.h"
 #include "renameentitydialog.h"
 #include "renamescenedialog.h"
+#include "newprojectdialog.h"
+#include "addscenedialog.h"
 #include <QMessageBox>
+#include <QDir>
+#include <QFileInfo>
+
+void GEENIE::NewProject()
+{
+    NewProjectDialog n(_mainWindow);
+    if(n.exec() == QDialog::Accepted)
+    {
+        Project* tmp = _project;
+        _project = new Project(0,n.name(),n.file());
+        delete tmp;
+        QFile file(n.file());
+        file.open(QIODevice::WriteOnly | QIODevice::Text);
+        file.close();
+        fillSceneExplorer();
+        fillAssetWidget();
+    }
+}
+
+void GEENIE::AddScene()
+{
+    AddSceneDialog asd(_mainWindow);
+    if(asd.exec() == QDialog::Accepted)
+    {
+        Scene* scene = new Scene(QUuid::createUuid(),asd.name());
+        AddSceneAction* asa = new AddSceneAction((*_project),scene);
+        _project->AddUserAction(asa);
+        fillSceneExplorer();
+    }
+}
 
 void GEENIE::AddComponent(QUuid parentId)
 {

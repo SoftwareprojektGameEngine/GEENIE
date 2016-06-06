@@ -1,7 +1,7 @@
 #include "core.h"
 #define CALC_INDEX(index) ((index) % (MAX_NUM_USERACTIONS + 1))
 
-Project::Project(EngineWrapper* engine, QString name) : fastEntityLookup(), scenes(), assets(), projectName(name) {
+Project::Project(EngineWrapper* engine, QString name, QString path) : fastEntityLookup(), scenes(), assets(), projectName(name), projectPath(path),saved(false) {
     for(int i=0; i < MAX_NUM_USERACTIONS+1;i++) {
         this->userActions[i] = nullptr;
     }
@@ -29,6 +29,7 @@ Project::~Project() {
 #include <QDebug>
 void Project::AddUserAction(UserAction *newAction) {
     // clear useractions in front (if any)
+    saved = false;
     if (this->CanRedo()) {
         int index = CALC_INDEX(this->firstActionIndex - 1);
 
@@ -68,6 +69,7 @@ bool Project::CanRedo() {
 }
 
 void Project::Undo() {
+    saved = false;
     if(this->CanUndo()) {
         this->userActions[this->currentActionIndex]->Undo();
         this->currentActionIndex = CALC_INDEX(this->currentActionIndex - 1);
@@ -77,6 +79,7 @@ void Project::Undo() {
 }
 
 void Project::Redo() {
+    saved = false;
     if(this->CanRedo()) {
         this->currentActionIndex = CALC_INDEX(this->currentActionIndex + 1);
         this->userActions[this->currentActionIndex]->Do();
@@ -86,6 +89,7 @@ void Project::Redo() {
 }
 
 void Project::AddEntity(Entity* entity) {
+    saved = false;
     if (this->scenes.contains(entity->GetParentID())) {
         this->scenes.value(entity->GetParentID())->AddEntity(entity);
     } else if(this->fastEntityLookup.contains(entity->GetParentID())) {
@@ -98,6 +102,7 @@ void Project::AddEntity(Entity* entity) {
 }
 
 Entity* Project::RemoveEntity(const QUuid& entityID) {
+    saved = false;
     Entity* removedEntity = this->FindEntity(entityID);
 
     if (removedEntity != nullptr) {
@@ -118,12 +123,14 @@ Entity* Project::FindEntity(const QUuid& entityID) {
 }
 
 void Project::AddScene(Scene* scene) {
+    saved = false;
     if (scene == nullptr) return;
 
     this->scenes.insert(scene->GetID(), scene);
 }
 
 Scene* Project::RemoveScene(const QUuid& sceneID) {
+    saved = false;
     Scene* scene = this->scenes.value(sceneID, nullptr);
 
     if (scene != nullptr) {
@@ -142,6 +149,7 @@ QHashIterator<QUuid, Scene*> Project::GetScenes() {
 }
 
 void Project::AddAsset(Asset *asset) {
+    saved = false;
     if (asset == nullptr) return;
 
     this->assets.insert(asset->GetID(), asset);
@@ -152,6 +160,7 @@ Asset* Project::GetAsset(const QUuid &assetID) {
 }
 
 Asset* Project::RemoveAsset(const QUuid &assetID) {
+    saved = false;
     Asset* asset = this->assets.value(assetID, nullptr);
 
     if (asset != nullptr) {
@@ -515,6 +524,7 @@ TiXmlElement *Project::SubEntitiesToXml(Entity *entity)
 
 void Project::save(QString &file)
 {
+    saved = true;
     TiXmlDocument doc;
     TiXmlDeclaration* decl = new TiXmlDeclaration("1.0","utf8","");
     doc.LinkEndChild(decl);
@@ -554,4 +564,17 @@ void Project::save(QString &file)
 QString Project::name()
 {
     return projectName;
+}
+
+QString Project::file()
+{
+    return projectPath;
+}
+
+#include <QFileInfo>
+
+QString Project::path()
+{
+    QFileInfo info(projectPath);
+    return info.path();
 }

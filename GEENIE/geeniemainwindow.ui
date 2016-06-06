@@ -14,7 +14,7 @@
    <string>GEENIEMainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="images.qrc">
+   <iconset>
     <normaloff>:/icons/icon.png</normaloff>:/icons/icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -238,6 +238,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionNew"/>
+   <addaction name="separator"/>
    <addaction name="actionUndo"/>
    <addaction name="actionRedo"/>
   </widget>
@@ -315,7 +317,7 @@
   </action>
   <action name="actionUndo">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset>
      <normaloff>:/icons/resources/images/icons/arrow_undo.png</normaloff>:/icons/resources/images/icons/arrow_undo.png</iconset>
    </property>
    <property name="text">
@@ -327,7 +329,7 @@
   </action>
   <action name="actionRedo">
    <property name="icon">
-    <iconset resource="images.qrc">
+    <iconset>
      <normaloff>:/icons/resources/images/icons/arrow_redo.png</normaloff>:/icons/resources/images/icons/arrow_redo.png</iconset>
    </property>
    <property name="text">
@@ -363,6 +365,10 @@
    </property>
   </action>
   <action name="actionNew">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icons/resources/images/icons/page_white_add.png</normaloff>:/icons/resources/images/icons/page_white_add.png</iconset>
+   </property>
    <property name="text">
     <string>New</string>
    </property>
@@ -432,8 +438,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

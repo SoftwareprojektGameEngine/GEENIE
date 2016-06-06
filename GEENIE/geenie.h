@@ -86,12 +86,14 @@ private slots:
     void redo();
 
     void AddEntity(QUuid parentId,se::ItemType type);
+    void AddScene();
     void RenameScene(QUuid id);
     void DeleteScene(QUuid id);
     void DeleteComponent(QUuid id, QUuid parentId);
     void AddComponent(QUuid parentId);
     void DeleteEntity(QUuid id);
     void RenameEntity(QUuid id);
+    void NewProject();
 
     void AddAsset(QString path, AssetType type);
     void DeleteAsset(QUuid id);

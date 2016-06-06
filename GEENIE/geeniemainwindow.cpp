@@ -214,3 +214,20 @@ void GEENIEMainWindow::on_actionLoad_triggered()
 {
     emit loadLayout();
 }
+
+#include "newdialog.h"
+void GEENIEMainWindow::on_actionNew_triggered()
+{
+    NewDialog nd(this);
+    if(nd.exec() == QDialog::Accepted)
+    {
+        if(nd.type())
+        {
+            emit newProject();
+        }
+        else
+        {
+            emit newScene();
+        }
+    }
+}

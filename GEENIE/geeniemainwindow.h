@@ -37,6 +37,8 @@ signals:
     void undo();
     void saveLayout();
     void loadLayout();
+    void newProject();
+    void newScene();
 
 public slots:
     void CanUndo(bool undo);
@@ -76,6 +78,8 @@ private slots:
     void on_actionSave_triggered();
 
     void on_actionLoad_triggered();
+
+    void on_actionNew_triggered();
 
 private:
     Ui::GEENIEMainWindow *ui;

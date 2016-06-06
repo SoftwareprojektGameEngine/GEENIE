@@ -262,6 +262,10 @@ private:
     EngineWrapper* engine;
     //! The project name
     QString projectName;
+    //! The project directory
+    QString projectPath;
+    //! The project save status
+    bool saved;
     //! Helper function for subentities
     TiXmlElement *SubEntitiesToXml(Entity* entity);
     //! Helper function for components
@@ -281,7 +285,7 @@ private:
 
 public:
     //! The project constructor.
-    Project(EngineWrapper* engine, QString name = QString("untitled"));
+    Project(EngineWrapper* engine, QString name = QString("untitled"), QString path = QString("C:/"));
     //! The project destructor.
     ~Project();
 
@@ -335,6 +339,12 @@ public:
     void save(QString& file);
     //! Returns project name
     QString name();
+    //! Returns project path
+    QString path();
+    //! Returns project path with filename
+    QString file();
+    //! Returns if there are unsaved changes
+    bool unsavedChanges(){return !saved;}
 
 public slots:
 private slots:

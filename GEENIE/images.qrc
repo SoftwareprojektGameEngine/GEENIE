@@ -6,5 +6,6 @@
         <file alias="icon.png">resources/images/icons/icon.png</file>
         <file>resources/images/icons/arrow_redo.png</file>
         <file>resources/images/icons/arrow_undo.png</file>
+        <file>resources/images/icons/page_white_add.png</file>
     </qresource>
 </RCC>
