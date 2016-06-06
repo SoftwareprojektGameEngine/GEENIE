@@ -562,11 +562,18 @@ void GEENIE::moveDockWidget(EDockWidgetTypes type, bool show, Qt::DockWidgetArea
     if(_dockWidgets.contains(type))
     {
         QDockWidget* w = _dockWidgets.value(type);
-        w->setVisible(show);
         _mainWindow->removeDockWidget(w);
         _mainWindow->addDockWidget(area,w);
+        w->setVisible(show);
         w->setFloating(floating);
-        w->setGeometry(x,y,width,height);
+        if(floating)
+        {
+            w->setGeometry(x,y,width,height);
+        }
+        else
+        {
+            w->setGeometry(0,0,width,height);
+        }
     }
 }
 
