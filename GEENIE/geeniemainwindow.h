@@ -33,6 +33,8 @@ signals:
     void saveSession();
     void changeScriptType(Highlighter::Types);
     void toggleDock(EDockWidgetTypes,bool);
+    void redo();
+    void undo();
 
 public slots:
     void CanUndo(bool undo);

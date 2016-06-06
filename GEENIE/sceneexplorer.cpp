@@ -212,6 +212,8 @@ void SceneExplorer::on_treeWidget_customContextMenuRequested(const QPoint &pos)
         else
         {
             menu->addAction(QString("Add entity"),this,SLOT(ContextMenuAddEntityToEntity()));
+            menu->addAction(QString("Rename entity"),this,SLOT(ContextMenuRenameEntity()));
+            menu->addAction(QString("Delete entity"),this,SLOT(ContextMenuDeleteEntity()));
             menu->addAction(QString("Add Component"),this,SLOT(ContextMenuAddComponent()));
         }
     }
@@ -251,4 +253,14 @@ void SceneExplorer::ContextMenuAddComponent()
 void SceneExplorer::ContextMenuPreviewScene()
 {
     emit CMPreviewScene(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()));
+}
+
+void SceneExplorer::ContextMenuDeleteEntity()
+{
+    emit CMDeleteEntity(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()));
+}
+
+void SceneExplorer::ContextMenuRenameEntity()
+{
+    emit CMRenameEntity(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()));
 }

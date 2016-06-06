@@ -59,6 +59,8 @@ private slots:
     void ContextMenuAddEntityToEntity();
     void ContextMenuAddComponent();
     void ContextMenuDeleteComponent();
+    void ContextMenuRenameEntity();
+    void ContextMenuDeleteEntity();
 
 signals:
     void clicked(QUuid id, se::ItemType type);
@@ -69,6 +71,8 @@ signals:
     void CMAddEntity(QUuid, se::ItemType);
     void CMAddComponent(QUuid);
     void CMDeleteComponent(QUuid,QUuid);
+    void CMDeleteEntity(QUuid);
+    void CMRenameEntity(QUuid);
     void sceneClicked();
 
 private:

@@ -27,7 +27,6 @@ SOURCES += main.cpp\
     assetwidget.cpp \
     inspector.cpp \
     exitdialog.cpp \
-    toolbar.cpp \
     sceneeditwidget.cpp \
     inspectorwidget.cpp \
     gdockwidget.cpp \
@@ -40,7 +39,11 @@ SOURCES += main.cpp\
     inspectorshaderwidget.cpp \
     inspectortexturewidget.cpp \
     inspectorscriptcomponent.cpp \
-    inspectorsoundwidget.cpp
+    inspectorsoundwidget.cpp \
+    addcomponentdialog.cpp \
+    addentitydialog.cpp \
+    renamescenedialog.cpp \
+    renameentitydialog.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
@@ -52,7 +55,6 @@ HEADERS  += geeniemainwindow.h \
     assetwidget.h \
     inspector.h \
     exitdialog.h \
-    toolbar.h \
     sceneeditwidget.h \
     inspectorwidget.h \
     gdockwidget.h \
@@ -65,7 +67,11 @@ HEADERS  += geeniemainwindow.h \
     inspectorshaderwidget.h \
     inspectortexturewidget.h \
     inspectorscriptcomponent.h \
-    inspectorsoundwidget.h
+    inspectorsoundwidget.h \
+    addcomponentdialog.h \
+    addentitydialog.h \
+    renamescenedialog.h \
+    renameentitydialog.h
 
 FORMS    += geeniemainwindow.ui \
     layoutform.ui \
@@ -73,7 +79,6 @@ FORMS    += geeniemainwindow.ui \
     assetwidget.ui \
     inspector.ui \
     exitdialog.ui \
-    toolbar.ui \
     sceneeditwidget.ui \
     inspectorwidget.ui \
     sceneexplorer.ui \
@@ -84,7 +89,11 @@ FORMS    += geeniemainwindow.ui \
     inspectorshaderwidget.ui \
     inspectortexturewidget.ui \
     inspectorscriptcomponent.ui \
-    inspectorsoundwidget.ui
+    inspectorsoundwidget.ui \
+    addcomponentdialog.ui \
+    addentitydialog.ui \
+    renamescenedialog.ui \
+    renameentitydialog.ui
 
 
 win32: DESTDIR = $$OUT_PWD/../bin

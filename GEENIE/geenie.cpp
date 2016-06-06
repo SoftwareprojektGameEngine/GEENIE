@@ -243,12 +243,21 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(eWidget,SIGNAL(clicked(QUuid,se::ItemType)),this,SLOT(ExplorerClicked(QUuid,se::ItemType)));
     QObject::connect(eWidget,SIGNAL(clicked(QUuid,se::ItemType,QUuid)),this,SLOT(ExplorerClicked(QUuid,se::ItemType,QUuid)));
     QObject::connect(eWidget,SIGNAL(sceneClicked()),this,SLOT(UnsetInspector()));
+    QObject::connect(eWidget,SIGNAL(CMAddComponent(QUuid)),this,SLOT(AddComponent(QUuid)));
+    QObject::connect(eWidget,SIGNAL(CMAddEntity(QUuid,se::ItemType)),this,SLOT(AddEntity(QUuid,se::ItemType)));
+    QObject::connect(eWidget,SIGNAL(CMDeleteComponent(QUuid,QUuid)),this,SLOT(DeleteComponent(QUuid,QUuid)));
+    QObject::connect(eWidget,SIGNAL(CMDeleteEntity(QUuid)),this,SLOT(DeleteEntity(QUuid)));
+    QObject::connect(eWidget,SIGNAL(CMDeleteScene(QUuid)),this,SLOT(DeleteScene(QUuid)));
+    QObject::connect(eWidget,SIGNAL(CMRenameEntity(QUuid)),this,SLOT(RenameEntity(QUuid)));
+    QObject::connect(eWidget,SIGNAL(CMRenameScene(QUuid)),this,SLOT(RenameScene(QUuid)));
 
     UnsetInspector();
     fillSceneExplorer();
     _mainWindow->show();
     QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
     QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
+    QObject::connect(_mainWindow,SIGNAL(redo()),this,SLOT(redo()));
+    QObject::connect(_mainWindow,SIGNAL(undo()),this,SLOT(undo()));
 }
 
 GEENIE::~GEENIE()
@@ -595,6 +604,18 @@ void GEENIE::changeScriptType(Highlighter::Types type)
     _highlighter->changeType(type);
 }
 
+void GEENIE::undo()
+{
+    _project->Undo();
+    fillSceneExplorer();
+}
+
+void GEENIE::redo()
+{
+    _project->Redo();
+    fillSceneExplorer();
+}
+
 #include "useractions.h"
 
 void GEENIE::applyColor(Color ambient, Color diffuse, Color specular, Vector spot, LightSourceType type, QUuid id, QUuid parentId, QString name)
@@ -611,4 +632,51 @@ void GEENIE::applyPosition(Vector position, QUuid id, QUuid parentId, QString na
     ModifyEntityAction* mea = new ModifyEntityAction((*_project),parentId,id,pc);
     _project->AddUserAction(mea);
     fillSceneExplorer();
+}
+
+#include "addcomponentdialog.h"
+#include "addentitydialog.h"
+#include "renameentitydialog.h"
+#include "renamescenedialog.h"
+
+void GEENIE::AddComponent(QUuid parentId)
+{
+    AddComponentDialog acd(_mainWindow);
+    if(acd.exec() == QDialog::Accepted)
+    {
+        Component* c = acd.component();
+        AddComponentAction* aca = new AddComponentAction((*_project),parentId,c);
+        _project->AddUserAction(aca);
+        fillSceneExplorer();
+    }
+}
+
+void GEENIE::DeleteComponent(QUuid id, QUuid parentId)
+{
+
+}
+
+void GEENIE::AddEntity(QUuid parentId, se::ItemType type)
+{
+
+}
+
+void GEENIE::RenameScene(QUuid id)
+{
+
+}
+
+void GEENIE::DeleteScene(QUuid id)
+{
+
+}
+
+void GEENIE::DeleteEntity(QUuid id)
+{
+
+}
+
+void GEENIE::RenameEntity(QUuid id)
+{
+
 }

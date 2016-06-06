@@ -70,6 +70,15 @@ private slots:
     void toggleDock(EDockWidgetTypes type,bool show);
     void applyColor(Color ambient,Color diffuse,Color specular,Vector spot,LightSourceType type,QUuid id,QUuid parentId,QString name);
     void applyPosition(Vector position,QUuid id,QUuid parentId,QString name);
+    void undo();
+    void redo();
+    void AddEntity(QUuid parentId,se::ItemType type);
+    void RenameScene(QUuid id);
+    void DeleteScene(QUuid id);
+    void DeleteComponent(QUuid id, QUuid parentId);
+    void AddComponent(QUuid parentId);
+    void DeleteEntity(QUuid id);
+    void RenameEntity(QUuid id);
 
 signals:
 

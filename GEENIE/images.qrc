@@ -4,5 +4,7 @@
     </qresource>
     <qresource prefix="/icons">
         <file alias="icon.png">resources/images/icons/icon.png</file>
+        <file>resources/images/icons/arrow_redo.png</file>
+        <file>resources/images/icons/arrow_undo.png</file>
     </qresource>
 </RCC>

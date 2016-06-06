@@ -187,12 +187,12 @@ void GEENIEMainWindow::on_actionAssets_toggled(bool arg1)
 
 void GEENIEMainWindow::on_actionRedo_triggered()
 {
-
+    emit redo();
 }
 
 void GEENIEMainWindow::on_actionUndo_triggered()
 {
-
+    emit undo();
 }
 
 void GEENIEMainWindow::CanRedo(bool redo)

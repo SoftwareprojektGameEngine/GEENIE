@@ -234,6 +234,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionUndo"/>
+   <addaction name="actionRedo"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionAbout_Us">
@@ -318,6 +320,10 @@
    </property>
   </action>
   <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/icons/resources/images/icons/arrow_undo.png</normaloff>:/icons/resources/images/icons/arrow_undo.png</iconset>
+   </property>
    <property name="text">
     <string>Undo</string>
    </property>
@@ -326,6 +332,10 @@
    </property>
   </action>
   <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/icons/resources/images/icons/arrow_redo.png</normaloff>:/icons/resources/images/icons/arrow_redo.png</iconset>
+   </property>
    <property name="text">
     <string>Redo</string>
    </property>
