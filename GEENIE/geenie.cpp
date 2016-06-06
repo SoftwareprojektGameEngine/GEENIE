@@ -236,6 +236,8 @@ GEENIE::GEENIE(QObject *parent) :
 
     QObject::connect(_mainWindow,SIGNAL(saveSession()),
                      this,SLOT(saveSession()));
+    QObject::connect(_mainWindow,SIGNAL(saveLayout()),this,SLOT(saveLayout()));
+    QObject::connect(_mainWindow,SIGNAL(loadLayout()),this,SLOT(loadLayout()));
     QObject::connect(_mainWindow,SIGNAL(changeScriptType(Highlighter::Types)),
                      this,SLOT(changeScriptType(Highlighter::Types)));
     QObject::connect(_mainWindow,SIGNAL(toggleDock(EDockWidgetTypes,bool)),
@@ -555,12 +557,228 @@ void GEENIE::insertDockWidget(EDockWidgetTypes type, QWidget *widget, bool show,
     }
 }
 
+void GEENIE::moveDockWidget(EDockWidgetTypes type, bool show, Qt::DockWidgetArea area, bool floating, int width, int height, int x, int y)
+{
+    if(_dockWidgets.contains(type))
+    {
+        QDockWidget* w = _dockWidgets.value(type);
+        w->setVisible(show);
+        _mainWindow->removeDockWidget(w);
+        _mainWindow->addDockWidget(area,w);
+        w->setFloating(floating);
+        w->setGeometry(x,y,width,height);
+    }
+}
+
 void GEENIE::createDockWidgetTitles()
 {
     _dockWidgetsTitles.insert(EDockWidgetTypes::LoggerWidget,QString("Logger"));
     _dockWidgetsTitles.insert(EDockWidgetTypes::InspectorWidget,QString("Inspector"));
     _dockWidgetsTitles.insert(EDockWidgetTypes::AssetsWidget,QString("Assets"));
     _dockWidgetsTitles.insert(EDockWidgetTypes::EntitiesWidget,QString("Explorer"));
+}
+
+#include <QFileDialog>
+
+void GEENIE::saveLayout()
+{
+    QString file = QFileDialog::getSaveFileName(_mainWindow,tr("Save Layout"),"C:/","Layout files (*.xml)");
+    if(file.isEmpty())
+    {
+        return;
+    }
+    INFO_MSG("Saving current session.");
+    QFile sessionSaveFile(file);
+    if(!sessionSaveFile.exists())
+    {
+        sessionSaveFile.open(QIODevice::WriteOnly);
+        sessionSaveFile.close();
+    }
+
+    TiXmlDocument doc;
+    TiXmlDeclaration* decl = new TiXmlDeclaration("1.0","","");
+    doc.LinkEndChild(decl);
+    TiXmlElement* root = new TiXmlElement("GEENIE");
+    doc.LinkEndChild(root);
+    TiXmlElement* script = new TiXmlElement("Script");
+    TiXmlElement* scriptContent = new TiXmlElement("Content");
+    if(_highlighter->document()->lineCount() > 3)
+    {
+        scriptContent->SetAttribute("type","file");
+        QString fileExt;
+        if(_highlighter->currentType() == Highlighter::Types::Python)
+        {
+            fileExt = QString(".py");
+        }
+        else
+        {
+            fileExt = QString(".lua");
+        }
+        QFile script(QString("%1\\%2%3").arg(Common::last_script_dir).arg(Common::last_script_file_name).arg(fileExt));
+        script.open(QIODevice::WriteOnly | QIODevice::Text);
+        QTextStream ts(new QString(),QIODevice::Text);
+        ts.setDevice(&script);
+        ts << _highlighter->document()->toPlainText();
+        script.close();
+        scriptContent->LinkEndChild(new TiXmlText(QString("%1\\%2%3").arg(Common::last_script_dir).arg(Common::last_script_file_name).arg(fileExt).toUtf8().data()));
+    }
+    else
+    {
+        scriptContent->SetAttribute("type","inline");
+        scriptContent->LinkEndChild(new TiXmlText(_highlighter->document()->toPlainText().toUtf8().data()));
+    }
+    TiXmlElement* scriptType = new TiXmlElement("Type");
+    if(_highlighter->currentType() == Highlighter::Types::Python)
+    {
+        scriptType->LinkEndChild(new TiXmlText("Python"));
+    }
+    else
+    {
+        scriptType->LinkEndChild(new TiXmlText("Lua"));
+    }
+    script->LinkEndChild(scriptContent);
+    script->LinkEndChild(scriptType);
+    root->LinkEndChild(script);
+    TiXmlElement* dockables = new TiXmlElement("Dockables");
+    root->LinkEndChild(dockables);
+
+    for(QMap<EDockWidgetTypes, QDockWidget*>::Iterator it = _dockWidgets.begin(); it != _dockWidgets.end(); ++it)
+    {
+        TiXmlElement* dockable = new TiXmlElement(_dockWidgetsTitles.value(it.key()).toUtf8().data());
+        dockables->LinkEndChild(dockable);
+
+        dockable->SetAttribute("width",dynamic_cast<QDockWidget*>(it.value())->geometry().width());
+        dockable->SetAttribute("height",dynamic_cast<QDockWidget*>(it.value())->geometry().height());
+        dockable->SetAttribute("x",dynamic_cast<QDockWidget*>(it.value())->x());
+        dockable->SetAttribute("y",dynamic_cast<QDockWidget*>(it.value())->y());
+
+        TiXmlElement* visible = new TiXmlElement("visible");
+        if(dynamic_cast<QDockWidget*>(it.value())->isVisible())
+        {
+            visible->LinkEndChild(new TiXmlText("true"));
+        }
+        else
+        {
+            visible->LinkEndChild(new TiXmlText("false"));
+        }
+        dockable->LinkEndChild(visible);
+
+        TiXmlElement* floating = new TiXmlElement("floating");
+        if(dynamic_cast<QDockWidget*>(it.value())->isFloating())
+        {
+            floating->LinkEndChild(new TiXmlText("true"));
+        }
+        else
+        {
+            floating->LinkEndChild(new TiXmlText("false"));
+        }
+        dockable->LinkEndChild(floating);
+        TiXmlElement* dockArea = new TiXmlElement("area");
+        dockArea->LinkEndChild(new TiXmlText(QString::number(_mainWindow->dockWidgetArea(dynamic_cast<QDockWidget*>(it.value()))).toUtf8().data()));
+        dockable->LinkEndChild(dockArea);
+    }
+    doc.SaveFile(file.toUtf8().data());
+}
+
+void GEENIE::loadLayout()
+{
+    QString file = QFileDialog::getOpenFileName(_mainWindow,tr("Save Layout"),"C:/","Layout files (*.xml)");
+    if(file.isEmpty())
+    {
+        return;
+    }
+    INFO_MSG("Loading session save file.");
+    TiXmlDocument doc(file.toUtf8().data());
+    bool ok = doc.LoadFile();
+    if(!ok)
+    {
+        ERROR_MSG("Failed to load last session. Using default.");
+    }
+    else
+    {
+        TiXmlElement* root = doc.FirstChildElement("GEENIE");
+        TiXmlElement* script = root->FirstChildElement("Script");
+        TiXmlElement* scriptType = script->FirstChildElement("Type");
+        if(scriptType->GetText() == "Python")
+        {
+            _mainWindow->setScriptType(Highlighter::Types::Python);
+        }
+        else
+        {
+            _mainWindow->setScriptType(Highlighter::Types::Lua);
+        }
+        TiXmlElement* scriptContent = script->FirstChildElement("Content");
+        if(QString(scriptContent->Attribute("type")) == QString("file"))
+        {
+            QFile lastScriptFile(QString(scriptContent->GetText()));
+            if(!lastScriptFile.open(QIODevice::ReadOnly))
+            {
+                ERROR_MSG("Could not open last script file.");
+            }
+            else
+            {
+                _mainWindow->setScript(QString::fromUtf8(lastScriptFile.readAll()));
+            }
+        }
+        else
+        {
+            _mainWindow->setScript(QString::fromUtf8(scriptContent->GetText()));
+        }
+        TiXmlElement* dockables = root->FirstChildElement("Dockables");
+        for(QMap<EDockWidgetTypes, QString>::Iterator it = _dockWidgetsTitles.begin(); it != _dockWidgetsTitles.end(); ++it)
+        {
+            TiXmlElement* dockable = dockables->FirstChildElement(it.value().toUtf8().data());
+            if(!dockable)
+            {
+                ERROR_MSG(QString("Dockable %1 not found.").arg(it.value()));
+            }
+            else
+            {
+                INFO_MSG(QString("Dockable %1 found.").arg(it.value()));
+                bool visible = true;
+                int height = 200;
+                int width = 200;
+                int x = 0;
+                int y = 0;
+                bool floating = false;
+                Qt::DockWidgetArea area = Qt::BottomDockWidgetArea;
+                EDockWidgetTypes type = it.key();
+                TiXmlElement* visibleElement = dockable->FirstChildElement("visible");
+                dockable->QueryIntAttribute("height",&height);
+                dockable->QueryIntAttribute("width",&width);
+                dockable->QueryIntAttribute("x",&x);
+                dockable->QueryIntAttribute("y",&y);
+                if(QString(visibleElement->GetText()) == QString("true"))
+                {
+                    visible = true;
+                }
+                else
+                {
+                    visible = false;
+                }
+
+                TiXmlElement* floatingElement = dockable->FirstChildElement("floating");
+                if(QString(floatingElement->GetText()) == QString("true"))
+                {
+                    floating = true;
+                }
+                else
+                {
+                    floating = false;
+                }
+                TiXmlElement* dockArea = dockable->FirstChildElement("area");
+                bool ok;
+                area = (Qt::DockWidgetArea)QString(dockArea->GetText()).toInt(&ok);
+                if(!ok)
+                {
+                    ERROR_MSG("Could not read area");
+                    area = Qt::BottomDockWidgetArea;
+                }
+                INFO_MSG(QString("%1 has area %2.").arg(it.value()).arg(area));
+                moveDockWidget(type,visible,area,floating,width,height,x,y);
+            }
+        }
+    }
 }
 
 void GEENIE::saveSession()
@@ -717,7 +935,7 @@ void GEENIE::AddComponent(QUuid parentId)
 void GEENIE::DeleteComponent(QUuid id, QUuid parentId)
 {
     QMessageBox::StandardButton resBtn = QMessageBox::question(_mainWindow,tr("Delete Component"),tr("Are you sure you want to delete this component?"),QMessageBox::No | QMessageBox::Yes);
-    if(resBtn = QMessageBox::Yes)
+    if(resBtn == QMessageBox::Yes)
     {
         RemoveComponentAction* rsa = new RemoveComponentAction((*_project),parentId,id);
         _project->AddUserAction(rsa);
@@ -756,7 +974,7 @@ void GEENIE::RenameScene(QUuid id)
 void GEENIE::DeleteScene(QUuid id)
 {
     QMessageBox::StandardButton resBtn = QMessageBox::question(_mainWindow,tr("Delete Scene"),tr("Are you sure you want to delete this scene?"),QMessageBox::No | QMessageBox::Yes);
-    if(resBtn = QMessageBox::Yes)
+    if(resBtn == QMessageBox::Yes)
     {
         RemoveSceneAction* rsa = new RemoveSceneAction((*_project),id);
         _project->AddUserAction(rsa);
@@ -771,7 +989,7 @@ void GEENIE::DeleteScene(QUuid id)
 void GEENIE::DeleteEntity(QUuid id)
 {
     QMessageBox::StandardButton resBtn = QMessageBox::question(_mainWindow,tr("Delete Entity"),tr("Are you sure you want to delete this entity?"),QMessageBox::No | QMessageBox::Yes);
-    if(resBtn = QMessageBox::Yes)
+    if(resBtn == QMessageBox::Yes)
     {
         RemoveEntityAction* rea = new RemoveEntityAction((*_project),id);
         _project->AddUserAction(rea);

@@ -33,6 +33,7 @@ public:
     ~GEENIE();
 
     void insertDockWidget(EDockWidgetTypes type, QWidget* widget, bool show = false, Qt::DockWidgetArea area = Qt::BottomDockWidgetArea, bool floating = false, int width = 200, int height = 200, int x = 0, int y = 0);
+    void moveDockWidget(EDockWidgetTypes type, bool show = false, Qt::DockWidgetArea area = Qt::BottomDockWidgetArea, bool floating = false, int width = 200, int height = 200, int x = 0, int y = 0);
 
 private:
 
@@ -65,6 +66,8 @@ private:
 
 private slots:
     void saveSession();
+    void saveLayout();
+    void loadLayout();
     void UnsetInspector();
     void changeScriptType(Highlighter::Types type);
     void ExplorerClicked(QUuid id,se::ItemType);

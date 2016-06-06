@@ -191,7 +191,6 @@
     <property name="title">
      <string>Component</string>
     </property>
-    <addaction name="actionMesh"/>
     <addaction name="actionEffects"/>
     <addaction name="actionPhysic"/>
    </widget>
@@ -199,9 +198,14 @@
     <property name="title">
      <string>Window</string>
     </property>
-    <addaction name="actionNext_Window"/>
-    <addaction name="actionPrevious_Window"/>
-    <addaction name="actionLayout"/>
+    <widget class="QMenu" name="menuLayout">
+     <property name="title">
+      <string>Layout </string>
+     </property>
+     <addaction name="actionSave"/>
+     <addaction name="actionLoad"/>
+    </widget>
+    <addaction name="menuLayout"/>
     <addaction name="actionInspector"/>
     <addaction name="actionConsole_2"/>
     <addaction name="actionExplorer"/>
@@ -258,11 +262,6 @@
     <string>Previous Window</string>
    </property>
   </action>
-  <action name="actionLayout">
-   <property name="text">
-    <string>Layout </string>
-   </property>
-  </action>
   <action name="actionInspector">
    <property name="checkable">
     <bool>true</bool>
@@ -282,11 +281,6 @@
   <action name="actionConsole">
    <property name="text">
     <string>Console</string>
-   </property>
-  </action>
-  <action name="actionMesh">
-   <property name="text">
-    <string>Mesh</string>
    </property>
   </action>
   <action name="actionEffects">
@@ -424,6 +418,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionLoad">
+   <property name="text">
+    <string>Load</string>
    </property>
   </action>
  </widget>

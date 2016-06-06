@@ -204,3 +204,13 @@ void GEENIEMainWindow::CanUndo(bool undo)
 {
     ui->actionUndo->setEnabled(undo);
 }
+
+void GEENIEMainWindow::on_actionSave_triggered()
+{
+    emit saveLayout();
+}
+
+void GEENIEMainWindow::on_actionLoad_triggered()
+{
+    emit loadLayout();
+}

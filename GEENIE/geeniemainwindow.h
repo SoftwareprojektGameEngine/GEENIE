@@ -35,6 +35,8 @@ signals:
     void toggleDock(EDockWidgetTypes,bool);
     void redo();
     void undo();
+    void saveLayout();
+    void loadLayout();
 
 public slots:
     void CanUndo(bool undo);
@@ -70,6 +72,10 @@ private slots:
     void on_actionRedo_triggered();
 
     void on_actionUndo_triggered();
+
+    void on_actionSave_triggered();
+
+    void on_actionLoad_triggered();
 
 private:
     Ui::GEENIEMainWindow *ui;
