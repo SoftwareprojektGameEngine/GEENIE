@@ -1,18 +1,6 @@
 #include "assetwidget.h"
 #include "ui_assetwidget.h"
 #include <qfiledialog.h>
-#include <core.h>
-#include <components.h>
-#include <useractions.h>
-
-QString Path;
-QList<QString> MaterialList;
-QList<QString> TextureList;
-QList<QString> ModelList;
-QList<QString> ScriptList;
-QList<QString> AudioList;
-QList<QString> VideoList;
-Project *CurrentProject;
 
 AssetWidget::AssetWidget(QWidget *parent) :
     QWidget(parent),
@@ -28,139 +16,134 @@ AssetWidget::~AssetWidget()
 
 void AssetWidget::on_LoadButton_clicked()
 {
-    //TODO: datei in richtigen ordner kopieren, asset registrieren
     int TabName = ui->AssetTabWidget->currentIndex();
+    QString Path;
+    AssetType type;
     switch (TabName) {
     case 0:
         Path = QFileDialog::getOpenFileName(this, tr("Load Material"), "C:/", "All Files (*.*)");
-        MaterialList.append(Path);
-        //QFile.copy(Path, );
-        //MaterialAsset* asset = new MaterialAsset(Path);
-        //CurrentProject->AddUserAction(new AddAssetAction(CurrentProject, asset));
-        ui->MaterialListWidget->clear();
-        foreach (QString item, MaterialList) {
-            ui->MaterialListWidget->addItem(item);
-        }
+        type = AssetType::MATERIAL_ASSET;
         break;
     case 1:
         Path = QFileDialog::getOpenFileName(this, tr("Load Texture"), "C:/", "All Files (*.*)");
-        TextureList.append(Path);
-        ui->TextureListWidget->clear();
-        foreach (QString item, TextureList) {
-            ui->TextureListWidget->addItem(item);
-        }
+        type = AssetType::TEXTURE_ASSET;
         break;
     case 2:
         Path = QFileDialog::getOpenFileName(this, tr("Load Model"), "C:/", "All Files (*.*)");
-        ModelList.append(Path);
-        ui->ModelListWidget->clear();
-        foreach (QString item, ModelList) {
-            ui->ModelListWidget->addItem(item);
-        }
+        type = AssetType::MODEL_ASSET;
         break;
     case 3:
         Path = QFileDialog::getOpenFileName(this, tr("Load Script"), "C:/", "All Files (*.*)");
-        ScriptList.append(Path);
-        ui->ScriptListWidget->clear();
-        foreach (QString item, ScriptList) {
-            ui->ScriptListWidget->addItem(item);
-        }
+        type = AssetType::SCRIPT_ASSET;
         break;
     case 4:
         Path = QFileDialog::getOpenFileName(this, tr("Load Audio"), "C:/", "All Files (*.*)");
-        AudioList.append(Path);
-        ui->AudioListWidget->clear();
-        foreach (QString item, AudioList) {
-            ui->AudioListWidget->addItem(item);
-        }
+        type = AssetType::AUDIO_ASSET;
         break;
     case 5:
         Path = QFileDialog::getOpenFileName(this, tr("Load Video"), "C:/", "All Files (*.*)");
-        VideoList.append(Path);
-        ui->VideoListWidget->clear();
-        foreach (QString item, VideoList) {
-            ui->VideoListWidget->addItem(item);
-        }
+        type = AssetType::VIDEO_ASSET;
         break;
     default:
         break;
+    }
+    if(Path != QString())
+    {
+        emit AddAssetToProject(Path,type);
     }
 }
 
 void AssetWidget::on_DeleteButton_clicked()
 {
-    QListWidget *view;
-    QList<QString> *list;
-    int row = 0;
+    QListWidget* view;
     switch(ui->AssetTabWidget->currentIndex())
     {
     case 0:
         view = ui->MaterialListWidget;
-        list = &MaterialList;
-        row = view->selectionModel()->selectedRows(0).at(0).row();
         break;
     case 1:
         view = ui->TextureListWidget;
-        list = &TextureList;
-        row = view->selectionModel()->selectedRows(1).at(1).row();
         break;
     case 2:
         view = ui->ModelListWidget;
-        list = &ModelList;
-        row = view->selectionModel()->selectedRows(2).at(2).row();
         break;
     case 3:
         view = ui->ScriptListWidget;
-        list = &ScriptList;
-        row = view->selectionModel()->selectedRows(3).at(3).row();
         break;
     case 4:
         view = ui->AudioListWidget;
-        list = &AudioList;
-        row = view->selectionModel()->selectedRows(4).at(4).row();
         break;
     case 5:
         view = ui->VideoListWidget;
-        list = &VideoList;
-        row = view->selectionModel()->selectedRows(5).at(5).row();
         break;
     default:
         break;
     }
-    qDeleteAll(view->selectedItems());
-    list->removeAt(row);
-    view->update();
+    if(view != 0 && !view->selectedItems().isEmpty())
+    {
 
+        emit DeleteAsset(QUuid(view->selectedItems().at(0)->data(Qt::UserRole).toByteArray()));
+    }
 }
 
-void AssetWidget::FillAssetLists(){
-    QHashIterator<QUuid, Asset*> iterator = CurrentProject->GetAssets();
+void AssetWidget::clear()
+{
+    ui->ModelListWidget->clear();
+    ui->TextureListWidget->clear();
+    ui->MaterialListWidget->clear();
+    ui->ScriptListWidget->clear();
+    ui->AudioListWidget->clear();
+    ui->VideoListWidget->clear();
+}
 
-    while(iterator.hasNext())
+void AssetWidget::AddAsset(Asset *asset)
+{
+    QListWidgetItem* item;
+    switch(asset->GetType())
     {
-        iterator.next();
-        switch(iterator.value()->GetType())
-        {
-        case MODEL_ASSET:
-            ModelList.append(iterator.value()->GetPath());
-            break;
-        case MATERIAL_ASSET:
-            MaterialList.append(iterator.value()->GetPath());
-            break;
-        case TEXTURE_ASSET:
-            TextureList.append(iterator.value()->GetPath());
-            break;
-        case AUDIO_ASSET:
-            AudioList.append(iterator.value()->GetPath());
-            break;
-        case VIDEO_ASSET:
-            VideoList.append(iterator.value()->GetPath());
-            break;
-        case SCRIPT_ASSET:
-            ScriptList.append(iterator.value()->GetPath());
-            break;
-        default:
-            break;
-        }
+    case MODEL_ASSET:
+    {
+        item = new QListWidgetItem(asset->GetPath(),ui->ModelListWidget);
+        item->setData(Qt::UserRole,asset->GetID().toByteArray());
+        ui->ModelListWidget->update();
+        break;
+    }
+    case MATERIAL_ASSET:
+    {
+        item = new QListWidgetItem(asset->GetPath(),ui->MaterialListWidget);
+        item->setData(Qt::UserRole,asset->GetID().toByteArray());
+        ui->MaterialListWidget->update();
+        break;
+    }
+    case TEXTURE_ASSET:
+    {
+        item = new QListWidgetItem(asset->GetPath(),ui->TextureListWidget);
+        item->setData(Qt::UserRole,asset->GetID().toByteArray());
+        ui->TextureListWidget->update();
+        break;
+    }
+    case AUDIO_ASSET:
+    {
+        item = new QListWidgetItem(asset->GetPath(),ui->AudioListWidget);
+        item->setData(Qt::UserRole,asset->GetID().toByteArray());
+        ui->AudioListWidget->update();
+        break;
+    }
+    case VIDEO_ASSET:
+    {
+        item = new QListWidgetItem(asset->GetPath(),ui->VideoListWidget);
+        item->setData(Qt::UserRole,asset->GetID().toByteArray());
+        ui->VideoListWidget->update();
+        break;
+    }
+    case SCRIPT_ASSET:
+    {
+        item = new QListWidgetItem(asset->GetPath(),ui->ScriptListWidget);
+        item->setData(Qt::UserRole,asset->GetID().toByteArray());
+        ui->ScriptListWidget->update();
+        break;
+    }
+    default:
+        break;
     }
 }

@@ -251,6 +251,9 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(eWidget,SIGNAL(CMRenameEntity(QUuid)),this,SLOT(RenameEntity(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMRenameScene(QUuid)),this,SLOT(RenameScene(QUuid)));
 
+    QObject::connect(aWidget,SIGNAL(AddAssetToProject(QString,AssetType)),this,SLOT(AddAsset(QString,AssetType)));
+    QObject::connect(aWidget,SIGNAL(DeleteAsset(QUuid)),this,SLOT(DeleteAsset(QUuid)));
+
     UnsetInspector();
     fillSceneExplorer();
     _mainWindow->show();
@@ -286,6 +289,18 @@ void GEENIE::ExplorerClicked(QUuid id, se::ItemType)
 void GEENIE::ExplorerClicked(QUuid id, se::ItemType, QUuid parentId)
 {
     ComponentToInspector(_project->FindEntity(parentId)->GetComponent(id),parentId);
+}
+
+void GEENIE::fillAssetWidget()
+{
+    AssetWidget* a = dynamic_cast<AssetWidget*>(_dockWidgets.value(EDockWidgetTypes::AssetsWidget)->widget());
+    a->clear();
+    QHashIterator<QUuid, Asset*> it = _project->GetAssets();
+    while(it.hasNext())
+    {
+        it.next();
+        a->AddAsset(it.value());
+    }
 }
 
 void GEENIE::fillSceneExplorer()
@@ -679,4 +694,57 @@ void GEENIE::DeleteEntity(QUuid id)
 void GEENIE::RenameEntity(QUuid id)
 {
 
+}
+
+
+void GEENIE::AddAsset(QString path, AssetType type)
+{
+    Asset* asset = nullptr;
+    switch(type)
+    {
+    case AssetType::MATERIAL_ASSET:
+    {
+        asset = new MaterialAsset(path);
+        break;
+    }
+    case AssetType::TEXTURE_ASSET:
+    {
+        asset = new TextureAsset(path);
+        break;
+    }
+    case AssetType::MODEL_ASSET:
+    {
+        asset = new ModelAsset(path);
+        break;
+    }
+    case AssetType::SCRIPT_ASSET:
+    {
+        asset = new ScriptAsset(path);
+        break;
+    }
+    case AssetType::AUDIO_ASSET:
+    {
+        break;
+    }
+    case AssetType::VIDEO_ASSET:
+    {
+        break;
+    }
+    default:
+        break;
+    }
+
+    if(asset != nullptr)
+    {
+        AddAssetAction* aaa = new AddAssetAction((*_project),asset);
+        _project->AddUserAction(aaa);
+        fillAssetWidget();
+    }
+}
+
+void GEENIE::DeleteAsset(QUuid id)
+{
+    RemoveAssetAction* raa = new RemoveAssetAction((*_project),id);
+    _project->AddUserAction(raa);
+    fillAssetWidget();
 }

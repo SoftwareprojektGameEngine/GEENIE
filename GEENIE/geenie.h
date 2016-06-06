@@ -46,6 +46,8 @@ private:
     void fillSceneExplorer();
     void fillSceneExplorerWithEntities(SCENEID sceneId,Entity* e);
 
+    void fillAssetWidget();
+
     QMap<EDockWidgetTypes, QDockWidget*> _dockWidgets;
     QMap<EDockWidgetTypes, QRect> _dockWidgetsCoords;
     QMap<EDockWidgetTypes, QString> _dockWidgetsTitles;
@@ -72,6 +74,7 @@ private slots:
     void applyPosition(Vector position,QUuid id,QUuid parentId,QString name);
     void undo();
     void redo();
+
     void AddEntity(QUuid parentId,se::ItemType type);
     void RenameScene(QUuid id);
     void DeleteScene(QUuid id);
@@ -79,6 +82,9 @@ private slots:
     void AddComponent(QUuid parentId);
     void DeleteEntity(QUuid id);
     void RenameEntity(QUuid id);
+
+    void AddAsset(QString path, AssetType type);
+    void DeleteAsset(QUuid id);
 
 signals:
 
