@@ -281,6 +281,26 @@ void GEENIE::toggleDock(EDockWidgetTypes type, bool show)
     }
 }
 
+void GEENIE::toggleAssetDock(bool show)
+{
+    _mainWindow->setDockActionsChecked(EDockWidgetTypes::AssetsWidget,show);
+}
+
+void GEENIE::toggleConsoleDock(bool show)
+{
+    _mainWindow->setDockActionsChecked(EDockWidgetTypes::LoggerWidget,show);
+}
+
+void GEENIE::toggleExplorerDock(bool show)
+{
+    _mainWindow->setDockActionsChecked(EDockWidgetTypes::EntitiesWidget,show);
+}
+
+void GEENIE::toggleInspectorDock(bool show)
+{
+    _mainWindow->setDockActionsChecked(EDockWidgetTypes::InspectorWidget,show);
+}
+
 void GEENIE::ExplorerClicked(QUuid id, se::ItemType)
 {
     EntityToInspector(_project->FindEntity(id));
@@ -502,6 +522,31 @@ void GEENIE::insertDockWidget(EDockWidgetTypes type, QWidget *widget, bool show,
             dWidget->hide();
         }
         _dockWidgets.insert(type,dWidget);
+        switch(type)
+        {
+        case EDockWidgetTypes::AssetsWidget:
+        {
+            QObject::connect(dWidget,SIGNAL(visibilityChanged(bool)),this,SLOT(toggleAssetDock(bool)));
+            break;
+        }
+        case EDockWidgetTypes::EntitiesWidget:
+        {
+            QObject::connect(dWidget,SIGNAL(visibilityChanged(bool)),this,SLOT(toggleExplorerDock(bool)));
+            break;
+        }
+        case EDockWidgetTypes::InspectorWidget:
+        {
+            QObject::connect(dWidget,SIGNAL(visibilityChanged(bool)),this,SLOT(toggleInspectorDock(bool)));
+            break;
+        }
+        case EDockWidgetTypes::LoggerWidget:
+        {
+            QObject::connect(dWidget,SIGNAL(visibilityChanged(bool)),this,SLOT(toggleConsoleDock(bool)));
+            break;
+        }
+        case EDockWidgetTypes::ScriptEditorWidget:
+        default: break;
+        }
 
     }
     else

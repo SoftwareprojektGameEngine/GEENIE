@@ -69,7 +69,14 @@ private slots:
     void changeScriptType(Highlighter::Types type);
     void ExplorerClicked(QUuid id,se::ItemType);
     void ExplorerClicked(QUuid id,se::ItemType,QUuid parentId);
+
+    void toggleInspectorDock(bool show);
+    void toggleExplorerDock(bool show);
+    void toggleConsoleDock(bool show);
+    void toggleAssetDock(bool show);
     void toggleDock(EDockWidgetTypes type,bool show);
+
+
     void applyColor(Color ambient,Color diffuse,Color specular,Vector spot,LightSourceType type,QUuid id,QUuid parentId,QString name);
     void applyPosition(Vector position,QUuid id,QUuid parentId,QString name);
     void undo();
