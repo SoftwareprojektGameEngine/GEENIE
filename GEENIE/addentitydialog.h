@@ -15,7 +15,15 @@ public:
     explicit AddEntityDialog(QWidget *parent = 0);
     ~AddEntityDialog();
 
+    QString name(){return _name;}
+
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
 private:
+    QString _name;
     Ui::AddEntityDialog *ui;
 };
 

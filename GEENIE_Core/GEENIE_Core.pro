@@ -35,7 +35,10 @@ SOURCES += \
     ../tinyxml/tinystr.cpp \
     ../tinyxml/tinyxml.cpp \
     ../tinyxml/tinyxmlerror.cpp \
-    ../tinyxml/tinyxmlparser.cpp
+    ../tinyxml/tinyxmlparser.cpp \
+    removecomponentaction.cpp \
+    renamesceneaction.cpp \
+    renameentityaction.cpp
 
 HEADERS +=\
         geenie_core_global.h \

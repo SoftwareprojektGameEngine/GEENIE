@@ -623,12 +623,14 @@ void GEENIE::undo()
 {
     _project->Undo();
     fillSceneExplorer();
+    fillAssetWidget();
 }
 
 void GEENIE::redo()
 {
     _project->Redo();
     fillSceneExplorer();
+    fillAssetWidget();
 }
 
 #include "useractions.h"
@@ -653,6 +655,7 @@ void GEENIE::applyPosition(Vector position, QUuid id, QUuid parentId, QString na
 #include "addentitydialog.h"
 #include "renameentitydialog.h"
 #include "renamescenedialog.h"
+#include <QMessageBox>
 
 void GEENIE::AddComponent(QUuid parentId)
 {
@@ -668,32 +671,82 @@ void GEENIE::AddComponent(QUuid parentId)
 
 void GEENIE::DeleteComponent(QUuid id, QUuid parentId)
 {
-
+    QMessageBox::StandardButton resBtn = QMessageBox::question(_mainWindow,tr("Delete Component"),tr("Are you sure you want to delete this component?"),QMessageBox::No | QMessageBox::Yes);
+    if(resBtn = QMessageBox::Yes)
+    {
+        RemoveComponentAction* rsa = new RemoveComponentAction((*_project),parentId,id);
+        _project->AddUserAction(rsa);
+        fillSceneExplorer();
+    }
+    else
+    {
+        return;
+    }
 }
 
 void GEENIE::AddEntity(QUuid parentId, se::ItemType type)
 {
+    Q_UNUSED(type);
 
+    AddEntityDialog aed(_mainWindow);
+    if(aed.exec() == QDialog::Accepted)
+    {
+        CreateEntityAction* cea = new CreateEntityAction((*_project),parentId,aed.name());
+        _project->AddUserAction(cea);
+        fillSceneExplorer();
+    }
 }
 
 void GEENIE::RenameScene(QUuid id)
 {
-
+    RenameSceneDialog rsd(_mainWindow,_project->GetScene(id)->name());
+    if(rsd.exec() == QDialog::Accepted)
+    {
+        RenameSceneAction* rsa = new RenameSceneAction((*_project),id,rsd.name());
+        _project->AddUserAction(rsa);
+        fillSceneExplorer();
+    }
 }
 
 void GEENIE::DeleteScene(QUuid id)
 {
-
+    QMessageBox::StandardButton resBtn = QMessageBox::question(_mainWindow,tr("Delete Scene"),tr("Are you sure you want to delete this scene?"),QMessageBox::No | QMessageBox::Yes);
+    if(resBtn = QMessageBox::Yes)
+    {
+        RemoveSceneAction* rsa = new RemoveSceneAction((*_project),id);
+        _project->AddUserAction(rsa);
+        fillSceneExplorer();
+    }
+    else
+    {
+        return;
+    }
 }
 
 void GEENIE::DeleteEntity(QUuid id)
 {
-
+    QMessageBox::StandardButton resBtn = QMessageBox::question(_mainWindow,tr("Delete Entity"),tr("Are you sure you want to delete this entity?"),QMessageBox::No | QMessageBox::Yes);
+    if(resBtn = QMessageBox::Yes)
+    {
+        RemoveEntityAction* rea = new RemoveEntityAction((*_project),id);
+        _project->AddUserAction(rea);
+        fillSceneExplorer();
+    }
+    else
+    {
+        return;
+    }
 }
 
 void GEENIE::RenameEntity(QUuid id)
 {
-
+    RenameEntityDialog red(_mainWindow,_project->FindEntity(id)->name());
+    if(red.exec() == QDialog::Accepted)
+    {
+        RenameEntityAction* rea = new RenameEntityAction((*_project),id,red.name());
+        _project->AddUserAction(rea);
+        fillSceneExplorer();
+    }
 }
 
 

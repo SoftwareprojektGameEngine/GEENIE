@@ -164,6 +164,7 @@ public:
      * \return
      */
     QString name(){return _name;}
+    void setName(QString name){_name = name;}
 };
 
 /*!
@@ -230,6 +231,7 @@ public:
      * \return
      */
     QString name(){return _name;}
+    void setName(QString name){_name = name;}
 };
 
 #include "enginewrapper.h"

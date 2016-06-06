@@ -16,7 +16,7 @@ private:
     bool done; //!< The state of this action. (Needed for cleanup.)
 public:
     //! The constructor
-    CreateEntityAction(Project& project, QUuid parentID);
+    CreateEntityAction(Project& project, QUuid parentID, QString name);
     //! The destructor
     ~CreateEntityAction();
 
@@ -37,6 +37,21 @@ private:
 public:
     RemoveEntityAction(Project& project, QUuid entityID);
     ~RemoveEntityAction();
+
+    void Do();
+    void Undo();
+};
+
+class SHARED_EXPORT RenameEntityAction : public UserAction {
+private:
+    Project& project;
+    QString oldName;
+    QString newName;
+    QUuid entityID;
+    bool done;
+public:
+    RenameEntityAction(Project& project, QUuid entityId, QString name);
+    ~RenameEntityAction();
 
     void Do();
     void Undo();
@@ -77,6 +92,20 @@ public:
     void Undo();
 };
 
+class SHARED_EXPORT RemoveComponentAction : public UserAction {
+private:
+    Project& project;
+    QUuid entityID;
+    Component* component;
+    bool done;
+public:
+    RemoveComponentAction(Project& project, QUuid entityID, QUuid componentID);
+    ~RemoveComponentAction();
+
+    void Do();
+    void Undo();
+};
+
 /*!
  * \brief The AddSceneAction class
  */
@@ -104,6 +133,21 @@ private:
 public:
     RemoveSceneAction(Project& project, QUuid sceneID);
     ~RemoveSceneAction();
+
+    void Do();
+    void Undo();
+};
+
+class SHARED_EXPORT RenameSceneAction : public UserAction {
+private:
+    Project& project;
+    QString oldName;
+    QString newName;
+    bool done;
+    QUuid sceneID;
+public:
+    RenameSceneAction(Project& project, QUuid sceneID, QString name);
+    ~RenameSceneAction();
 
     void Do();
     void Undo();
