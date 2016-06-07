@@ -315,35 +315,51 @@ void GEENIE::fillSceneExplorer()
     s->clear();
     s->setHeader(_project->name());
     QHashIterator<QUuid, Scene*> it = _project->GetScenes();
+	QList<SCENE_DATA> scenes;
     while(it.hasNext())
     {
         it.next();
-        SCENEID id = s->AddScene(it.value()->name(),it.key());
+
+		SCENE_DATA scene;
+		scene.sceneId = it.key();
+		scene.sceneName = it.value()->name();
+
         QHashIterator<QUuid, Entity*> eit = it.value()->GetEntities();
         while(eit.hasNext())
         {
             eit.next();
-            fillSceneExplorerWithEntities(id,eit.value());
+            ENTITY_DATA entity = fillSceneExplorerWithEntities(eit.value());
+			scene.entities.append(entity);
         }
+		scenes.append(scene);
+		s->FillTree(&scenes);
     }
 }
 
-void GEENIE::fillSceneExplorerWithEntities(SCENEID sceneId, Entity *e)
+ENTITY_DATA GEENIE::fillSceneExplorerWithEntities(Entity *e)
 {
     SceneExplorer *s = dynamic_cast<SceneExplorer*>(_dockWidgets.value(EDockWidgetTypes::EntitiesWidget)->widget());
-    ENTITYID id = s->AddEntity(e->name(),sceneId,e->GetID());
+	ENTITY_DATA entity;
+	entity.entityName = e->name();
+	entity.entityId = e->GetID();
+
     QHashIterator<QUuid, Entity*> it = e->GetSubEntities();
     while(it.hasNext())
     {
         it.next();
-        fillSceneExplorerWithEntities(sceneId, it.value());
+		ENTITY_DATA subEntity = fillSceneExplorerWithEntities(it.value());
+		entity.entities.append(subEntity);
     }
     QHashIterator<QUuid, Component*> cit = e->GetComponents();
     while(cit.hasNext())
     {
         cit.next();
-        s->AddComponent(cit.value()->name(),sceneId,id,cit.value()->GetID(),e->GetID());
+		COMPONENT_DATA comp;
+		comp.componentName = cit.value()->name();
+		comp.entityId = e->GetID();
+		comp.componentId = cit.value()->GetID();
     }
+	return entity;
 }
 
 void GEENIE::EntityToInspector(Entity *e)

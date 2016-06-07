@@ -5,11 +5,34 @@
 #include <QUuid>
 #include <qtreewidget.h>
 
-typedef  int SCENEID;
-typedef  int ENTITYID;
-typedef  int COMPONENTID;
+typedef int SCENEID;
+typedef int ENTITYID;
+typedef int COMPONENTID;
 
-enum{SE_INVALID_NAME = -10, SE_INVALID_SCENEID, SE_INVALID_ENTITYID, SE_INVALID_COMPONENTID, SE_TAKE_ERROR};
+struct COMPONENT_DATA
+{
+    QString componentName;
+    QUuid entityId;
+	QUuid componentId;
+};
+
+struct ENTITY_DATA
+{
+    QString entityName;
+    QUuid   entityId;
+    QList<ENTITY_DATA> entities;
+    QList<COMPONENT_DATA> components;
+
+};
+
+struct SCENE_DATA
+{
+    QString sceneName;
+    QUuid sceneId;
+    QList<ENTITY_DATA> entities;
+};
+
+enum{SE_INVALID_NAME = -10, SE_INVALID_SCENEID, SE_INVALID_ENTITYID, SE_INVALID_COMPONENTID, SE_TAKE_ERROR, SE_INVALID_ENTITY_COUNT};
 
 namespace Ui {
 class SceneExplorer;
@@ -33,14 +56,11 @@ public:
 
     ~SceneExplorer();
 
-    SCENEID AddScene(QString sceneName, QUuid id);
-    int DeleteScene(SCENEID id);
 
-    SCENEID AddEntity(QString entityName, SCENEID index, QUuid id);
-    int DeleteEntity(SCENEID sceneId, ENTITYID entityId);
-
-    COMPONENTID AddComponent(QString componentName, SCENEID sceneIndex, ENTITYID entityIndex, QUuid id, QUuid entityId);
-    int DeleteComponent(SCENEID sceneIndex, ENTITYID entityIndex , COMPONENTID componentIndex);
+    int AddScene(QString sceneName, QUuid id);
+    int AddEntitys(QTreeWidgetItem*,QList<ENTITY_DATA>);
+    int AddComponent();
+    int FillTree(QList<SCENE_DATA>*);
 
     void setHeader(QString& name);
 
@@ -76,6 +96,7 @@ signals:
     void sceneClicked();
 
 private:
+
 
     Ui::SceneExplorer *ui;
 };

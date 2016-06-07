@@ -10,6 +10,39 @@ SceneExplorer::SceneExplorer(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->treeWidget->setColumnCount(1);
+	/* SceneExplorer Test
+    SCENE_DATA scene;
+    scene.sceneName = "Scene1";
+    scene.sceneId = 0;
+
+	ENTITY_DATA e;
+	e.entityName = "Entity1";
+	e.entityId = 0;
+
+	ENTITY_DATA e2;
+	e2.entityName = "Entity2";
+	e2.entityId = 0;
+
+	ENTITY_DATA e3;
+	e3.entityName = "Entity3";
+	e3.entityId = 0;
+
+	COMPONENT_DATA c;
+	c.componentName = "Comp1";
+	c.entityId = 0;
+
+	e.components.append(c);
+	e2.components.append(c);
+	e3.components.append(c);
+	e2.entities.append(e3);
+	e.entities.append(e2);
+	scene.entities.append(e);
+    QList<SCENE_DATA> scenes;
+    scenes.append(scene);
+	scene.sceneName = "Scene2";
+	scenes.append(scene);
+
+    FillTree(&scenes);*/
 }
 
 //!Cleans the used Storage.
@@ -24,134 +57,67 @@ void SceneExplorer::setHeader(QString &name)
     ui->treeWidget->setHeaderLabel(name);
 }
 
-//!Add Scene in SceneExplorer. Returns the id of the Scene if no error occurs.
-SCENEID SceneExplorer::AddScene(QString sceneName, QUuid id)
+
+
+int SceneExplorer::FillTree(QList<SCENE_DATA> *scenes)
 {
-    if (sceneName == "")
+ //TODO: ERRORCODE
+    if(scenes->count() == 0)
+    {
+        return 0;
+    }
+    for(int i=0; i<scenes->count();i++)
+    {
+        //Add new scene
+        this->AddScene(scenes->at(i).sceneName, scenes->at(i).sceneId );
+
+        //Add Entities with Components to Scene
+        this->AddEntitys(this->ui->treeWidget->topLevelItem(i),scenes->at(i).entities);
+    }
+	return 0;
+}
+
+int SceneExplorer::AddScene(QString sceneName, QUuid sceneId)
+{
+    if(sceneName == "")
     {
         return SE_INVALID_NAME;
     }
-
-    QTreeWidgetItem *itm = new QTreeWidgetItem(ui->treeWidget);
+    QTreeWidgetItem *itm = new QTreeWidgetItem();
     itm->setText(0,sceneName);
-    itm->setData(0,Qt::UserRole,id.toByteArray());
+	itm->setData(0, Qt::UserRole, sceneId.toByteArray());
+	itm->setData(0, Qt::UserRole + 1, false);
     ui->treeWidget->addTopLevelItem(itm);
-
-    ui->treeWidget->expandAll();
-
-    return ui->treeWidget->indexOfTopLevelItem(itm);
+	return 0;
 }
 
-//!Add Entity to Selected Scene in SceneExplorer. Returns the id of the Entity if no error occurs.
-SCENEID SceneExplorer::AddEntity(QString entityName, SCENEID sceneId, QUuid id)
+int SceneExplorer::AddEntitys(QTreeWidgetItem *parent,QList<ENTITY_DATA> entities)
 {
-    if (entityName == "")
-    {
-        return SE_INVALID_NAME;
-    }
+   for(int i=0 ; i<entities.count();i++)
+   {
+       QTreeWidgetItem *itm = new QTreeWidgetItem();
+       itm->setText(0,entities.at(i).entityName);
+	   itm->setData(0, Qt::UserRole, entities.at(i).entityId.toByteArray());
+	   itm->setData(0, Qt::UserRole + 1, false);
 
-    QTreeWidgetItem *itm = new QTreeWidgetItem();
-    itm->setText(0, entityName);
-    itm->setData(0,Qt::UserRole,id.toByteArray());
-    itm->setData(0,Qt::UserRole+1,false);
+	   parent->addChild(itm);
 
-    if (ui->treeWidget->topLevelItemCount() >= sceneId && sceneId <= 0)
-    {
-        QTreeWidgetItem *parent = ui->treeWidget->topLevelItem(sceneId);
-        parent->addChild(itm);
-        ui->treeWidget->expandAll();
-        return parent->indexOfChild(itm);
-    }
-    ui->treeWidget->expandAll();
-    return SE_INVALID_SCENEID;
-}
+       //Add Components to Entity
+       for(int j = 0; j<entities.at(i).components.count();j++)
+       {
+           QTreeWidgetItem *comp = new QTreeWidgetItem();
+           comp->setText(0,entities.at(i).components.at(j).componentName);
 
-//!Add component to Scene->Entity. Returns COMPONENTID if no error occurs.
-COMPONENTID SceneExplorer::AddComponent(QString componentName, SCENEID sceneIndex, ENTITYID entityIndex, QUuid id, QUuid entityId)
-{
-    QTreeWidgetItem *itm = new QTreeWidgetItem();
-    itm->setText(0,componentName);
-    itm->setData(0,Qt::UserRole,id.toByteArray());
-    itm->setData(0,Qt::UserRole+1,true);
-    itm->setData(0,Qt::UserRole+2,entityId.toByteArray());
+		   itm->setData(0, Qt::UserRole, entities.at(i).components.at(j).componentId.toByteArray());
+		   itm->setData(0, Qt::UserRole + 1, true);
+		   itm->setData(0, Qt::UserRole + 2, entities.at(i).components.at(j).entityId.toByteArray());
 
-    if(componentName == "")
-    {
-        ui->treeWidget->expandAll();
-        return SE_INVALID_NAME;
-    }
-
-    if(ui->treeWidget->topLevelItemCount()>= sceneIndex && sceneIndex>=0)
-    {
-        if(ui->treeWidget->topLevelItem(sceneIndex)->childCount()>= entityIndex && entityIndex >=0)
-        {
-            ui->treeWidget->topLevelItem(sceneIndex)->child(entityIndex)->addChild(itm);
-            ui->treeWidget->expandAll();
-            return ui->treeWidget->topLevelItem(sceneIndex)->child(entityIndex)->indexOfChild(itm);
-        }
-        ui->treeWidget->expandAll();
-        return SE_INVALID_ENTITYID;
-    }
-    ui->treeWidget->expandAll();
-    return SE_INVALID_SCENEID;
-}
-
-//!Delete Scene from SceneExplorer. Returns 0 if no Error occurs.
-int SceneExplorer::DeleteScene(SCENEID id)
-{
-    if (id >= 0 && id < ui->treeWidget->topLevelItemCount())
-    {
-        if (ui->treeWidget->takeTopLevelItem(id) != 0)
-        {
-            return 0;
-        }
-        return SE_TAKE_ERROR;
-    }
-    return SE_INVALID_SCENEID;
-}
-
-//!Delete Entity from SceneExplorer. Returns 0 if no Error occurs.
-int SceneExplorer::DeleteEntity(SCENEID sceneId, ENTITYID entityId)
-{
-    if (sceneId >= 0 && sceneId < ui->treeWidget->topLevelItemCount())
-    {
-        QTreeWidgetItem *scene = ui->treeWidget->topLevelItem(sceneId);
-
-        if (entityId >= 0 && entityId < scene->childCount())
-        {
-            if (scene->takeChild(entityId) != 0)
-            {
-                return 0;
-            }
-            return SE_TAKE_ERROR;
-        }
-        //TODO: Use ErrorCode
-        return SE_INVALID_ENTITYID;
-    }
-    //TODO: Use ErrorCode
-    return SE_INVALID_SCENEID;
-}
-
-//!Deletes a component from Scene->Entity. Returns 0 if no error occurs.
-int SceneExplorer::DeleteComponent(SCENEID sceneIndex, ENTITYID entityIndex, COMPONENTID componentIndex)
-{
-    if(ui->treeWidget->topLevelItemCount()>= sceneIndex && sceneIndex>=0)
-    {
-        if(ui->treeWidget->topLevelItem(sceneIndex)->childCount()>= entityIndex && entityIndex >=0)
-        {
-            if(ui->treeWidget->topLevelItem(sceneIndex)->child(entityIndex)->childCount()>= componentIndex && componentIndex >= 0)
-            {
-                if(ui->treeWidget->topLevelItem(sceneIndex)->child(entityIndex)->takeChild(componentIndex) != 0)
-                {
-                   return 0;
-                }
-                return SE_TAKE_ERROR;
-            }
-            return SE_INVALID_COMPONENTID;
-        }
-        return SE_INVALID_ENTITYID;
-    }
-    return SE_INVALID_SCENEID;
+		   parent->child(parent->indexOfChild(itm))->addChild(comp);
+       }
+       //Add SubEntitys recursivly
+       AddEntitys(parent->child(parent->indexOfChild(itm)),entities.at(i).entities);
+   }
+   return 0;
 }
 
 void SceneExplorer::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)

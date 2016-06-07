@@ -45,7 +45,7 @@ private:
     void createDockWidgetTitles();
 
     void fillSceneExplorer();
-    void fillSceneExplorerWithEntities(SCENEID sceneId,Entity* e);
+    ENTITY_DATA fillSceneExplorerWithEntities(Entity* e);
 
     void fillAssetWidget();
 
