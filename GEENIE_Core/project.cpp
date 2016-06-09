@@ -232,11 +232,18 @@ Color Project::XmlToColor(TiXmlElement *parent, QString &name)
 {
     Color ret;
     TiXmlElement* c = parent->FirstChildElement(name.toUtf8().data());
-    float t = 0;
-    ret.r = c->FirstChildElement("r")->QueryFloatAttribute("r",&t);
-    ret.g = c->FirstChildElement("g")->QueryFloatAttribute("g",&t);
-    ret.b = c->FirstChildElement("b")->QueryFloatAttribute("b",&t);
-    ret.a = c->FirstChildElement("a")->QueryFloatAttribute("a",&t);
+    float r = 0;
+    float g = 0;
+    float b = 0;
+    float a = 0;
+    c->FirstChildElement("r")->QueryFloatAttribute("r",&r);
+    c->FirstChildElement("g")->QueryFloatAttribute("g",&g);
+    c->FirstChildElement("b")->QueryFloatAttribute("b",&b);
+    c->FirstChildElement("a")->QueryFloatAttribute("a",&a);
+    ret.r = r;
+    ret.g = g;
+    ret.b = b;
+    ret.a = a;
     return ret;
 }
 
@@ -244,17 +251,27 @@ Vector Project::XmlToVector(TiXmlElement *parent, QString &name)
 {
     Vector ret = Vector();
     TiXmlElement* v = parent->FirstChildElement(name.toUtf8().data());
-    ret.x = v->FirstChildElement("x")->QueryFloatAttribute("x",0);
-    ret.y = v->FirstChildElement("y")->QueryFloatAttribute("y",0);
-    ret.z = v->FirstChildElement("z")->QueryFloatAttribute("z",0);
-    ret.w = v->FirstChildElement("w")->QueryFloatAttribute("w",0);
+    float x = 0;
+    v->FirstChildElement("x")->QueryFloatAttribute("x",&x);
+    ret.x = x;
+    float y = 0;
+    v->FirstChildElement("y")->QueryFloatAttribute("y",&y);
+    ret.y = y;
+    float z = 0;
+    v->FirstChildElement("z")->QueryFloatAttribute("z",&z);
+    ret.z = z;
+    float w = 0;
+    v->FirstChildElement("w")->QueryFloatAttribute("w",&w);
+    ret.w = w;
     return ret;
 }
 
 void Project::XmlToComponent(TiXmlElement *c, Entity *e)
 {
     QUuid id = QUuid(QString(c->Attribute("id")));
-    ComponentType type = (ComponentType)c->QueryIntAttribute("type",(int)ComponentType::MODEL);
+    int itype = 0;
+    c->QueryIntAttribute("type",&itype);
+    ComponentType type = static_cast<ComponentType>(itype);
     switch(type)
     {
     case ComponentType::MODEL:
@@ -283,7 +300,7 @@ void Project::XmlToComponent(TiXmlElement *c, Entity *e)
         TiXmlElement* position = c->FirstChildElement("position");
         if(position != 0)
         {
-            Vector pos = XmlToVector(position,QString("position"));
+            Vector pos = XmlToVector(position,QString("pos"));
             e->AddComponent(new PositionComponent(pos,id));
         }
         break;
@@ -308,7 +325,8 @@ void Project::XmlToComponent(TiXmlElement *c, Entity *e)
         if(texture != 0)
         {
             QUuid tId = QUuid(QString(texture->Attribute("id")));
-            int index = texture->QueryIntAttribute("index",0);
+            int index = 0;
+            texture->QueryIntAttribute("index",&index);
             e->AddComponent(new TextureComponent(tId,index,id));
         }
         break;
@@ -338,7 +356,9 @@ void Project::XmlToComponent(TiXmlElement *c, Entity *e)
         TiXmlElement* script = c->FirstChildElement("script");
         QUuid sId = QUuid(QString(script->Attribute("id")));
         TiXmlElement* trigger = script->FirstChildElement("trigger");
-        ScriptTrigger ttype = (ScriptTrigger)trigger->QueryIntAttribute("type",0);
+        int itype = 0;
+        trigger->QueryIntAttribute("type",&itype);
+        ScriptTrigger ttype = static_cast<ScriptTrigger>(itype);
         e->AddComponent(new ScriptTriggerComponent(ttype,sId,id));
         break;
     }
@@ -351,7 +371,8 @@ void Project::XmlToEntity(TiXmlElement *e)
 {
     QUuid id = QUuid(QString(e->Attribute("id")));
     QUuid parentId = QUuid(QString(e->Attribute("parent")));
-    Entity* entity = new Entity(parentId,id);
+    QString name = QString(e->Attribute("name"));
+    Entity* entity = new Entity(parentId,id,name);
     this->AddEntity(entity);
     TiXmlElement* comp = e->FirstChildElement("component");
     for(comp;comp != 0;comp = comp->NextSiblingElement("component"))
@@ -490,7 +511,7 @@ void Project::AddComponentInformationToXml(TiXmlElement *componentNode, Componen
     {
         PositionComponent* c = dynamic_cast<PositionComponent*>(component);
         TiXmlElement* position = new TiXmlElement("position");
-        VectorToXml(position,c->GetPosition(),QString("position"));
+        VectorToXml(position,c->GetPosition(),QString("pos"));
         componentNode->LinkEndChild(position);
         break;
     }
@@ -550,6 +571,7 @@ void Project::AddComponentInformationToXml(TiXmlElement *componentNode, Componen
 TiXmlElement *Project::SubEntitiesToXml(Entity *entity)
 {
     TiXmlElement* e = new TiXmlElement("entity");
+    e->SetAttribute("name",entity->name().toUtf8().data());
     e->SetAttribute("id",entity->GetID().toByteArray().data());
     e->SetAttribute("parent",entity->GetParentID().toByteArray().data());
     if(entity->HasSubEntities())
