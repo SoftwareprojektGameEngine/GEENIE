@@ -47,6 +47,7 @@ void GEENIEMainWindow::closeEvent(QCloseEvent *event)
         }
         else if(sBtn == QMessageBox::Cancel)
         {
+            event->ignore();
             return;
         }
     }

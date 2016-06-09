@@ -384,8 +384,8 @@ void GEENIE::fillSceneExplorer()
 			scene.entities.append(entity);
         }
 		scenes.append(scene);
-		s->FillTree(&scenes);
     }
+    s->FillTree(&scenes);
 }
 
 ENTITY_DATA GEENIE::fillSceneExplorerWithEntities(Entity *e)

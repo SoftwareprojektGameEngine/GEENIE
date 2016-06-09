@@ -57,7 +57,7 @@ void SceneExplorer::setHeader(QString &name)
     ui->treeWidget->setHeaderLabel(name);
 }
 
-
+#include <QDebug>
 
 int SceneExplorer::FillTree(QList<SCENE_DATA> *scenes)
 {
