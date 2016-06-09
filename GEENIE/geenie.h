@@ -68,6 +68,7 @@ private slots:
     void saveSession();
 
     void mainWindowOnClose();
+    void ProjectConfigured();
 
     void saveLayout();
     void loadLayout();

@@ -1,13 +1,16 @@
 #include "newdialog.h"
 #include "ui_newdialog.h"
 
-NewDialog::NewDialog(QWidget *parent) :
+NewDialog::NewDialog(QWidget *parent, bool projectConfigured) :
     QDialog(parent),
     ui(new Ui::NewDialog)
 {
     ui->setupUi(this);
     ui->listWidget->addItem(QString("Project"));
-    ui->listWidget->addItem(QString("Scene"));
+    if(projectConfigured)
+    {
+        ui->listWidget->addItem(QString("Scene"));
+    }
     _type = true;
 }
 

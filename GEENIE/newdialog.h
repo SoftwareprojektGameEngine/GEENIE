@@ -12,7 +12,7 @@ class NewDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewDialog(QWidget *parent = 0);
+    explicit NewDialog(QWidget *parent = 0, bool projectConfigured = false);
     ~NewDialog();
     bool type(){return _type;}
 

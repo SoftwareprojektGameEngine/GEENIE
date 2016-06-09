@@ -9,6 +9,7 @@
 GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
     QMainWindow(parent),
     _projectSaved(true),
+    _projectConfigured(false),
     ui(new Ui::GEENIEMainWindow)
 {
     ui->setupUi(this);
@@ -235,7 +236,8 @@ void GEENIEMainWindow::on_actionLoad_triggered()
 #include "newdialog.h"
 void GEENIEMainWindow::on_actionNew_triggered()
 {
-    NewDialog nd(this);
+    emit checkIfProjectConfigured();
+    NewDialog nd(this,_projectConfigured);
     if(nd.exec() == QDialog::Accepted)
     {
         if(nd.type())
@@ -252,4 +254,9 @@ void GEENIEMainWindow::on_actionNew_triggered()
 void GEENIEMainWindow::setProjectSaved(bool saved)
 {
     _projectSaved = saved;
+}
+
+void GEENIEMainWindow::setProjectConfigured(bool configured)
+{
+    _projectConfigured = configured;
 }

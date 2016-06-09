@@ -25,6 +25,7 @@ public:
     void setDockActionsChecked(EDockWidgetTypes type,bool checked);
 
     void setProjectSaved(bool saved);
+    void setProjectConfigured(bool configured);
 
     QTextDocument* scriptEditorDocument();
 
@@ -41,6 +42,7 @@ signals:
     void loadLayout();
     void newProject();
     void newScene();
+    void checkIfProjectConfigured();
     void onClose();
     void saveProject();
     void saveProject(QString path);
@@ -89,6 +91,7 @@ private slots:
 
 private:
     bool _projectSaved;
+    bool _projectConfigured;
     Ui::GEENIEMainWindow *ui;
 };
 

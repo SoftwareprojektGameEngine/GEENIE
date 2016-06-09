@@ -250,6 +250,7 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(onClose()),this,SLOT(mainWindowOnClose()));
     QObject::connect(_mainWindow,SIGNAL(saveProject()),this,SLOT(SaveProject()));
     QObject::connect(_mainWindow,SIGNAL(saveProject(QString)),this,SLOT(SaveProject(QString)));
+    QObject::connect(_mainWindow,SIGNAL(checkIfProjectConfigured()),this,SLOT(ProjectConfigured()));
 }
 
 GEENIE::~GEENIE()
@@ -268,6 +269,11 @@ void GEENIE::mainWindowOnClose()
     {
         _mainWindow->setProjectSaved(!_project->unsavedChanges());
     }
+}
+
+void GEENIE::ProjectConfigured()
+{
+    _mainWindow->setProjectConfigured(!(_project == nullptr));
 }
 
 void GEENIE::SaveProject()
