@@ -153,39 +153,51 @@ void SceneExplorer::clear()
 void SceneExplorer::on_treeWidget_customContextMenuRequested(const QPoint &pos)
 {
     QTreeWidgetItem* item = ui->treeWidget->itemAt(pos);
+
     QMenu* menu = new QMenu(this);
-    bool top = false;
-    for(int i = 0; i < ui->treeWidget->topLevelItemCount(); i++)
+    if(item == 0)
     {
-        if(item == ui->treeWidget->topLevelItem(i))
-        {
-            top = true;
-        }
-    }
-    if(top)
-    {
-        menu->addAction(QString("Add entity"),this,SLOT(ContextMenuAddEntityToScene()));
-        menu->addAction(QString("Preview scene"),this,SLOT(ContextMenuPreviewScene()));
-        menu->addAction(QString("Delete scene"),this,SLOT(ContextMenuDeleteScene()));
-        menu->addAction(QString("Rename scene"),this,SLOT(ContextMenuRenameScene()));
+        menu->addAction(QString("AddScene"), this, SLOT(ContextMenuAddScene()));
     }
     else
     {
-        if(item->data(0,Qt::UserRole+1).toBool())
+        bool top = false;
+        for(int i = 0; i < ui->treeWidget->topLevelItemCount(); i++)
         {
-            menu->addAction(QString("Delete component"),this,SLOT(ContextMenuDeleteComponent()));
+            if(item == ui->treeWidget->topLevelItem(i))
+            {
+                top = true;
+            }
+        }
+        if(top)
+        {
+            menu->addAction(QString("Add entity"),this,SLOT(ContextMenuAddEntityToScene()));
+            menu->addAction(QString("Preview scene"),this,SLOT(ContextMenuPreviewScene()));
+            menu->addAction(QString("Delete scene"),this,SLOT(ContextMenuDeleteScene()));
+            menu->addAction(QString("Rename scene"),this,SLOT(ContextMenuRenameScene()));
         }
         else
         {
-            menu->addAction(QString("Add entity"),this,SLOT(ContextMenuAddEntityToEntity()));
-            menu->addAction(QString("Rename entity"),this,SLOT(ContextMenuRenameEntity()));
-            menu->addAction(QString("Delete entity"),this,SLOT(ContextMenuDeleteEntity()));
-            menu->addAction(QString("Add Component"),this,SLOT(ContextMenuAddComponent()));
+            if(item->data(0,Qt::UserRole+1).toBool())
+            {
+                menu->addAction(QString("Delete component"),this,SLOT(ContextMenuDeleteComponent()));
+            }
+            else
+            {
+                menu->addAction(QString("Add entity"),this,SLOT(ContextMenuAddEntityToEntity()));
+                menu->addAction(QString("Rename entity"),this,SLOT(ContextMenuRenameEntity()));
+                menu->addAction(QString("Delete entity"),this,SLOT(ContextMenuDeleteEntity()));
+                menu->addAction(QString("Add Component"),this,SLOT(ContextMenuAddComponent()));
+            }
         }
     }
     menu->popup(ui->treeWidget->viewport()->mapToGlobal(pos));
 }
 
+void SceneExplorer::ContextMenuAddScene()
+{
+    emit CMAddScene();
+}
 void SceneExplorer::ContextMenuAddEntityToScene()
 {
     emit CMAddEntity(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()),se::ItemType::SCENE);

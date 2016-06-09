@@ -229,6 +229,7 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(eWidget,SIGNAL(sceneClicked()),this,SLOT(UnsetInspector()));
     QObject::connect(eWidget,SIGNAL(CMAddComponent(QUuid)),this,SLOT(AddComponent(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMAddEntity(QUuid,se::ItemType)),this,SLOT(AddEntity(QUuid,se::ItemType)));
+    QObject::connect(eWidget,SIGNAL(CMAddScene()),this,SLOT(AddScene()));
     QObject::connect(eWidget,SIGNAL(CMDeleteComponent(QUuid,QUuid)),this,SLOT(DeleteComponent(QUuid,QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteEntity(QUuid)),this,SLOT(DeleteEntity(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteScene(QUuid)),this,SLOT(DeleteScene(QUuid)));
