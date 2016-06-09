@@ -343,6 +343,8 @@ public:
     QString path();
     //! Returns project path with filename
     QString file();
+    //! Returns asset path
+    QString assetPath();
     //! Returns if there are unsaved changes
     bool unsavedChanges(){return !saved;}
 

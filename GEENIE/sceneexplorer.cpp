@@ -153,6 +153,10 @@ void SceneExplorer::clear()
 #include <QMenu>
 void SceneExplorer::on_treeWidget_customContextMenuRequested(const QPoint &pos)
 {
+    if(ui->treeWidget->headerItem()->data(0,Qt::DisplayRole) == QString("(No project configured)"))
+    {
+        return;
+    }
     QTreeWidgetItem* item = ui->treeWidget->itemAt(pos);
 
     QMenu* menu = new QMenu(this);

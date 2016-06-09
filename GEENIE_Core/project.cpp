@@ -1,4 +1,6 @@
 #include "core.h"
+#include <QDir>
+#include <QDebug>
 #define CALC_INDEX(index) ((index) % (MAX_NUM_USERACTIONS + 1))
 
 Project::Project(EngineWrapper* engine, QString name, QString path) : fastEntityLookup(), scenes(), assets(), projectName(name), projectPath(path),saved(false) {
@@ -12,6 +14,10 @@ Project::Project(EngineWrapper* engine, QString name, QString path) : fastEntity
     this->engine = engine;
     emit CanUndoSignal(this->CanUndo());
     emit CanRedoSignal(this->CanRedo());
+    if(!QDir(this->assetPath()).exists())
+    {
+        QDir().mkpath(this->assetPath());
+    }
 }
 
 Project::~Project() {
@@ -148,11 +154,52 @@ QHashIterator<QUuid, Scene*> Project::GetScenes() {
     return QHashIterator<QUuid, Scene*>(this->scenes);
 }
 
+#include <QFileInfo>
+
 void Project::AddAsset(Asset *asset) {
     saved = false;
     if (asset == nullptr) return;
 
-    this->assets.insert(asset->GetID(), asset);
+    Asset* a = nullptr;
+
+    QFile file(asset->GetPath());
+    file.copy(this->assetPath()+QString(QFileInfo(asset->GetPath()).fileName()));
+
+    switch(asset->GetType())
+    {
+    case AssetType::TEXTURE_ASSET:
+    {
+        a = new TextureAsset(QFileInfo(asset->GetPath()).fileName(),asset->GetID());
+        break;
+    }
+    case AssetType::MODEL_ASSET:
+    {
+        a = new ModelAsset(QFileInfo(asset->GetPath()).fileName(),asset->GetID());
+        break;
+    }
+    case AssetType::MATERIAL_ASSET:
+    {
+        a = new MaterialAsset(QFileInfo(asset->GetPath()).fileName(),asset->GetID());
+        break;
+    }
+    case AssetType::SCRIPT_ASSET:
+    {
+        a = new ScriptAsset(QFileInfo(asset->GetPath()).fileName(),asset->GetID());
+        break;
+    }
+    case AssetType::AUDIO_ASSET:
+    {
+        break;
+    }
+    case AssetType::VIDEO_ASSET:
+    {
+        break;
+    }
+    }
+
+    if(a == nullptr)return;
+
+    this->assets.insert(a->GetID(), a);
 }
 
 Asset* Project::GetAsset(const QUuid &assetID) {
@@ -366,6 +413,7 @@ void Project::load(QString &file)
         }
         }
     }
+    projectPath = file;
 }
 
 void Project::ColorToXml(TiXmlElement *parent, Color color, QString &name)
@@ -525,6 +573,12 @@ TiXmlElement *Project::SubEntitiesToXml(Entity *entity)
 void Project::save(QString &file)
 {
     saved = true;
+    QFile saveFile(file);
+    if(!saveFile.exists())
+    {
+        saveFile.open(QIODevice::WriteOnly);
+        saveFile.close();
+    }
     TiXmlDocument doc;
     TiXmlDeclaration* decl = new TiXmlDeclaration("1.0","utf8","");
     doc.LinkEndChild(decl);
@@ -558,7 +612,7 @@ void Project::save(QString &file)
         assetElement->LinkEndChild(assetPath);
         root->LinkEndChild(assetElement);
     }
-    doc.SaveFile(file.toUtf8().data());
+    qDebug() << doc.SaveFile(file.toUtf8().data());
 }
 
 QString Project::name()
@@ -571,10 +625,13 @@ QString Project::file()
     return projectPath;
 }
 
-#include <QFileInfo>
-
 QString Project::path()
 {
     QFileInfo info(projectPath);
     return info.path();
+}
+
+QString Project::assetPath()
+{
+    return QString("%1%2").arg(this->path()).arg("/assets/");
 }

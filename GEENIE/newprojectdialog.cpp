@@ -23,7 +23,7 @@ void NewProjectDialog::on_pushButton_clicked()
 void NewProjectDialog::on_pushButton_2_clicked()
 {
     _name = ui->lineEdit->text();
-    _file = ui->lineEdit->text();
+    _file = ui->lineEdit_2->text();
     if(!_name.isEmpty() && !_file.isEmpty())
     {
         QDialog::accept();

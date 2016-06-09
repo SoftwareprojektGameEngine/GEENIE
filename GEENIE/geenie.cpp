@@ -36,8 +36,9 @@ GEENIE::GEENIE(QObject *parent) :
     _highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
 {
     //EXAMPLE PROJECT
-    _project = new Project(0,QString("(No project configured)"));
+    //_project = new Project(0,QString("(No project configured)"));
     //EXAMPLE PROJECT
+    _project = nullptr;
     createDockWidgetTitles();
     QDir dir;
     dir.mkpath(Common::log_path);
@@ -50,8 +51,6 @@ GEENIE::GEENIE(QObject *parent) :
     AssetWidget* aWidget = new AssetWidget(_mainWindow);
 
     SceneExplorer* eWidget = new SceneExplorer(_mainWindow);
-
-    eWidget->setHeader(_project->name());
 
 
     QFile sessionSaveFile(QString("%1%2").arg(Common::session_save_dir).arg(Common::session_save_file_name));
@@ -242,8 +241,8 @@ GEENIE::GEENIE(QObject *parent) :
     UnsetInspector();
     fillSceneExplorer();
     _mainWindow->show();
-    QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
-    QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
+    //QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
+    //QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
     QObject::connect(_mainWindow,SIGNAL(redo()),this,SLOT(redo()));
     QObject::connect(_mainWindow,SIGNAL(undo()),this,SLOT(undo()));
     QObject::connect(_mainWindow,SIGNAL(newProject()),this,SLOT(NewProject()));
@@ -314,6 +313,11 @@ void GEENIE::fillSceneExplorer()
 {
     SceneExplorer *s = dynamic_cast<SceneExplorer*>(_dockWidgets.value(EDockWidgetTypes::EntitiesWidget)->widget());
     s->clear();
+    if(_project == nullptr)
+    {
+        s->setHeader(QString("(No project configured)"));
+        return;
+    }
     s->setHeader(_project->name());
     QHashIterator<QUuid, Scene*> it = _project->GetScenes();
 	QList<SCENE_DATA> scenes;
@@ -939,6 +943,7 @@ void GEENIE::NewProject()
     if(n.exec() == QDialog::Accepted)
     {
         Project* tmp = _project;
+        qDebug() << n.file();
         _project = new Project(0,n.name(),n.file());
         delete tmp;
         QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
@@ -946,6 +951,7 @@ void GEENIE::NewProject()
         QFile file(n.file());
         file.open(QIODevice::WriteOnly | QIODevice::Text);
         file.close();
+        _project->save(n.file());
         fillSceneExplorer();
         fillAssetWidget();
     }
