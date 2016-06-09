@@ -20,10 +20,17 @@ void NewProjectDialog::on_pushButton_clicked()
     ui->lineEdit_2->setText(file);
 }
 
+#include <QFileInfo>
+#include <QMessageBox>
 void NewProjectDialog::on_pushButton_2_clicked()
 {
     _name = ui->lineEdit->text();
     _file = ui->lineEdit_2->text();
+    if(QFileInfo(_file).absoluteDir().entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries).count() != 0)
+    {
+        QMessageBox::warning(this,QString("Not empty directory"),QString("The selected directoy is not empty.\nPlease select another directory."));
+        return;
+    }
     if(!_name.isEmpty() && !_file.isEmpty())
     {
         QDialog::accept();

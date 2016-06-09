@@ -214,6 +214,8 @@ Asset* Project::RemoveAsset(const QUuid &assetID) {
         this->assets.remove(assetID);
     }
 
+    QFile(this->assetPath()+asset->GetPath()).remove();
+
     return asset;
 }
 
