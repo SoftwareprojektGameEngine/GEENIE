@@ -10,3 +10,4 @@ GeneratedFiles/
 session_save.xml
 *.bat
 *.opendb
+*.autosave
