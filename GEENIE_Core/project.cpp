@@ -583,6 +583,18 @@ TiXmlElement *Project::SubEntitiesToXml(Entity *entity)
 void Project::save(QString &file)
 {
     saved = true;
+    if(file != this->file())
+    {
+        QDir().mkpath(QFileInfo(file).absolutePath()+QString("/assets/"));
+        QStringList fileList = QDir(this->assetPath()).entryList(QDir::Files);
+        for(auto const filed : fileList)
+        {
+            QFile assetFile(this->assetPath() + filed);
+            QString newFile = QFileInfo(file).absolutePath()+QString("/assets/")+filed;
+            assetFile.copy(newFile);
+        }
+        projectPath = file;
+    }
     QFile saveFile(file);
     if(!saveFile.exists())
     {
@@ -622,7 +634,7 @@ void Project::save(QString &file)
         assetElement->LinkEndChild(assetPath);
         root->LinkEndChild(assetElement);
     }
-    qDebug() << doc.SaveFile(file.toUtf8().data());
+    doc.SaveFile(file.toUtf8().data());
 }
 
 QString Project::name()
