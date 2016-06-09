@@ -6,7 +6,7 @@
 class RenderStageEx : public osgUtil::RenderStage {
 public:
     RenderStageEx();
-
+    //!osgUtil::RenderStage::drawInner(...)
     void drawInner(osg::RenderInfo &renderInfo, osgUtil::RenderLeaf*& previous, bool &doCopyTexture);
 };
 

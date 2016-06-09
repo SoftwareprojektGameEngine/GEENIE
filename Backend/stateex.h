@@ -5,9 +5,12 @@
 
 class StateEx : public osg::State {
 public:
+    //!Constructor, which initializes defaultFbo.
     StateEx();
 
+    //!Sets the defaultFbo attribute.
     void setDefaultFbo(GLuint fbo);
+    //!Returns the defaultFbo attribute.
     GLuint getDefaultFbo() const;
 
 protected:

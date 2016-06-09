@@ -15,10 +15,14 @@ public:
     META_Object(Ex, RenderStageCacheEx)
 
     virtual void objectDeleted(void* object);
+    //!Sets Render Stage of CullVisitor.
     void setRenderStage(osgUtil::CullVisitor* cullVisitor, osgUtil::RenderStage* renderStage);
+    //!Returns the RenderStage of the CullVisito.
     osgUtil::RenderStage* getRenderStage(osgUtil::CullVisitor* cullVisitor);
 
+    //!Resizes the GL-Object-Buffers.
     virtual void resizeGLObjectBuffers(unsigned int maxSize);
+    //!Cleans the used storage of the GL Objects.
     virtual void releaseGLObjects(osg::State* state = nullptr) const;
 
 private:
