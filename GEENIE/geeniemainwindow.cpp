@@ -286,6 +286,10 @@ void GEENIEMainWindow::on_actionOpen_2_triggered()
         }
     }
     QString file = QFileDialog::getOpenFileName(this,QString("Load project ..."),QString("C:/"),QString("GEENIE project files (*.geenie)"));
+    if(file.isEmpty())
+    {
+        return;
+    }
     emit loadProject(file);
 }
 
