@@ -260,3 +260,8 @@ void GEENIEMainWindow::setProjectConfigured(bool configured)
 {
     _projectConfigured = configured;
 }
+
+void GEENIEMainWindow::on_actionLoad_default_layout_triggered()
+{
+    emit setLayoutToDefault();
+}

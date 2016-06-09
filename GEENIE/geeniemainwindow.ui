@@ -14,7 +14,7 @@
    <string>GEENIEMainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="images.qrc">
     <normaloff>:/icons/icon.png</normaloff>:/icons/icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -204,6 +204,8 @@
      </property>
      <addaction name="actionSave"/>
      <addaction name="actionLoad"/>
+     <addaction name="separator"/>
+     <addaction name="actionLoad_default_layout"/>
     </widget>
     <addaction name="menuLayout"/>
     <addaction name="actionInspector"/>
@@ -317,7 +319,7 @@
   </action>
   <action name="actionUndo">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/resources/images/icons/arrow_undo.png</normaloff>:/icons/resources/images/icons/arrow_undo.png</iconset>
    </property>
    <property name="text">
@@ -329,7 +331,7 @@
   </action>
   <action name="actionRedo">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/resources/images/icons/arrow_redo.png</normaloff>:/icons/resources/images/icons/arrow_redo.png</iconset>
    </property>
    <property name="text">
@@ -366,7 +368,7 @@
   </action>
   <action name="actionNew">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/resources/images/icons/page_white_add.png</normaloff>:/icons/resources/images/icons/page_white_add.png</iconset>
    </property>
    <property name="text">
@@ -436,8 +438,15 @@
     <string>Load</string>
    </property>
   </action>
+  <action name="actionLoad_default_layout">
+   <property name="text">
+    <string>Load default layout</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>

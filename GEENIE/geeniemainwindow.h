@@ -47,6 +47,7 @@ signals:
     void saveProject();
     void saveProject(QString path);
     void loadProject(QString path);
+    void setLayoutToDefault();
 
 public slots:
     void CanUndo(bool undo);
@@ -88,6 +89,8 @@ private slots:
     void on_actionLoad_triggered();
 
     void on_actionNew_triggered();
+
+    void on_actionLoad_default_layout_triggered();
 
 private:
     bool _projectSaved;

@@ -35,9 +35,6 @@ GEENIE::GEENIE(QObject *parent) :
     _layoutName("default"),
     _highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
 {
-    //EXAMPLE PROJECT
-    //_project = new Project(0,QString("(No project configured)"));
-    //EXAMPLE PROJECT
     _project = nullptr;
     createDockWidgetTitles();
     QDir dir;
@@ -241,8 +238,6 @@ GEENIE::GEENIE(QObject *parent) :
     UnsetInspector();
     fillSceneExplorer();
     _mainWindow->show();
-    //QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
-    //QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
     QObject::connect(_mainWindow,SIGNAL(redo()),this,SLOT(redo()));
     QObject::connect(_mainWindow,SIGNAL(undo()),this,SLOT(undo()));
     QObject::connect(_mainWindow,SIGNAL(newProject()),this,SLOT(NewProject()));
@@ -251,6 +246,7 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(saveProject()),this,SLOT(SaveProject()));
     QObject::connect(_mainWindow,SIGNAL(saveProject(QString)),this,SLOT(SaveProject(QString)));
     QObject::connect(_mainWindow,SIGNAL(checkIfProjectConfigured()),this,SLOT(ProjectConfigured()));
+    QObject::connect(_mainWindow,SIGNAL(setLayoutToDefault()),this,SLOT(SetDefaultLayout()));
 }
 
 GEENIE::~GEENIE()
@@ -532,6 +528,14 @@ void GEENIE::defaultSession(QWidget *inspector, QWidget *asset, QWidget *entitie
     insertDockWidget(EDockWidgetTypes::InspectorWidget,inspector,true,Qt::RightDockWidgetArea);
     insertDockWidget(EDockWidgetTypes::AssetsWidget,asset,true,Qt::RightDockWidgetArea);
     insertDockWidget(EDockWidgetTypes::EntitiesWidget,entities,true,Qt::LeftDockWidgetArea);
+}
+
+void GEENIE::SetDefaultLayout()
+{
+    moveDockWidget(EDockWidgetTypes::LoggerWidget,true,Qt::BottomDockWidgetArea);
+    moveDockWidget(EDockWidgetTypes::InspectorWidget,true,Qt::RightDockWidgetArea);
+    moveDockWidget(EDockWidgetTypes::AssetsWidget,true,Qt::RightDockWidgetArea);
+    moveDockWidget(EDockWidgetTypes::EntitiesWidget,true,Qt::LeftDockWidgetArea);
 }
 
 void GEENIE::insertDockWidget(EDockWidgetTypes type, QWidget *widget, bool show, Qt::DockWidgetArea area, bool floating, int width, int height, int x, int y)
