@@ -290,10 +290,26 @@ void GEENIEMainWindow::on_actionOpen_2_triggered()
 
 void GEENIEMainWindow::on_actionSave_As_triggered()
 {
+    emit checkIfProjectConfigured();
+    if(!_projectConfigured)return;
 
+    QString file = QFileDialog::getSaveFileName(this,"Select project file","C:/","GEENIE project file (*.geenie)");
+    if(file.isEmpty())
+    {
+        QMessageBox::warning(this,QString("No file name"),QString("The filename is empty.\nPlease select one."));
+        return;
+    }
+    if(QFileInfo(file).absoluteDir().entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries).count() != 0)
+    {
+        QMessageBox::warning(this,QString("Not empty directory"),QString("The selected directoy is not empty.\nPlease select another directory."));
+        return;
+    }
+    emit saveProject(file);
 }
 
 void GEENIEMainWindow::on_actionSave_2_triggered()
 {
-
+    emit checkIfProjectConfigured();
+    if(!_projectConfigured)return;
+    emit saveProject();
 }
