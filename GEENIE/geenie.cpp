@@ -339,7 +339,7 @@ void GEENIE::fillSceneExplorer()
 
 ENTITY_DATA GEENIE::fillSceneExplorerWithEntities(Entity *e)
 {
-    SceneExplorer *s = dynamic_cast<SceneExplorer*>(_dockWidgets.value(EDockWidgetTypes::EntitiesWidget)->widget());
+    //SceneExplorer *s = dynamic_cast<SceneExplorer*>(_dockWidgets.value(EDockWidgetTypes::EntitiesWidget)->widget());
 	ENTITY_DATA entity;
 	entity.entityName = e->name();
 	entity.entityId = e->GetID();
@@ -941,6 +941,8 @@ void GEENIE::NewProject()
         Project* tmp = _project;
         _project = new Project(0,n.name(),n.file());
         delete tmp;
+        QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
+        QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
         QFile file(n.file());
         file.open(QIODevice::WriteOnly | QIODevice::Text);
         file.close();

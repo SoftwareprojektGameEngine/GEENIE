@@ -74,6 +74,7 @@ int SceneExplorer::FillTree(QList<SCENE_DATA> *scenes)
         //Add Entities with Components to Scene
         this->AddEntitys(this->ui->treeWidget->topLevelItem(i),scenes->at(i).entities);
     }
+    ui->treeWidget->expandAll();
 	return 0;
 }
 
