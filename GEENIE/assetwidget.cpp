@@ -96,6 +96,8 @@ void AssetWidget::clear()
     ui->VideoListWidget->clear();
 }
 
+#include <QFileInfo>
+
 void AssetWidget::AddAsset(Asset *asset)
 {
     QListWidgetItem* item;
@@ -103,42 +105,42 @@ void AssetWidget::AddAsset(Asset *asset)
     {
     case MODEL_ASSET:
     {
-        item = new QListWidgetItem(asset->GetPath(),ui->ModelListWidget);
+        item = new QListWidgetItem(QFileInfo(asset->GetPath()).fileName(),ui->ModelListWidget);
         item->setData(Qt::UserRole,asset->GetID().toByteArray());
         ui->ModelListWidget->update();
         break;
     }
     case MATERIAL_ASSET:
     {
-        item = new QListWidgetItem(asset->GetPath(),ui->MaterialListWidget);
+        item = new QListWidgetItem(QFileInfo(asset->GetPath()).fileName(),ui->MaterialListWidget);
         item->setData(Qt::UserRole,asset->GetID().toByteArray());
         ui->MaterialListWidget->update();
         break;
     }
     case TEXTURE_ASSET:
     {
-        item = new QListWidgetItem(asset->GetPath(),ui->TextureListWidget);
+        item = new QListWidgetItem(QFileInfo(asset->GetPath()).fileName(),ui->TextureListWidget);
         item->setData(Qt::UserRole,asset->GetID().toByteArray());
         ui->TextureListWidget->update();
         break;
     }
     case AUDIO_ASSET:
     {
-        item = new QListWidgetItem(asset->GetPath(),ui->AudioListWidget);
+        item = new QListWidgetItem(QFileInfo(asset->GetPath()).fileName(),ui->AudioListWidget);
         item->setData(Qt::UserRole,asset->GetID().toByteArray());
         ui->AudioListWidget->update();
         break;
     }
     case VIDEO_ASSET:
     {
-        item = new QListWidgetItem(asset->GetPath(),ui->VideoListWidget);
+        item = new QListWidgetItem(QFileInfo(asset->GetPath()).fileName(),ui->VideoListWidget);
         item->setData(Qt::UserRole,asset->GetID().toByteArray());
         ui->VideoListWidget->update();
         break;
     }
     case SCRIPT_ASSET:
     {
-        item = new QListWidgetItem(asset->GetPath(),ui->ScriptListWidget);
+        item = new QListWidgetItem(QFileInfo(asset->GetPath()).fileName(),ui->ScriptListWidget);
         item->setData(Qt::UserRole,asset->GetID().toByteArray());
         ui->ScriptListWidget->update();
         break;

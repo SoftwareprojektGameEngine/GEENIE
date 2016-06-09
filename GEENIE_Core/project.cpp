@@ -169,22 +169,22 @@ void Project::AddAsset(Asset *asset) {
     {
     case AssetType::TEXTURE_ASSET:
     {
-        a = new TextureAsset(QFileInfo(asset->GetPath()).fileName(),asset->GetID());
+        a = new TextureAsset(this->assetPath()+QFileInfo(asset->GetPath()).fileName(),asset->GetID());
         break;
     }
     case AssetType::MODEL_ASSET:
     {
-        a = new ModelAsset(QFileInfo(asset->GetPath()).fileName(),asset->GetID());
+        a = new ModelAsset(this->assetPath()+QFileInfo(asset->GetPath()).fileName(),asset->GetID());
         break;
     }
     case AssetType::MATERIAL_ASSET:
     {
-        a = new MaterialAsset(QFileInfo(asset->GetPath()).fileName(),asset->GetID());
+        a = new MaterialAsset(this->assetPath()+QFileInfo(asset->GetPath()).fileName(),asset->GetID());
         break;
     }
     case AssetType::SCRIPT_ASSET:
     {
-        a = new ScriptAsset(QFileInfo(asset->GetPath()).fileName(),asset->GetID());
+        a = new ScriptAsset(this->assetPath()+QFileInfo(asset->GetPath()).fileName(),asset->GetID());
         break;
     }
     case AssetType::AUDIO_ASSET:
@@ -198,6 +198,7 @@ void Project::AddAsset(Asset *asset) {
     }
 
     if(a == nullptr)return;
+    delete asset;
 
     this->assets.insert(a->GetID(), a);
 }
@@ -392,30 +393,37 @@ void Project::load(QString &file)
     TiXmlElement* asset = root->FirstChildElement("asset");
     for(asset;asset != 0;asset = asset->NextSiblingElement("asset"))
     {
-        AssetType type = (AssetType)asset->QueryIntAttribute("type",(int)AssetType::TEXTURE_ASSET);
+        int iType = 0;
+        asset->QueryIntAttribute("type",&iType);
+        AssetType type = static_cast<AssetType>(iType);
         QUuid id = QUuid(QString(asset->Attribute("id")));
-        QString path = QString(asset->FirstChildElement("path")->GetText());
+        QString path = QString(this->assetPath()+asset->FirstChildElement("path")->GetText());
         switch(type)
         {
         case AssetType::TEXTURE_ASSET:
         {
             this->AddAsset(new TextureAsset(path,id));
+            break;
         }
         case AssetType::MODEL_ASSET:
         {
             this->AddAsset(new ModelAsset(path,id));
+            break;
         }
         case AssetType::MATERIAL_ASSET:
         {
             this->AddAsset(new MaterialAsset(path,id));
+            break;
         }
         case AssetType::SCRIPT_ASSET:
         {
             this->AddAsset(new ScriptAsset(path,id));
+            break;
         }
         }
     }
     projectPath = file;
+    saved = true;
 }
 
 void Project::ColorToXml(TiXmlElement *parent, Color color, QString &name)
@@ -610,7 +618,7 @@ void Project::save(QString &file)
         assetElement->SetAttribute("id",asset->GetID().toByteArray().data());
         assetElement->SetAttribute("type",(int)asset->GetType());
         TiXmlElement* assetPath = new TiXmlElement("path");
-        assetPath->LinkEndChild(new TiXmlText(asset->GetPath().toUtf8().data()));
+        assetPath->LinkEndChild(new TiXmlText(QFileInfo(asset->GetPath()).fileName().toUtf8().data()));
         assetElement->LinkEndChild(assetPath);
         root->LinkEndChild(assetElement);
     }

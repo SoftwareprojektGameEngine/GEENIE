@@ -265,3 +265,35 @@ void GEENIEMainWindow::on_actionLoad_default_layout_triggered()
 {
     emit setLayoutToDefault();
 }
+
+void GEENIEMainWindow::on_actionOpen_2_triggered()
+{
+    emit onClose();
+    if(!_projectSaved)
+    {
+        QMessageBox::StandardButton sBtn = QMessageBox::question(this,tr("Unsaved changes"),
+                                                                 tr("There are unsaved changes.\nWould you like to save them before closing?"),
+                                                                 QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                                 QMessageBox::Yes);
+        if(sBtn == QMessageBox::Yes)
+        {
+            emit saveProject();
+        }
+        else if(sBtn == QMessageBox::Cancel)
+        {
+            return;
+        }
+    }
+    QString file = QFileDialog::getOpenFileName(this,QString("Load project ..."),QString("C:/"),QString("GEENIE project files (*.geenie)"));
+    emit loadProject(file);
+}
+
+void GEENIEMainWindow::on_actionSave_As_triggered()
+{
+
+}
+
+void GEENIEMainWindow::on_actionSave_2_triggered()
+{
+
+}

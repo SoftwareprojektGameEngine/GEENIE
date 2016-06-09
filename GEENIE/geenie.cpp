@@ -245,6 +245,7 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(onClose()),this,SLOT(mainWindowOnClose()));
     QObject::connect(_mainWindow,SIGNAL(saveProject()),this,SLOT(SaveProject()));
     QObject::connect(_mainWindow,SIGNAL(saveProject(QString)),this,SLOT(SaveProject(QString)));
+    QObject::connect(_mainWindow,SIGNAL(loadProject(QString)),this,SLOT(LoadProject(QString)));
     QObject::connect(_mainWindow,SIGNAL(checkIfProjectConfigured()),this,SLOT(ProjectConfigured()));
     QObject::connect(_mainWindow,SIGNAL(setLayoutToDefault()),this,SLOT(SetDefaultLayout()));
 }
@@ -293,10 +294,12 @@ void GEENIE::LoadProject(QString path)
         Project* tmp = _project;
         _project = new Project(0);
         delete tmp;
-        _project->load(path);
-        QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
-        QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
     }
+    _project->load(path);
+    QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
+    QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
+    fillSceneExplorer();
+    fillAssetWidget();
 }
 
 void GEENIE::toggleDock(EDockWidgetTypes type, bool show)

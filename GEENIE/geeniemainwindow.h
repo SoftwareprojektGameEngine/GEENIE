@@ -92,6 +92,12 @@ private slots:
 
     void on_actionLoad_default_layout_triggered();
 
+    void on_actionOpen_2_triggered();
+
+    void on_actionSave_As_triggered();
+
+    void on_actionSave_2_triggered();
+
 private:
     bool _projectSaved;
     bool _projectConfigured;
