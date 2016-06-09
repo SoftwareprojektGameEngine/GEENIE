@@ -8,6 +8,7 @@
 
 GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
     QMainWindow(parent),
+    _projectSaved(true),
     ui(new Ui::GEENIEMainWindow)
 {
     ui->setupUi(this);
@@ -32,8 +33,24 @@ GEENIEMainWindow::~GEENIEMainWindow()
 
 void GEENIEMainWindow::closeEvent(QCloseEvent *event)
 {
+    emit onClose();
+    if(!_projectSaved)
+    {
+        QMessageBox::StandardButton sBtn = QMessageBox::question(this,tr("Unsaved changes"),
+                                                                 tr("There are unsaved changes.\nWould you like to save them before closing?"),
+                                                                 QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                                 QMessageBox::Yes);
+        if(sBtn == QMessageBox::Yes)
+        {
+            emit saveProject();
+        }
+        else if(sBtn == QMessageBox::Cancel)
+        {
+            return;
+        }
+    }
     QMessageBox::StandardButton resBtn = QMessageBox::question( this, tr("GEENIE"),
-                                                                tr("Are you sure?\n"),
+                                                                tr("Are you sure you want to leave?\n"),
                                                                 QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
                                                                 QMessageBox::Yes);
     if (resBtn == QMessageBox::Cancel)
@@ -230,4 +247,9 @@ void GEENIEMainWindow::on_actionNew_triggered()
             emit newScene();
         }
     }
+}
+
+void GEENIEMainWindow::setProjectSaved(bool saved)
+{
+    _projectSaved = saved;
 }

@@ -66,6 +66,9 @@ private:
 
 private slots:
     void saveSession();
+
+    void mainWindowOnClose();
+
     void saveLayout();
     void loadLayout();
     void UnsetInspector();
@@ -78,7 +81,6 @@ private slots:
     void toggleConsoleDock(bool show);
     void toggleAssetDock(bool show);
     void toggleDock(EDockWidgetTypes type,bool show);
-
 
     void applyColor(Color ambient,Color diffuse,Color specular,Vector spot,LightSourceType type,QUuid id,QUuid parentId,QString name);
     void applyPosition(Vector position,QUuid id,QUuid parentId,QString name);
@@ -94,6 +96,10 @@ private slots:
     void DeleteEntity(QUuid id);
     void RenameEntity(QUuid id);
     void NewProject();
+    void SaveProject();
+    void SaveProject(QString path);
+
+    void LoadProject(QString path);
 
     void AddAsset(QString path, AssetType type);
     void DeleteAsset(QUuid id);

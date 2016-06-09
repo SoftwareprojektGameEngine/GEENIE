@@ -247,12 +247,54 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(undo()),this,SLOT(undo()));
     QObject::connect(_mainWindow,SIGNAL(newProject()),this,SLOT(NewProject()));
     QObject::connect(_mainWindow,SIGNAL(newScene()),this,SLOT(AddScene()));
+    QObject::connect(_mainWindow,SIGNAL(onClose()),this,SLOT(mainWindowOnClose()));
+    QObject::connect(_mainWindow,SIGNAL(saveProject()),this,SLOT(SaveProject()));
+    QObject::connect(_mainWindow,SIGNAL(saveProject(QString)),this,SLOT(SaveProject(QString)));
 }
 
 GEENIE::~GEENIE()
 {
     _saveTimer->stop();
     delete _saveTimer;
+}
+
+void GEENIE::mainWindowOnClose()
+{
+    if(_project == nullptr)
+    {
+        _mainWindow->setProjectSaved(true);
+    }
+    else
+    {
+        _mainWindow->setProjectSaved(!_project->unsavedChanges());
+    }
+}
+
+void GEENIE::SaveProject()
+{
+    _project->save(_project->file());
+}
+
+void GEENIE::SaveProject(QString path)
+{
+    _project->save(path);
+}
+
+void GEENIE::LoadProject(QString path)
+{
+    if(_project == nullptr)
+    {
+        _project = new Project(0);
+    }
+    else
+    {
+        Project* tmp = _project;
+        _project = new Project(0);
+        delete tmp;
+        _project->load(path);
+        QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
+        QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
+    }
 }
 
 void GEENIE::toggleDock(EDockWidgetTypes type, bool show)
@@ -943,7 +985,6 @@ void GEENIE::NewProject()
     if(n.exec() == QDialog::Accepted)
     {
         Project* tmp = _project;
-        qDebug() << n.file();
         _project = new Project(0,n.name(),n.file());
         delete tmp;
         QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
