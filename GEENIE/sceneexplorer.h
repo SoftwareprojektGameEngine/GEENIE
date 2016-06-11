@@ -77,8 +77,8 @@ private slots:
     void ContextMenuDeleteScene();
     void ContextMenuAddEntityToScene();
     void ContextMenuAddEntityToEntity();
-    void ContextMenuAddComponent();
-    void ContextMenuDeleteComponent();
+    //void ContextMenuAddComponent();
+    //void ContextMenuDeleteComponent();
     void ContextMenuRenameEntity();
     void ContextMenuDeleteEntity();
     void ContextMenuAddScene();
@@ -90,8 +90,8 @@ signals:
     void CMRenameScene(QUuid);
     void CMDeleteScene(QUuid);
     void CMAddEntity(QUuid, se::ItemType);
-    void CMAddComponent(QUuid);
-    void CMDeleteComponent(QUuid,QUuid);
+    //void CMAddComponent(QUuid);
+    //void CMDeleteComponent(QUuid,QUuid);
     void CMDeleteEntity(QUuid);
     void CMRenameEntity(QUuid);
     void CMAddScene();

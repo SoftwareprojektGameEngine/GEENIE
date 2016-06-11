@@ -4,15 +4,6 @@
 #include "assetwidget.h"
 #include "sceneexplorer.h"
 #include "../tinyxml/tinyxml.h"
-#include "inspector.h"
-#include "inspectorlightwidget.h"
-#include "inspectormaterialwidget.h"
-#include "inspectormodelwidget.h"
-#include "inspectorpositionwidget.h"
-#include "inspectorscriptcomponent.h"
-#include "inspectorshaderwidget.h"
-#include "inspectorsoundwidget.h"
-#include "inspectortexturewidget.h"
 #include "inspectorwidget.h"
 #include "core.h"
 #include "components.h"
@@ -41,9 +32,6 @@ GEENIE::GEENIE(QObject *parent) :
     dir.mkpath(Common::log_path);
 
     InspectorWidget* inspectorWidget = new InspectorWidget(_mainWindow);
-    Inspector* inspector = new Inspector(inspectorWidget);
-    _inspectorWidgets.append(inspector);
-    inspectorWidget->addWidget(inspector);
 
     AssetWidget* aWidget = new AssetWidget(_mainWindow);
 
@@ -221,12 +209,11 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(toggleDock(EDockWidgetTypes,bool)),
                      this,SLOT(toggleDock(EDockWidgetTypes,bool)));
     QObject::connect(eWidget,SIGNAL(clicked(QUuid,se::ItemType)),this,SLOT(ExplorerClicked(QUuid,se::ItemType)));
-    QObject::connect(eWidget,SIGNAL(clicked(QUuid,se::ItemType,QUuid)),this,SLOT(ExplorerClicked(QUuid,se::ItemType,QUuid)));
     QObject::connect(eWidget,SIGNAL(sceneClicked()),this,SLOT(UnsetInspector()));
-    QObject::connect(eWidget,SIGNAL(CMAddComponent(QUuid)),this,SLOT(AddComponent(QUuid)));
+    //QObject::connect(eWidget,SIGNAL(CMAddComponent(QUuid)),this,SLOT(AddComponent(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMAddEntity(QUuid,se::ItemType)),this,SLOT(AddEntity(QUuid,se::ItemType)));
     QObject::connect(eWidget,SIGNAL(CMAddScene()),this,SLOT(AddScene()));
-    QObject::connect(eWidget,SIGNAL(CMDeleteComponent(QUuid,QUuid)),this,SLOT(DeleteComponent(QUuid,QUuid)));
+    //QObject::connect(eWidget,SIGNAL(CMDeleteComponent(QUuid,QUuid)),this,SLOT(DeleteComponent(QUuid,QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteEntity(QUuid)),this,SLOT(DeleteEntity(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteScene(QUuid)),this,SLOT(DeleteScene(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMRenameEntity(QUuid)),this,SLOT(RenameEntity(QUuid)));
@@ -339,11 +326,6 @@ void GEENIE::ExplorerClicked(QUuid id, se::ItemType)
     EntityToInspector(_project->FindEntity(id));
 }
 
-void GEENIE::ExplorerClicked(QUuid id, se::ItemType, QUuid parentId)
-{
-    ComponentToInspector(_project->FindEntity(parentId)->GetComponent(id),parentId);
-}
-
 void GEENIE::fillAssetWidget()
 {
     AssetWidget* a = dynamic_cast<AssetWidget*>(_dockWidgets.value(EDockWidgetTypes::AssetsWidget)->widget());
@@ -427,102 +409,13 @@ void GEENIE::EntityToInspector(Entity *e)
     while(it.hasNext())
     {
         it.next();
-        ComponentToInspector(it.value(),e->GetID(),true);
-    }
-}
-
-void GEENIE::ComponentToInspector(Component *c, QUuid parent, bool sub)
-{
-    InspectorWidget* in = dynamic_cast<InspectorWidget*>(_dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget());
-    if(!sub)
-    {
-        for(auto widget : _inspectorWidgets)
-        {
-            in->removeWidget(widget);
-            delete widget;
-        }
-        _inspectorWidgets.clear();
-    }
-    switch(c->GetType())
-    {
-    case ComponentType::MODEL:
-    {
-        InspectorModelWidget* w = new InspectorModelWidget(_mainWindow, c->GetID(),parent,c->name());
-        in->addWidget(w);
-        _inspectorWidgets.append(w);
-        break;
-    }
-    case ComponentType::MATERIAL:
-    {
-        InspectorMaterialWidget* w = new InspectorMaterialWidget(_mainWindow, c->GetID(),parent,c->name());
-        in->addWidget(w);
-        _inspectorWidgets.append(w);
-        break;
-    }
-    case ComponentType::POSITION:
-    {
-        PositionComponent* pc = dynamic_cast<PositionComponent*>(c);
-        InspectorPositionWidget* w = new InspectorPositionWidget(_mainWindow,pc->GetPosition(), c->GetID(),parent,c->name());
-        QObject::connect(w,SIGNAL(applyPosition(Vector,QUuid,QUuid,QString)),
-                         this,SLOT(applyPosition(Vector,QUuid,QUuid,QString)));
-        in->addWidget(w);
-        _inspectorWidgets.append(w);
-        break;
-    }
-    case ComponentType::LIGHT:
-    {
-        LightComponent* lc = dynamic_cast<LightComponent*>(c);
-        InspectorLightWidget* w = new InspectorLightWidget(_mainWindow,c->GetID(),parent,lc->GetAmbientColor(),lc->GetDiffuseColor(),lc->GetSpecularColor(),lc->GetSpotlightDirection(),lc->GetLightSourceType(),c->name());
-        QObject::connect(w,SIGNAL(applyColor(Color,Color,Color,Vector,LightSourceType,QUuid,QUuid,QString)),
-                         this,SLOT(applyColor(Color,Color,Color,Vector,LightSourceType,QUuid,QUuid,QString)));
-        in->addWidget(w);
-        _inspectorWidgets.append(w);
-        break;
-    }
-    case ComponentType::TEXTURE:
-    {
-        InspectorTextureWidget* w = new InspectorTextureWidget(_mainWindow, c->GetID(),parent,c->name());
-        in->addWidget(w);
-        _inspectorWidgets.append(w);
-        break;
-    }
-    case ComponentType::SOUND:
-    {
-        InspectorSoundWidget* w = new InspectorSoundWidget(_mainWindow, c->GetID(),parent,c->name());
-        in->addWidget(w);
-        _inspectorWidgets.append(w);
-        break;
-    }
-    case ComponentType::SHADER:
-    {
-        InspectorShaderWidget* w = new InspectorShaderWidget(_mainWindow, c->GetID(),parent,c->name());
-        in->addWidget(w);
-        _inspectorWidgets.append(w);
-        break;
-    }
-    case ComponentType::SCRIPT:
-    {
-        InspectorScriptComponent* w = new InspectorScriptComponent(_mainWindow, c->GetID(),parent,c->name());
-        in->addWidget(w);
-        _inspectorWidgets.append(w);
-        break;
-    }
     }
 }
 
 void GEENIE::UnsetInspector()
 {
     InspectorWidget* w = dynamic_cast<InspectorWidget*>(_dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget());
-    for(auto widget : _inspectorWidgets)
-    {
-        w->removeWidget(widget);
-        delete widget;
-    }
-    _inspectorWidgets.clear();
-    Inspector* i = new Inspector(w->parentWidget());
-    w->addWidget(i);
-    _inspectorWidgets.append(i);
-
+    w->children();
 }
 
 void GEENIE::defaultSession(QWidget *inspector, QWidget *asset, QWidget *entities)

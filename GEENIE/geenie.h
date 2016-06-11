@@ -15,16 +15,6 @@ class QDockWidget;
 class Project;
 class Entity;
 
-enum EInspectorTypes
-{
-    None = 0,
-    Audio = 1,
-    Camera = 2,
-    Material = 3,
-    Texture = 4,
-    Transform = 5
-};
-
 class GEENIE : public QObject
 {
     Q_OBJECT
@@ -39,7 +29,6 @@ private:
 
 
     void EntityToInspector(Entity* e);
-    void ComponentToInspector(Component* c, QUuid parent, bool sub = false);
 
     void defaultSession(QWidget* inspector, QWidget* asset, QWidget* entities);
     void createDockWidgetTitles();
@@ -77,7 +66,6 @@ private slots:
     void UnsetInspector();
     void changeScriptType(Highlighter::Types type);
     void ExplorerClicked(QUuid id,se::ItemType);
-    void ExplorerClicked(QUuid id,se::ItemType,QUuid parentId);
 
     void toggleInspectorDock(bool show);
     void toggleExplorerDock(bool show);

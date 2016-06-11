@@ -24,21 +24,11 @@ SOURCES += main.cpp\
     layoutform.cpp \
     scripthighlighter.cpp \
     assetwidget.cpp \
-    inspector.cpp \
     exitdialog.cpp \
     sceneeditwidget.cpp \
     inspectorwidget.cpp \
     gdockwidget.cpp \
     sceneexplorer.cpp \
-    inspectorparentwidget.cpp \
-    inspectorpositionwidget.cpp \
-    inspectorlightwidget.cpp \
-    inspectormodelwidget.cpp \
-    inspectormaterialwidget.cpp \
-    inspectorshaderwidget.cpp \
-    inspectortexturewidget.cpp \
-    inspectorscriptcomponent.cpp \
-    inspectorsoundwidget.cpp \
     addcomponentdialog.cpp \
     addentitydialog.cpp \
     renamescenedialog.cpp \
@@ -54,21 +44,11 @@ HEADERS  += geeniemainwindow.h \
     layoutform.h \
     scripthighlighter.h \
     assetwidget.h \
-    inspector.h \
     exitdialog.h \
     sceneeditwidget.h \
     inspectorwidget.h \
     gdockwidget.h \
     sceneexplorer.h \
-    inspectorparentwidget.h \
-    inspectorpositionwidget.h \
-    inspectorlightwidget.h \
-    inspectormodelwidget.h \
-    inspectormaterialwidget.h \
-    inspectorshaderwidget.h \
-    inspectortexturewidget.h \
-    inspectorscriptcomponent.h \
-    inspectorsoundwidget.h \
     addcomponentdialog.h \
     addentitydialog.h \
     renamescenedialog.h \
@@ -85,14 +65,6 @@ FORMS    += geeniemainwindow.ui \
     sceneeditwidget.ui \
     inspectorwidget.ui \
     sceneexplorer.ui \
-    inspectorpositionwidget.ui \
-    inspectorlightwidget.ui \
-    inspectormodelwidget.ui \
-    inspectormaterialwidget.ui \
-    inspectorshaderwidget.ui \
-    inspectortexturewidget.ui \
-    inspectorscriptcomponent.ui \
-    inspectorsoundwidget.ui \
     addcomponentdialog.ui \
     addentitydialog.ui \
     renamescenedialog.ui \
