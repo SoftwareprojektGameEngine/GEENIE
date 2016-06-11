@@ -1,5 +1,6 @@
 #ifndef INSPECTORWIDGET_H
 #define INSPECTORWIDGET_H
+#include "geenie.h"
 
 #include <QWidget>
 
@@ -17,6 +18,8 @@ public:
 
     void addWidget(QWidget* widget);
     void removeWidget(QWidget* widget);
+    void FillTree(Entity*);
+
 
 public slots:
     void resizeSlot(int h, int w);
@@ -26,3 +29,4 @@ private:
 };
 
 #endif // INSPECTORWIDGET_H
+

@@ -41,7 +41,6 @@ private:
     QMap<EDockWidgetTypes, QDockWidget*> _dockWidgets;
     QMap<EDockWidgetTypes, QRect> _dockWidgetsCoords;
     QMap<EDockWidgetTypes, QString> _dockWidgetsTitles;
-    QVector<QWidget*> _inspectorWidgets;
 
     GEENIEMainWindow* _mainWindow;
     ScriptHighlighter* _highlighter;
@@ -96,7 +95,6 @@ private slots:
     void DeleteAsset(QUuid id);
 
 signals:
-
 public slots:
 };
 

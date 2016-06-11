@@ -9,6 +9,7 @@ InspectorWidget::InspectorWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->scrollAreaWidgetContents->setLayout(new QVBoxLayout(ui->scrollAreaWidgetContents));
+
 }
 
 InspectorWidget::~InspectorWidget()
@@ -30,4 +31,8 @@ void InspectorWidget::removeWidget(QWidget* widget)
 void InspectorWidget::resizeSlot(int h, int w)
 {
     setGeometry(this->x(),this->y(),w,h);
+}
+
+void InspectorWidget::FillTree(Entity *e)
+{
 }

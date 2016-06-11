@@ -221,7 +221,6 @@ GEENIE::GEENIE(QObject *parent) :
 
     QObject::connect(aWidget,SIGNAL(AddAssetToProject(QString,AssetType)),this,SLOT(AddAsset(QString,AssetType)));
     QObject::connect(aWidget,SIGNAL(DeleteAsset(QUuid)),this,SLOT(DeleteAsset(QUuid)));
-
     UnsetInspector();
     fillSceneExplorer();
     _mainWindow->show();
@@ -235,6 +234,7 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(loadProject(QString)),this,SLOT(LoadProject(QString)));
     QObject::connect(_mainWindow,SIGNAL(checkIfProjectConfigured()),this,SLOT(ProjectConfigured()));
     QObject::connect(_mainWindow,SIGNAL(setLayoutToDefault()),this,SLOT(SetDefaultLayout()));
+
 }
 
 GEENIE::~GEENIE()
@@ -324,6 +324,7 @@ void GEENIE::toggleInspectorDock(bool show)
 void GEENIE::ExplorerClicked(QUuid id, se::ItemType)
 {
     EntityToInspector(_project->FindEntity(id));
+
 }
 
 void GEENIE::fillAssetWidget()
@@ -399,17 +400,7 @@ ENTITY_DATA GEENIE::fillSceneExplorerWithEntities(Entity *e)
 void GEENIE::EntityToInspector(Entity *e)
 {
     InspectorWidget* in = dynamic_cast<InspectorWidget*>(_dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget());
-    for(auto widget : _inspectorWidgets)
-    {
-        in->removeWidget(widget);
-        delete widget;
-    }
-    _inspectorWidgets.clear();
-    QHashIterator<QUuid, Component*> it = e->GetComponents();
-    while(it.hasNext())
-    {
-        it.next();
-    }
+    in->FillTree(e);
 }
 
 void GEENIE::UnsetInspector()
