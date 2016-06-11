@@ -49,13 +49,13 @@
         <height>579</height>
        </rect>
       </property>
-      <widget class="QTreeView" name="treeView">
+      <widget class="QTreeWidget" name="treeWidget">
        <property name="geometry">
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>741</width>
-         <height>581</height>
+         <width>731</width>
+         <height>571</height>
         </rect>
        </property>
       </widget>

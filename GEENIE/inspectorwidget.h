@@ -24,8 +24,14 @@ public:
 public slots:
     void resizeSlot(int h, int w);
 
+private slots:
+    void on_treeWidget_DoubleClicked(QTreeWidgetItem *item, int column);
+
 private:
     Ui::InspectorWidget *ui;
+    QTreeWidget *t;
+    void SetHeaderText(QString, QString);
+    void InitializeTree();
 };
 
 #endif // INSPECTORWIDGET_H
