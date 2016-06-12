@@ -32,44 +32,113 @@ void AddComponentDialog::on_createBtn_clicked()
     {
     case ComponentType::MODEL:
     {
-        //_component = new ModelComponent();
+        if(ui->checkBox->isChecked())
+        {
+            _component = new ModelComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()),ui->lineEdit->text());
+        }
+        else
+        {
+            //TODO: Standardcomponent
+        }
+        break;
     }
     case ComponentType::MATERIAL:
     {
-
+        if(ui->checkBox->isChecked())
+        {
+            _component = new MaterialComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()),1,ui->lineEdit->text());
+        }
+        else
+        {
+            //TODO: Standardcomponent
+        }
+        break;
     }
     case ComponentType::POSITION:
     {
-
+        if(ui->checkBox->isChecked())
+        {
+            //TODO: get Pos data?
+            Vector *pos = new Vector(0,0,0,1);
+            _component = new PositionComponent(*pos,ui->lineEdit->text());
+        }
+        else
+        {
+            //TODO: Standardcomponent
+        }
+        break;
     }
     case ComponentType::LIGHT:
     {
-
+        Color c(0,0,0,0);
+        Vector v(0,0,0,0);
+        _component = new LightComponent(AMBIENT,c,c,c,v,ui->lineEdit->text());
+        break;
     }
     case ComponentType::TEXTURE:
     {
-
+        if(ui->checkBox->isChecked())
+        {
+            _component = new TextureComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()),1,ui->lineEdit->text());
+        }
+        else
+        {
+            //TODO: Standardcomponent
+        }
+        break;
     }
     case ComponentType::SOUND:
     {
-
+        if(ui->checkBox->isChecked())
+        {
+            _component = new SoundComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()),ui->lineEdit->text());
+        }
+        else
+        {
+            //TODO: Standardcomponent
+        }
+        break;
     }
     case ComponentType::SHADER:
     {
-
+        if(ui->checkBox->isChecked())
+        {
+            _component = new ShaderComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()),ui->lineEdit->text());
+        }
+        else
+        {
+            //TODO: Standardcomponent
+        }
+        break;
     }
     case ComponentType::SCRIPT:
     {
-
+        //TODO: Disable ScriptComponent?
+        break;
     }
     default: QDialog::reject(); break;
     }
 
-    //QDialog::accept();
-    QDialog::reject();
+    QDialog::accept();
 }
 
 void AddComponentDialog::on_cancelBtn_clicked()
 {
     QDialog::reject();
+}
+
+void AddComponentDialog::SetAssetList(QList<ASSET_DATA> a)
+{
+    QComboBox *list = ui->comboBox;
+    for(int i=0;i<a.count();i++)
+    {
+        list->addItem(a.at(i).name,a.at(i).id.toByteArray());
+    }
+}
+
+
+
+void AddComponentDialog::on_comboBox_currentIndexChanged(const QString &arg1)
+{
+    emit LoadAssetList(this, ui->comboBox_2->currentIndex());
 }

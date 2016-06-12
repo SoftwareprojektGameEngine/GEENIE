@@ -8,7 +8,7 @@
 #include "scripthighlighter.h"
 #include "sceneexplorer.h"
 #include "components.h"
-
+#include "addcomponentdialog.h"
 
 class GEENIEMainWindow;
 class QDockWidget;
@@ -32,7 +32,6 @@ private:
 
     void defaultSession(QWidget* inspector, QWidget* asset, QWidget* entities);
     void createDockWidgetTitles();
-
     void fillSceneExplorer();
     ENTITY_DATA fillSceneExplorerWithEntities(Entity* e);
 
@@ -54,7 +53,7 @@ private:
 
 private slots:
     void saveSession();
-
+    void LoadAssetList(AddComponentDialog* dialog,int type);
     void SetDefaultLayout();
 
     void mainWindowOnClose();

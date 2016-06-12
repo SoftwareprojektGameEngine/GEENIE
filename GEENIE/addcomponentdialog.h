@@ -2,7 +2,12 @@
 #define ADDCOMPONENTDIALOG_H
 
 #include <QDialog>
-
+#include <QUuid>
+struct ASSET_DATA
+{
+    QString name;
+    QUuid id;
+};
 
 namespace Ui {
 class AddComponentDialog;
@@ -31,7 +36,7 @@ public:
      * \return Component.
      */
     Component* component();
-
+    void SetAssetList(QList<ASSET_DATA>);
 private slots:
     //! Slot for the Create-Button.
     /*!
@@ -45,6 +50,10 @@ private slots:
      */
     void on_cancelBtn_clicked();
 
+    void on_comboBox_currentIndexChanged(const QString &arg1);
+
+signals:
+    void LoadAssetList(AddComponentDialog* ,int);
 private:
     //! UI Variable.
     /*!

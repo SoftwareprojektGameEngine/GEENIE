@@ -213,10 +213,10 @@ GEENIE::GEENIE(QObject *parent) :
                      this,SLOT(toggleDock(EDockWidgetTypes,bool)));
     QObject::connect(eWidget,SIGNAL(clicked(QUuid,se::ItemType)),this,SLOT(ExplorerClicked(QUuid,se::ItemType)));
     QObject::connect(eWidget,SIGNAL(sceneClicked()),this,SLOT(UnsetInspector()));
-    //QObject::connect(eWidget,SIGNAL(CMAddComponent(QUuid)),this,SLOT(AddComponent(QUuid)));
+    QObject::connect(eWidget,SIGNAL(CMAddComponent(QUuid)),this,SLOT(AddComponent(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMAddEntity(QUuid,se::ItemType)),this,SLOT(AddEntity(QUuid,se::ItemType)));
     QObject::connect(eWidget,SIGNAL(CMAddScene()),this,SLOT(AddScene()));
-    //QObject::connect(eWidget,SIGNAL(CMDeleteComponent(QUuid,QUuid)),this,SLOT(DeleteComponent(QUuid,QUuid)));
+    QObject::connect(eWidget,SIGNAL(CMDeleteComponent(QUuid,QUuid)),this,SLOT(DeleteComponent(QUuid,QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteEntity(QUuid)),this,SLOT(DeleteEntity(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteScene(QUuid)),this,SLOT(DeleteScene(QUuid)));
     //QObject::connect(eWidget,SIGNAL(CMRenameEntity(QUuid)),this,SLOT(RenameEntity(QUuid)));
@@ -904,6 +904,7 @@ void GEENIE::AddScene()
 void GEENIE::AddComponent(QUuid parentId)
 {
     AddComponentDialog acd(_mainWindow);
+    connect(&acd,SIGNAL(LoadAssetList(AddComponentDialog*,int)),this,SLOT(LoadAssetList(AddComponentDialog*, int)));
     if(acd.exec() == QDialog::Accepted)
     {
         Component* c = acd.component();
@@ -1040,4 +1041,57 @@ void GEENIE::DeleteAsset(QUuid id)
     RemoveAssetAction* raa = new RemoveAssetAction((*_project),id);
     _project->AddUserAction(raa);
     fillAssetWidget();
+}
+
+void GEENIE::LoadAssetList(AddComponentDialog* dialog,int type)
+{
+    QList<ASSET_DATA> assets;
+    /*
+    switch(type)
+    {
+        case MATERIAL:
+        {
+
+            break;
+        }
+        case POSITION:
+        {
+
+            break;
+        }
+        case LIGHT:
+        {
+            break;
+        }
+        case TEXTURE:
+        {
+
+            break;
+        }
+        case SOUND:
+        {
+            break;
+        }
+        case SHADER:
+        {
+            break;
+        }
+        case SCRIPT:
+        {
+            break;
+        }
+    }*/
+    QHashIterator<QUuid,Asset*> a = _project->GetAssets();
+    while(a.hasNext())
+    {
+        if(a.value()->GetType() == type)
+        {
+            ASSET_DATA data;
+            data.id = a.value()->GetID();
+            data.name = "Material";
+            assets.push_back(data);
+        }
+        a.next();
+    }
+    dialog->SetAssetList(assets);
 }
