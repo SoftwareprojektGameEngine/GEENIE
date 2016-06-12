@@ -18,7 +18,7 @@ public:
 
     void addWidget(QWidget* widget);
     void removeWidget(QWidget* widget);
-    void FillTree(Entity*);
+    void FillTree(Entity*, QTreeWidgetItem *parentItem = 0);
 
 
 public slots:

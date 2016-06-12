@@ -12,15 +12,6 @@ InspectorWidget::InspectorWidget(QWidget *parent) :
     t = ui->treeWidget;
 
     InitializeTree();
-
-    QTreeWidgetItem *itm = new QTreeWidgetItem();
-    QTreeWidgetItem *child = new QTreeWidgetItem();
-    child->setText(0,"Prop1");
-    child->setText(1,"value1");
-    itm->addChild(child);
-    itm->setText(0,"Entity");
-    itm->setText(1,"value1");
-    t->addTopLevelItem(itm);
 }
 void InspectorWidget::InitializeTree()
 {
@@ -56,11 +47,23 @@ void InspectorWidget::resizeSlot(int h, int w)
 
 #include <QDebug>
 
-void InspectorWidget::FillTree(Entity *e)
+void InspectorWidget::FillTree(Entity *e, QTreeWidgetItem* parentItem)
 {
-    ui->treeWidget->clear();
-    QTreeWidgetItem *itm = new QTreeWidgetItem(ui->treeWidget);
-    itm->setText(1,"Entity");
+
+    if(parentItem == 0)
+    {
+        ui->treeWidget->clear();
+    }
+    QTreeWidgetItem *itm;
+    if(parentItem != 0)
+    {
+        itm = new QTreeWidgetItem(parentItem);
+    }
+    else
+    {
+        itm = new QTreeWidgetItem(ui->treeWidget);
+    }
+    itm->setText(0,"Entity");
     itm->setText(1,e->name());
     QHashIterator<QUuid, Component*> it = e->GetComponents();
     while(it.hasNext())
@@ -68,6 +71,7 @@ void InspectorWidget::FillTree(Entity *e)
                 it.next();
         QTreeWidgetItem *c = new QTreeWidgetItem();
         Component *comp = it.value();
+        c->setText(0,comp->name());
         switch(comp->GetType())
         {
         default:
@@ -76,6 +80,11 @@ void InspectorWidget::FillTree(Entity *e)
         itm->addChild(c);
     }
     QHashIterator<QUuid, Entity*> it2 = e->GetSubEntities();
+    while(it2.hasNext())
+    {
+        it2.next();
+        FillTree(it2.value(),itm);
+    }
 }
 void InspectorWidget::SetHeaderText(QString text1, QString text2)
 {
@@ -87,5 +96,6 @@ void InspectorWidget::SetHeaderText(QString text1, QString text2)
 
 void InspectorWidget::on_treeWidget_DoubleClicked(QTreeWidgetItem *item, int column)
 {
-
+    Q_UNUSED(item);
+    Q_UNUSED(column);
 }
