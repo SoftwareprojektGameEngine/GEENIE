@@ -21,7 +21,7 @@ void InspectorWidget::InitializeTree()
     SetHeaderText("Property", "Values");
 
 
-    t->setStyleSheet("QTreeWidget::item { border-bottom: 1px solid black; border-top: 1px solid black; border-right: 1px solid black;border-left: 1px solid black;}");
+   // t->setStyleSheet("QTreeWidget::item { border-bottom: 1px solid black; border-top: 1px solid black; border-right: 1px solid black;border-left: 1px solid black;}");
 }
 
 InspectorWidget::~InspectorWidget()
@@ -47,31 +47,29 @@ void InspectorWidget::resizeSlot(int h, int w)
 
 #include <QDebug>
 
-void InspectorWidget::FillTree(Entity *e, QTreeWidgetItem* parentItem)
+void InspectorWidget::FillTree(Entity *e, bool sub)
 {
 
-    if(parentItem == 0)
+    if(!sub)
     {
         ui->treeWidget->clear();
     }
-    QTreeWidgetItem *itm;
-    if(parentItem != 0)
-    {
-        itm = new QTreeWidgetItem(parentItem);
-    }
-    else
-    {
-        itm = new QTreeWidgetItem(ui->treeWidget);
-    }
+    QTreeWidgetItem *itm = new QTreeWidgetItem(ui->treeWidget);
+    itm->setFlags(itm->flags() | Qt::ItemIsEditable);
     itm->setText(0,"Entity");
     itm->setText(1,e->name());
+    itm->setData(0,Qt::UserRole,e->GetID());
     QHashIterator<QUuid, Component*> it = e->GetComponents();
     while(it.hasNext())
     {
-                it.next();
+        it.next();
         QTreeWidgetItem *c = new QTreeWidgetItem();
         Component *comp = it.value();
-        c->setText(0,comp->name());
+        c->setFlags(c->flags() | Qt::ItemIsEditable);
+        c->setText(0,comp->GetTypeName());
+        c->setData(0,Qt::UserRole,comp->GetID());
+        c->setData(0,Qt::UserRole+1,e->GetID());
+        c->setText(1,comp->name());
         switch(comp->GetType())
         {
         default:
@@ -83,7 +81,7 @@ void InspectorWidget::FillTree(Entity *e, QTreeWidgetItem* parentItem)
     while(it2.hasNext())
     {
         it2.next();
-        FillTree(it2.value(),itm);
+        FillTree(it2.value(),true);
     }
 }
 void InspectorWidget::SetHeaderText(QString text1, QString text2)
@@ -94,8 +92,11 @@ void InspectorWidget::SetHeaderText(QString text1, QString text2)
 }
 
 
-void InspectorWidget::on_treeWidget_DoubleClicked(QTreeWidgetItem *item, int column)
+void InspectorWidget::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
-    Q_UNUSED(item);
-    Q_UNUSED(column);
+    if(column == 0)
+    {
+        return;
+    }
+    ui->treeWidget->editItem(item,column);
 }

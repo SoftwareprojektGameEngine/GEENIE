@@ -18,14 +18,14 @@ public:
 
     void addWidget(QWidget* widget);
     void removeWidget(QWidget* widget);
-    void FillTree(Entity*, QTreeWidgetItem *parentItem = 0);
+    void FillTree(Entity*, bool sub = false);
 
 
 public slots:
     void resizeSlot(int h, int w);
 
 private slots:
-    void on_treeWidget_DoubleClicked(QTreeWidgetItem *item, int column);
+    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
 private:
     Ui::InspectorWidget *ui;
