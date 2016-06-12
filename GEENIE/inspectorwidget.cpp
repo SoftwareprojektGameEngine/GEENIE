@@ -54,16 +54,18 @@ void InspectorWidget::resizeSlot(int h, int w)
     setGeometry(this->x(),this->y(),w,h);
 }
 
+#include <QDebug>
+
 void InspectorWidget::FillTree(Entity *e)
 {
-
-    QTreeWidgetItem *itm;
+    ui->treeWidget->clear();
+    QTreeWidgetItem *itm = new QTreeWidgetItem(ui->treeWidget);
     itm->setText(1,"Entity");
     itm->setText(1,e->name());
     QHashIterator<QUuid, Component*> it = e->GetComponents();
-
     while(it.hasNext())
     {
+                it.next();
         QTreeWidgetItem *c = new QTreeWidgetItem();
         Component *comp = it.value();
         switch(comp->GetType())
@@ -72,7 +74,6 @@ void InspectorWidget::FillTree(Entity *e)
             break;
         }
         itm->addChild(c);
-        it.next();
     }
     QHashIterator<QUuid, Entity*> it2 = e->GetSubEntities();
 }
