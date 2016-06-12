@@ -58,7 +58,8 @@ void InspectorWidget::FillTree(Entity *e, bool sub)
     itm->setFlags(itm->flags() | Qt::ItemIsEditable);
     itm->setText(0,"Entity");
     itm->setText(1,e->name());
-    itm->setData(0,Qt::UserRole,e->GetID());
+    itm->setData(1,Qt::UserRole,e->GetID().toByteArray());
+
     QHashIterator<QUuid, Component*> it = e->GetComponents();
     while(it.hasNext())
     {
@@ -67,8 +68,8 @@ void InspectorWidget::FillTree(Entity *e, bool sub)
         Component *comp = it.value();
         c->setFlags(c->flags() | Qt::ItemIsEditable);
         c->setText(0,comp->GetTypeName());
-        c->setData(0,Qt::UserRole,comp->GetID());
-        c->setData(0,Qt::UserRole+1,e->GetID());
+        c->setData(1,Qt::UserRole,comp->GetID().toByteArray());
+        c->setData(1,Qt::UserRole+1,e->GetID().toByteArray());
         c->setText(1,comp->name());
         switch(comp->GetType())
         {
@@ -99,4 +100,21 @@ void InspectorWidget::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int
         return;
     }
     ui->treeWidget->editItem(item,column);
+}
+
+void InspectorWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column)
+{
+    if(column == 0)
+    {
+        return;
+    }
+    if(item->data(1,Qt::UserRole+1) == QVariant()) // Entity name changed
+    {
+        emit RenameEntity(QUuid(item->data(1,Qt::UserRole).toByteArray()),item->data(1,Qt::DisplayRole).toString());
+    }
+    else // Component name changed
+    {
+
+    }
+
 }

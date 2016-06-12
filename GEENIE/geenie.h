@@ -72,8 +72,6 @@ private slots:
     void toggleAssetDock(bool show);
     void toggleDock(EDockWidgetTypes type,bool show);
 
-    void applyColor(Color ambient,Color diffuse,Color specular,Vector spot,LightSourceType type,QUuid id,QUuid parentId,QString name);
-    void applyPosition(Vector position,QUuid id,QUuid parentId,QString name);
     void undo();
     void redo();
 
@@ -82,9 +80,10 @@ private slots:
     void RenameScene(QUuid id);
     void DeleteScene(QUuid id);
     void DeleteComponent(QUuid id, QUuid parentId);
+    void ModifyComponent(QUuid id, QUuid parentId, Component* component);
     void AddComponent(QUuid parentId);
     void DeleteEntity(QUuid id);
-    void RenameEntity(QUuid id);
+    void RenameEntity(QUuid id, QString name);
     void NewProject();
     void SaveProject();
     void SaveProject(QString path);

@@ -33,6 +33,9 @@ GEENIE::GEENIE(QObject *parent) :
 
     InspectorWidget* inspectorWidget = new InspectorWidget(_mainWindow);
 
+    QObject::connect(inspectorWidget,SIGNAL(RenameEntity(QUuid,QString)),this,SLOT(RenameEntity(QUuid,QString)));
+    QObject::connect(inspectorWidget,SIGNAL(ModifyComponent(QUuid,QUuid,Component*)),this,SLOT(ModifyComponent(QUuid,QUuid,Component*)));
+
     AssetWidget* aWidget = new AssetWidget(_mainWindow);
 
     SceneExplorer* eWidget = new SceneExplorer(_mainWindow);
@@ -216,7 +219,7 @@ GEENIE::GEENIE(QObject *parent) :
     //QObject::connect(eWidget,SIGNAL(CMDeleteComponent(QUuid,QUuid)),this,SLOT(DeleteComponent(QUuid,QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteEntity(QUuid)),this,SLOT(DeleteEntity(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteScene(QUuid)),this,SLOT(DeleteScene(QUuid)));
-    QObject::connect(eWidget,SIGNAL(CMRenameEntity(QUuid)),this,SLOT(RenameEntity(QUuid)));
+    //QObject::connect(eWidget,SIGNAL(CMRenameEntity(QUuid)),this,SLOT(RenameEntity(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMRenameScene(QUuid)),this,SLOT(RenameScene(QUuid)));
 
     QObject::connect(aWidget,SIGNAL(AddAssetToProject(QString,AssetType)),this,SLOT(AddAsset(QString,AssetType)));
@@ -850,18 +853,9 @@ void GEENIE::redo()
 
 #include "useractions.h"
 
-void GEENIE::applyColor(Color ambient, Color diffuse, Color specular, Vector spot, LightSourceType type, QUuid id, QUuid parentId, QString name)
+void GEENIE::ModifyComponent(QUuid id, QUuid parentId, Component *component)
 {
-    LightComponent* lc = new LightComponent(type,ambient,diffuse,specular,spot,id,name);
-    ModifyEntityAction* mea = new ModifyEntityAction((*_project),parentId,id,lc);
-    _project->AddUserAction(mea);
-    fillSceneExplorer();
-}
-
-void GEENIE::applyPosition(Vector position, QUuid id, QUuid parentId, QString name)
-{
-    PositionComponent* pc = new PositionComponent(position,id,name);
-    ModifyEntityAction* mea = new ModifyEntityAction((*_project),parentId,id,pc);
+    ModifyEntityAction* mea = new ModifyEntityAction((*_project),parentId,id,component);
     _project->AddUserAction(mea);
     fillSceneExplorer();
 }
@@ -988,15 +982,11 @@ void GEENIE::DeleteEntity(QUuid id)
     }
 }
 
-void GEENIE::RenameEntity(QUuid id)
+void GEENIE::RenameEntity(QUuid id, QString name)
 {
-    RenameEntityDialog red(_mainWindow,_project->FindEntity(id)->name());
-    if(red.exec() == QDialog::Accepted)
-    {
-        RenameEntityAction* rea = new RenameEntityAction((*_project),id,red.name());
-        _project->AddUserAction(rea);
-        fillSceneExplorer();
-    }
+    RenameEntityAction* rea = new RenameEntityAction((*_project),id,name);
+    _project->AddUserAction(rea);
+    fillSceneExplorer();
 }
 
 

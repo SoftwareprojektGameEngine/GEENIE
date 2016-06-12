@@ -3,7 +3,6 @@
 
 Entity::Entity(QUuid parentID, QUuid id, QString name) : parentID(parentID), components(), subEntities(),_name(name) {
     this->id = id;
-    this->AddComponent(new PositionComponent(Vector()));
 }
 
 Entity::~Entity() {
