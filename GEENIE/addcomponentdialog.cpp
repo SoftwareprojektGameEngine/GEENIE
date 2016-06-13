@@ -59,8 +59,7 @@ void AddComponentDialog::on_createBtn_clicked()
         if(ui->checkBox->isChecked())
         {
             //TODO: get Pos data?
-            Vector *pos = new Vector(0,0,0,1);
-            _component = new PositionComponent(*pos,ui->lineEdit->text());
+            _component = new PositionComponent(Vector(),ui->lineEdit->text());
         }
         else
         {

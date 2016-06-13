@@ -21,27 +21,27 @@ void AssetWidget::on_LoadButton_clicked()
     AssetType type;
     switch (TabName) {
     case 0:
-        Path = QFileDialog::getOpenFileName(this, tr("Load Material"), "C:/", "All Files (*.*)");
+        Path = QFileDialog::getOpenFileName(this, tr("Load Material"), "C:/", "Material Files (*.bmp; *.dds; *.gif; *.hdr; *.jps; *.jpc; *.jpeg; *.jpg; *.attr; *.pic; *.png; *.pnm; *.pgm; *.pbm; *.rgb; *.sgi; *.rgba; *.int; *.inta; *.bw; *.tga; *.tiff; *.tif");
         type = AssetType::MATERIAL_ASSET;
         break;
     case 1:
-        Path = QFileDialog::getOpenFileName(this, tr("Load Texture"), "C:/", "All Files (*.*)");
+        Path = QFileDialog::getOpenFileName(this, tr("Load Texture"), "C:/", "Texture Files (*.bmp; *.dds; *.gif; *.hdr; *.jps; *.jpc; *.jpeg; *.jpg; *.attr; *.pic; *.png; *.pnm; *.pgm; *.pbm; *.rgb; *.sgi; *.rgba; *.int; *.inta; *.bw; *.tga; *.tiff; *.tif)");
         type = AssetType::TEXTURE_ASSET;
         break;
     case 2:
-        Path = QFileDialog::getOpenFileName(this, tr("Load Model"), "C:/", "All Files (*.*)");
+        Path = QFileDialog::getOpenFileName(this, tr("Load Model"), "C:/", "Model Files (*.3dc; *.asc; *.ac; *.bsp; *.dae; *.dw; *.dxf; *.fbx; *.gem; *.geo; *.iv; *.wrl; *.ive; *.logo; *.lwo; *.lw; *.lws; *.md2; *.obj; *.ogr; *.flt; *.osg; *.shp; *.stl; *.sta; *.x)");
         type = AssetType::MODEL_ASSET;
         break;
     case 3:
-        Path = QFileDialog::getOpenFileName(this, tr("Load Script"), "C:/", "All Files (*.*)");
+        Path = QFileDialog::getOpenFileName(this, tr("Load Script"), "C:/", "Script Files (*.py; *.lua)");
         type = AssetType::SCRIPT_ASSET;
         break;
     case 4:
-        Path = QFileDialog::getOpenFileName(this, tr("Load Audio"), "C:/", "All Files (*.*)");
+        Path = QFileDialog::getOpenFileName(this, tr("Load Audio"), "C:/", "All Files (*.mp3; *.ogg)");
         type = AssetType::AUDIO_ASSET;
         break;
     case 5:
-        Path = QFileDialog::getOpenFileName(this, tr("Load Video"), "C:/", "All Files (*.*)");
+        Path = QFileDialog::getOpenFileName(this, tr("Load Video"), "C:/", "Video files (*.mov; *.mpg; *.mpv; *.mp4; *.m4v; *.dv; *.avi; *.flv; *.swf)");
         type = AssetType::VIDEO_ASSET;
         break;
     default:

@@ -124,10 +124,6 @@ int SceneExplorer::AddEntitys(QTreeWidgetItem *parent,QList<ENTITY_DATA> entitie
 
 void SceneExplorer::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
 {
-    if(column > 0)
-    {
-        return;
-    }
     for(int i = 0; i < ui->treeWidget->topLevelItemCount(); i++)
     {
         if(item == ui->treeWidget->topLevelItem(i))
@@ -138,7 +134,7 @@ void SceneExplorer::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
     }
     if(item->data(0,Qt::UserRole+1).toBool())
     {
-        //emit clicked(QUuid(item->data(0,Qt::UserRole).toByteArray()),se::ItemType::COMPONENT,QUuid(item->data(0,Qt::UserRole+2).toByteArray()));
+        emit clicked(QUuid(item->data(0,Qt::UserRole).toByteArray()),se::ItemType::COMPONENT,QUuid(item->data(0,Qt::UserRole+2).toByteArray()));
     }
     else
     {

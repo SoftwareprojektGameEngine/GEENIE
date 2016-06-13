@@ -26,7 +26,30 @@ GEENIE::GEENIE(QObject *parent) :
     _layoutName("default"),
     _highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
 {
-    _project = nullptr;
+    _project = new Project(0,QString("Example project"));
+    {
+        Scene* scene = new Scene(QUuid::createUuid(),QString("Example Scene 1"));
+        _project->AddScene(scene);
+        Entity* e1 = new Entity(scene->GetID(),QUuid::createUuid(),QString("Example Entity 1"));
+        _project->AddEntity(e1);
+        Entity* e2 = new Entity(scene->GetID(),QUuid::createUuid(),QString("Example Entity 2"));
+        e2->AddComponent(new LightComponent(LightSourceType::AMBIENT,Color(),Color(),Color()));
+        e2->AddComponent(new PositionComponent(Vector()));
+        _project->AddEntity(e2);
+        Entity* e3 = new Entity(scene->GetID(),QUuid::createUuid(),QString("Example Entity 3"));
+        e2->AddComponent(new LightComponent(LightSourceType::AMBIENT,Color(0.1f,0.2f,0.4f,1.0f),Color(0.4f,0.3f,0.1f,0.9f),Color(0.7f,0.6f,0.1f,0.7f)));
+        e2->AddComponent(new PositionComponent(Vector()));
+        _project->AddEntity(e3);
+        Entity* e4 = new Entity(e1->GetID(),QUuid::createUuid(),QString("Example Entity 4"));
+        _project->AddEntity(e4);
+        Entity* e5 = new Entity(e1->GetID(),QUuid::createUuid(),QString("Example Entity 5"));
+        _project->AddEntity(e5);
+        Scene* scene2 = new Scene(QUuid::createUuid(),QString("Example Scene 2"));
+        _project->AddScene(scene2);
+        Entity* e6 = new Entity(scene->GetID(),QUuid::createUuid(),QString("Example Entity 6"));
+        _project->AddEntity(e6);
+        _project->save(QString("C:/Projects/default.geenie"));
+    }
     createDockWidgetTitles();
     QDir dir;
     dir.mkpath(Common::log_path);
@@ -908,6 +931,7 @@ void GEENIE::AddComponent(QUuid parentId)
     if(acd.exec() == QDialog::Accepted)
     {
         Component* c = acd.component();
+        qDebug() << __LINE__;
         AddComponentAction* aca = new AddComponentAction((*_project),parentId,c);
         _project->AddUserAction(aca);
         fillSceneExplorer();

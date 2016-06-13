@@ -37,6 +37,8 @@ private:
     QTreeWidget *t;
     void SetHeaderText(QString, QString);
     void InitializeTree();
+    QTreeWidgetItem* VectorToItem(Vector v);
+    QTreeWidgetItem* ColorToItem(Color c);
 };
 
 #endif // INSPECTORWIDGET_H

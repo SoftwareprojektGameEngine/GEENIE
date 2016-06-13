@@ -26,7 +26,7 @@
       <enum>Qt::CustomContextMenu</enum>
      </property>
      <property name="editTriggers">
-      <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+      <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
      </property>
      <property name="dragDropMode">
       <enum>QAbstractItemView::NoDragDrop</enum>
