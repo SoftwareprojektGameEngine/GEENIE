@@ -7,6 +7,11 @@ namespace Ui {
 class AddEntityDialog;
 }
 
+/*!
+ * \class AddEntityDialog addentitydialog.h
+ * \brief The AddEntityDialog class
+ */
+
 class AddEntityDialog : public QDialog
 {
     Q_OBJECT
@@ -23,35 +28,35 @@ public:
      */
     ~AddEntityDialog();
 
-    //! Get Entity-Name.
+    //! Get entity-name.
     /*!
-     * \return A QString of the current Entity-Name.
+     * \return A QString of the current entity-name.
      */
     QString name(){return _name;}
 
 private slots:
-    //! Slot for the Create-Button.
+    //! Slot for the create-button.
     /*!
-      If the selected Name of the new Entity is not empty, it will be created.
+      If the selected name of the new entity is not empty, it will be created.
      */
     void on_pushButton_clicked();
 
-    //! Slot for the Cancel-Button.
+    //! Slot for the cancel-button.
     /*!
-      Will be called when the Cancel-Button is clicked. Aborts the Creation of a new Entity.
+      Will be called when the cancel-button is clicked. Aborts the creation of a new entity.
      */
     void on_pushButton_2_clicked();
 
 private:
-    //! Name Variable.
+    //! Name variable.
     /*!
-      Stores the private Name of the Entity. Is a QString.
+      Stores the private name of the entity. Is a QString.
      */
     QString _name;
 
-    //! UI Variable.
+    //! UI variable.
     /*!
-      Stores the AddEntityDialog UI. Is Private.
+      Stores the AddEntityDialog ui. Is private.
      */
     Ui::AddEntityDialog *ui;
 };

@@ -15,6 +15,11 @@ class AddComponentDialog;
 
 class Component;
 
+/*!
+ * \class AddComponentDialog addcomponentdialog.h
+ * \brief The AddComponentDialog class
+ */
+
 class AddComponentDialog : public QDialog
 {
     Q_OBJECT
@@ -33,20 +38,20 @@ public:
 
     //! Get component.
     /*!
-     * \return Component.
+     * \return Component The actual Component.
      */
     Component* component();
     void SetAssetList(QList<ASSET_DATA>);
 private slots:
-    //! Slot for the Create-Button.
+    //! Slot for the create-button.
     /*!
-      A component for the actual Entity will be created.
+      A component for the actual entity will be created.
      */
     void on_createBtn_clicked();
 
-    //! Slot for the Cancel-Button.
+    //! Slot for the cancel-button.
     /*!
-      Cancels assigning a Component to the selected Entity.
+      Cancels assigning a component to the selected entity.
      */
     void on_cancelBtn_clicked();
 
@@ -55,15 +60,15 @@ private slots:
 signals:
     void LoadAssetList(AddComponentDialog* ,int);
 private:
-    //! UI Variable.
+    //! UI variable.
     /*!
-      Private Variable stores the AddComponentDialog-UI.
+      Private variable stores the AddComponentDialog-ui.
      */
     Ui::AddComponentDialog *ui;
 
-    //! Component Variable.
+    //! Component variable.
     /*!
-      Private Variable stores the actual Component.
+      Private variable stores the actual component.
      */
     Component* _component;
 };
