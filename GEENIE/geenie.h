@@ -27,7 +27,7 @@ public:
 
     //! Constructor
     /*!
-     * \brief The "main"-method of our editor. Creates the dockable-widgets, set their titles, creates a log-path, loads the session-save file and connects all signals and slots.
+     * The "main"-method of our editor. Creates the dockable-widgets, set their titles, creates a log-path, loads the session-save file and connects all signals and slots.
      * \param parent The parent object.
      */
 
@@ -42,7 +42,7 @@ public:
 
     //! Insert dockable-widget.
     /*!
-     * \brief Create and insert a dockable widget to the editor.
+     * Create and insert a dockable widget to the editor.
      * \param type Available options: AssetsWidget, EntitiesWidget, InspectorWidget, LoggerWidget, ScriptEditorWidget.
      * \param widget The needed child-widget. Note that a dockable-widget is just a wrappe for the child-widget.
      * \param show Shows or hides the dockable-widget.
@@ -58,7 +58,7 @@ public:
 
     //! Moving method for the dockable-widgets.
     /*!
-     * \brief Destroys and creates a new widget on the given coordinates.
+     * Destroys and creates a new widget on the given coordinates.
      * \param type Available options: AssetsWidget, EntitiesWidget, InspectorWidget, LoggerWidget, ScriptEditorWidget.
      * \param show Shows or hides the dockable-widget.
      * \param area The area where the widget is docked in.
@@ -75,7 +75,7 @@ private:
 
     //! Entity to inspector method.
     /*!
-     * \brief Adds an entity to the inspector.
+     * Adds an entity to the inspector.
      * \param e An entity.
      */
 
@@ -83,7 +83,7 @@ private:
 
     //! Default-session method.
     /*!
-     * \brief Restores all widgets to its default places.
+     * Restores all widgets to its default places.
      * \param inspector The inspector-widget.
      * \param asset The asset-widget.
      * \param entities The entity-widget.
@@ -97,7 +97,7 @@ private:
 
     //! Method to fill the sceneexplorer for the first time.
     /*!
-     * \brief Reads the current project. If it's empty, the sceneexplorer will show "(No project configured)". Else it will read the GEENIE-file and fills the sceneexplorer with all available scenes and entities.
+     * Reads the current project. If it's empty, the sceneexplorer will show "(No project configured)". Else it will read the GEENIE-file and fills the sceneexplorer with all available scenes and entities.
      */
 
     void fillSceneExplorer();
@@ -108,7 +108,7 @@ private:
 
     //! Fills and the Assetwidget with assets.
     /*!
-     * \brief Gets its data from the current project file. Is used for initially filling the assetwidget with assets or to update it.
+     * Gets its data from the current project file. Is used for initially filling the assetwidget with assets or to update it.
      */
 
     void fillAssetWidget();
@@ -150,14 +150,14 @@ private slots:
 
     //! Slot for saving the session file.
     /*!
-     * \brief Saves the session file in a html document.
+     * Saves the session file in a html document.
      */
 
     void saveSession();
 
     //! Slot for loading an assetlist.
     /*!
-     * \brief Loads an assetlist from a project for the assetwindow.
+     * Loads an assetlist from a project for the assetwindow.
      * \param dialog Not needed yet.
      * \param type The assettype.
      */
@@ -170,7 +170,7 @@ private slots:
 
     //! Slot for closing GEENIE.
     /*!
-     * \brief If there are some unsaved changes in a project the user has the option now to save them.
+     * If there are some unsaved changes in a project the user has the option now to save them.
      */
 
     void mainWindowOnClose();
@@ -181,7 +181,7 @@ private slots:
 
     //! Slot for saving a layout.
     /*!
-     * \brief Saves layout in a html-file
+     * Saves layout in a html-file
      */
 
     void saveLayout();
@@ -196,14 +196,14 @@ private slots:
 
     //! Changes the script-type for the script highlighting.
     /*!
-     * \param type The highlighter type.
+     * type The highlighter type.
      */
 
     void changeScriptType(Highlighter::Types type);
 
     //! Explorer-inspector synchronisation.
     /*!
-     * \brief Pushes entity-data to the inspector.
+     * Pushes entity-data to the inspector.
      * \param id The id of the entity.
      */
 
@@ -254,7 +254,7 @@ private slots:
 
     //! Dialog for adding an entity
     /*!
-     * \brief Addind an entity to the explorer.
+     * Addind an entity to the explorer.
      * \param parentId The id of the parent entity.
      * \param type Not used yet.
      */

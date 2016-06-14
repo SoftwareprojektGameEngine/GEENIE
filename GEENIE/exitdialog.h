@@ -20,14 +20,14 @@ public:
 
     //! Constructor.
     /*!
-     * \brief Creates the ui.
+     * Creates the ui.
      * \param parent The parent-widget.
      */
     explicit ExitDialog(QWidget *parent = 0);
 
     //! Deconstructor
     /*!
-     * \brief Deletes the ui.
+     * Deletes the ui.
      */
     ~ExitDialog();
 
@@ -35,14 +35,14 @@ private slots:
 
     //! Slot for the yes-button.
     /*!
-     * \brief Returns back to GEENIE.
+     * Returns back to GEENIE.
      */
 
     void on_pushButton_clicked();
 
     //! Slot for the no-Button.
     /*!
-     * \brief Go back to windows.
+     * Go back to windows.
      */
 
     void on_pushButton_2_clicked();
@@ -51,7 +51,7 @@ private:
 
     //! UI variable.
     /*!
-     * \brief Stores the actual ui in a private variable.
+     * Stores the actual ui in a private variable.
      */
 
     Ui::ExitDialog *ui;

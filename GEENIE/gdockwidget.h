@@ -16,7 +16,7 @@ public:
 
     //! Constructor
     /*!
-     * \brief Creates the dockable widgets.
+     * Creates the dockable widgets.
      * \param title The title of the widget.
      * \param parent The parent-widget.
      * \param flags QT window-flags can be added. For more details watch the QT-Documentation.
@@ -28,7 +28,7 @@ protected:
 
     //! Slot for the resize-signal.
     /*!
-     * \brief Will be executed if a widget is resized. Updates the size of the widget.
+     * Will be executed if a widget is resized. Updates the size of the widget.
      * \param event Needs the resize-event.
      */
 
