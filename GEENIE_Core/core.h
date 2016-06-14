@@ -160,10 +160,14 @@ public:
      */
     bool HasComponents();
     /*!
-     * \brief name
-     * \return
+     * \brief Returns the name of the entity
+     * \return name
      */
     QString name(){return _name;}
+    /*!
+     * \brief Sets the entity name
+     * \param name
+     */
     void setName(QString name){_name = name;}
 };
 
@@ -227,10 +231,14 @@ public:
      */
     bool HasEntities();
     /*!
-     * \brief name
-     * \return
+     * \brief Returns the name of the scene
+     * \return name
      */
     QString name(){return _name;}
+    /*!
+     * \brief Sets the scene name
+     * \param name
+     */
     void setName(QString name){_name = name;}
 };
 
@@ -351,7 +359,13 @@ public:
 public slots:
 private slots:
 signals:
+    /*!
+     * \brief Signals if there can be something done
+     */
     void CanRedoSignal(bool);
+    /*!
+     * \brief Signals if there can be something done
+     */
     void CanUndoSignal(bool);
 };
 
