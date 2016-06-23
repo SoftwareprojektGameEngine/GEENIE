@@ -1,4 +1,5 @@
 #include "core.h"
+#include "QDebug"
 #define CALC_INDEX(index) ((index) % (MAX_NUM_USERACTIONS + 1))
 
 Project::Project(EngineWrapper* engine, QString name) : fastEntityLookup(), scenes(), assets(), projectName(name) {
@@ -136,6 +137,7 @@ QHashIterator<QUuid, Scene*> Project::GetScenes() {
 }
 
 void Project::AddAsset(Asset *asset) {
+    qDebug() << "adding asset " << asset->GetID() << " to project";
     if (asset == nullptr) return;
 
     this->assets.insert(asset->GetID(), asset);

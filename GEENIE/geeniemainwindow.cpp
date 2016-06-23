@@ -1,15 +1,17 @@
 #include "geeniemainwindow.h"
 #include "ui_geeniemainwindow.h"
 #include "exitdialog.h"
+#include "sceneeditwidget.h"
 
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QDebug>
 
-GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::GEENIEMainWindow)
+GEENIEMainWindow::GEENIEMainWindow(GEENIE* geenie, QWidget *parent) :
+    QMainWindow(parent)//,
+    //ui(new Ui::GEENIEMainWindow)
 {
+    ui = new Ui::GEENIEMainWindow;
     ui->setupUi(this);
     QFont font;
     font.setFamily("Courier");
@@ -21,6 +23,16 @@ GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
     ui->comboBox->addItem(QString("Python"));
     ui->comboBox->addItem(QString("Lua"));
     ui->comboBox->setCurrentIndex(0);
+
+    //engineWidget = geenie->getEngine()->CreateWidget();
+    //engineWidget->GetWidget()->setParent(this);
+    _sceneEditWidget = new SceneEditWidget(geenie);
+    auto layout = new QVBoxLayout();
+    layout->addWidget(_sceneEditWidget);
+    layout->setContentsMargins(0,0,0,0);
+    _sceneEditWidget->setLayout(layout);
+
+    ui->tabWidget->addTab(_sceneEditWidget, QString("SceneEdit"));//engineWidget->GetWidget(), QString("scene edit"));
 }
 
 GEENIEMainWindow::~GEENIEMainWindow()

@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "scripthighlighter.h"
 #include "logger.h"
+#include "geenie.h"
+#include "sceneeditwidget.h"
 
 class QTextDocument;
 class Project;
@@ -17,7 +19,7 @@ class GEENIEMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit GEENIEMainWindow(QWidget *parent = 0);
+    explicit GEENIEMainWindow(GEENIE* geenie, QWidget *parent = 0);
     ~GEENIEMainWindow();
 
     void setScriptType(Highlighter::Types type);
@@ -25,6 +27,7 @@ public:
     void setDockActionsChecked(EDockWidgetTypes type,bool checked);
 
     QTextDocument* scriptEditorDocument();
+    inline SceneEditWidget* getSceneEditWidget() { return _sceneEditWidget; }
 
 protected:
     void closeEvent(QCloseEvent* event);
@@ -63,6 +66,7 @@ private slots:
 
 private:
     Ui::GEENIEMainWindow *ui;
+    SceneEditWidget* _sceneEditWidget;
 };
 
 #endif // GEENIEMAINWINDOW_H

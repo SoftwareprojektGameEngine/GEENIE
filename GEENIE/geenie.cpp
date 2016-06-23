@@ -26,25 +26,38 @@
 #include <QString>
 #include <QScrollArea>
 
+#include "osgwrapper.h"
+
 GEENIE::GEENIE(QObject *parent) :
     QObject(parent),
-    _mainWindow(new GEENIEMainWindow),
-    _layoutName("default"),
-    _highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
+    _layoutName("default")//,
+    //_highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
 {
     //EXAMPLE PROJECT
-    _project = new Project(0,QString("untitled"));
+    _engine = new OSGWrapper();
+    _project = new Project(_engine, QString("untitled"));
     QUuid exEntityId;
-    {
+        ModelAsset* cow = new ModelAsset(QString("D:\\Studium\\Test\\Openscenegraph\\data\\avatar.osg"));
+        _project->AddAsset(cow);
         Scene* scene = new Scene();
         _project->AddScene(scene);
         Entity* entity = new Entity(scene->GetID());
         exEntityId = entity->GetID();
         _project->AddEntity(entity);
-        entity->AddComponent(new SoundComponent(QUuid::createUuid()));
-        entity->AddComponent(new TextureComponent(QUuid::createUuid(),0));
-        entity->AddComponent(new ModelComponent(QUuid::createUuid()));
-    }
+        //entity->AddComponent(new SoundComponent(QUuid::createUuid()));
+        //entity->AddComponent(new TextureComponent(QUuid::createUuid(),0));
+        Entity* subEntity = new Entity(entity->GetID());
+        //_project->AddEntity(subEntity);
+        entity->AddSubEntity(subEntity);
+        subEntity->AddComponent(new ModelComponent(cow->GetID()));
+        //subEntity->AddComponent(new PositionComponent(Vector()));
+        LightComponent* light = new LightComponent(AMBIENT, Color(1.0f,1.0f,1.0f,1.0f), Color(), Color(), Vector());
+        entity->AddComponent(light);
+        _engine->CreateModel(*cow);
+    _mainWindow = new GEENIEMainWindow(this);
+    //_mainWindow->getSceneEditWidget()->GetEngineWidget()->GetWidget()->setGeometry(0, 0, 800, 600);
+    _mainWindow->getSceneEditWidget()->GetEngineWidget()->BuildSceneGraph(scene);
+    _highlighter = new ScriptHighlighter(_mainWindow->scriptEditorDocument());
     //EXAMPLE PROJECT
     createDockWidgetTitles();
     QDir dir;

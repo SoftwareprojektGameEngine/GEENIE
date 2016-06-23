@@ -21,7 +21,8 @@ SOURCES += \
     graphicswindowex.cpp \
     renderstagecacheex.cpp \
     renderstageex.cpp \
-    stateex.cpp
+    stateex.cpp \
+    compositeviewerex.cpp
 
 HEADERS +=\
         backend_global.h \
@@ -32,7 +33,8 @@ HEADERS +=\
     stateex.h \
     renderstageex.h \
     cullvisitorex.h \
-    graphicswindowex.h
+    graphicswindowex.h \
+    compositeviewerex.h
 
 DLLDESTDIR = $$OUT_PWD/../bin
 
