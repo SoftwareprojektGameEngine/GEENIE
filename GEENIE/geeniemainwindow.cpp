@@ -7,11 +7,12 @@
 #include <QCloseEvent>
 #include <QDebug>
 
-GEENIEMainWindow::GEENIEMainWindow(GEENIE* geenie, QWidget *parent) :
-    QMainWindow(parent)//,
-    //ui(new Ui::GEENIEMainWindow)
+GEENIEMainWindow::GEENIEMainWindow(EngineWrapper* engine, QWidget *parent) :
+    QMainWindow(parent),
+    _projectSaved(true),
+    _projectConfigured(false),
+    ui(new Ui::GEENIEMainWindow)
 {
-    ui = new Ui::GEENIEMainWindow;
     ui->setupUi(this);
     QFont font;
     font.setFamily("Courier");
@@ -26,13 +27,15 @@ GEENIEMainWindow::GEENIEMainWindow(GEENIE* geenie, QWidget *parent) :
 
     //engineWidget = geenie->getEngine()->CreateWidget();
     //engineWidget->GetWidget()->setParent(this);
-    _sceneEditWidget = new SceneEditWidget(geenie);
+    _sceneEditWidget = new SceneEditWidget(engine);
     auto layout = new QVBoxLayout();
     layout->addWidget(_sceneEditWidget);
     layout->setContentsMargins(0,0,0,0);
     _sceneEditWidget->setLayout(layout);
 
     ui->tabWidget->addTab(_sceneEditWidget, QString("SceneEdit"));//engineWidget->GetWidget(), QString("scene edit"));
+    ui->actionUndo->setEnabled(false);
+    ui->actionRedo->setEnabled(false);
 }
 
 GEENIEMainWindow::~GEENIEMainWindow()
@@ -42,8 +45,25 @@ GEENIEMainWindow::~GEENIEMainWindow()
 
 void GEENIEMainWindow::closeEvent(QCloseEvent *event)
 {
+    emit onClose();
+    if(!_projectSaved)
+    {
+        QMessageBox::StandardButton sBtn = QMessageBox::question(this,tr("Unsaved changes"),
+                                                                 tr("There are unsaved changes.\nWould you like to save them before closing?"),
+                                                                 QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                                 QMessageBox::Yes);
+        if(sBtn == QMessageBox::Yes)
+        {
+            emit saveProject();
+        }
+        else if(sBtn == QMessageBox::Cancel)
+        {
+            event->ignore();
+            return;
+        }
+    }
     QMessageBox::StandardButton resBtn = QMessageBox::question( this, tr("GEENIE"),
-                                                                tr("Are you sure?\n"),
+                                                                tr("Are you sure you want to leave?\n"),
                                                                 QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
                                                                 QMessageBox::Yes);
     if (resBtn == QMessageBox::Cancel)
@@ -193,4 +213,119 @@ void GEENIEMainWindow::on_actionExplorer_toggled(bool arg1)
 void GEENIEMainWindow::on_actionAssets_toggled(bool arg1)
 {
     emit toggleDock(EDockWidgetTypes::AssetsWidget,arg1);
+}
+
+void GEENIEMainWindow::on_actionRedo_triggered()
+{
+    emit redo();
+}
+
+void GEENIEMainWindow::on_actionUndo_triggered()
+{
+    emit undo();
+}
+
+void GEENIEMainWindow::CanRedo(bool redo)
+{
+    ui->actionRedo->setEnabled(redo);
+}
+
+void GEENIEMainWindow::CanUndo(bool undo)
+{
+    ui->actionUndo->setEnabled(undo);
+}
+
+void GEENIEMainWindow::on_actionSave_triggered()
+{
+    emit saveLayout();
+}
+
+void GEENIEMainWindow::on_actionLoad_triggered()
+{
+    emit loadLayout();
+}
+
+#include "newdialog.h"
+void GEENIEMainWindow::on_actionNew_triggered()
+{
+    emit checkIfProjectConfigured();
+    NewDialog nd(this,_projectConfigured);
+    if(nd.exec() == QDialog::Accepted)
+    {
+        if(nd.type())
+        {
+            emit newProject();
+        }
+        else
+        {
+            emit newScene();
+        }
+    }
+}
+
+void GEENIEMainWindow::setProjectSaved(bool saved)
+{
+    _projectSaved = saved;
+}
+
+void GEENIEMainWindow::setProjectConfigured(bool configured)
+{
+    _projectConfigured = configured;
+}
+
+void GEENIEMainWindow::on_actionLoad_default_layout_triggered()
+{
+    emit setLayoutToDefault();
+}
+
+void GEENIEMainWindow::on_actionOpen_2_triggered()
+{
+    emit onClose();
+    if(!_projectSaved)
+    {
+        QMessageBox::StandardButton sBtn = QMessageBox::question(this,tr("Unsaved changes"),
+                                                                 tr("There are unsaved changes.\nWould you like to save them before closing?"),
+                                                                 QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                                 QMessageBox::Yes);
+        if(sBtn == QMessageBox::Yes)
+        {
+            emit saveProject();
+        }
+        else if(sBtn == QMessageBox::Cancel)
+        {
+            return;
+        }
+    }
+    QString file = QFileDialog::getOpenFileName(this,QString("Load project ..."),QString("C:/"),QString("GEENIE project files (*.geenie)"));
+    if(file.isEmpty())
+    {
+        return;
+    }
+    emit loadProject(file);
+}
+
+void GEENIEMainWindow::on_actionSave_As_triggered()
+{
+    emit checkIfProjectConfigured();
+    if(!_projectConfigured)return;
+
+    QString file = QFileDialog::getSaveFileName(this,"Select project file","C:/","GEENIE project file (*.geenie)");
+    if(file.isEmpty())
+    {
+        QMessageBox::warning(this,QString("No file name"),QString("The filename is empty.\nPlease select one."));
+        return;
+    }
+    if(QFileInfo(file).absoluteDir().entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries).count() != 0)
+    {
+        QMessageBox::warning(this,QString("Not empty directory"),QString("The selected directoy is not empty.\nPlease select another directory."));
+        return;
+    }
+    emit saveProject(file);
+}
+
+void GEENIEMainWindow::on_actionSave_2_triggered()
+{
+    emit checkIfProjectConfigured();
+    if(!_projectConfigured)return;
+    emit saveProject();
 }

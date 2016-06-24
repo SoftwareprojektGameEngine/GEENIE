@@ -9,19 +9,46 @@ namespace Ui {
 class SceneEditWidget;
 }
 
+/*!
+ * \class SceneEditWidget sceneeditwidget.h
+ * \brief The SceneEditWidget class
+ */
+
 class SceneEditWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit SceneEditWidget(GEENIE* geenie, QWidget *parent = 0);
+
+    //! Constructor.
+    /*!
+     * Creates a widget which shows the osg output.
+     * \param engine The connection to osg.
+     * \param parent The parent widget.
+     */
+
+    explicit SceneEditWidget(EngineWrapper* engine, QWidget *parent = 0);
+
+    //! Deconstructor.
+    /*!
+     * Deletes the osg-widget and the whole ui.
+     */
     ~SceneEditWidget();
 
     inline EngineWidgetWrapper* GetEngineWidget() { return engineWidget; }
 
 private:
+
+    //! Private variable that stores the sceneeditwidget ui.
+
     Ui::SceneEditWidget *ui;
+
+    //! Private variable that stores the connection to osg.
+
     EngineWrapper* engine;
+
+    //! Private variable that stores the connection to the osg-widget.
+
     EngineWidgetWrapper* engineWidget;
     Vector camPos;
     Vector camDir;
@@ -29,6 +56,9 @@ private:
 
 protected:
     virtual void keyPressEvent(QKeyEvent* keyEvent);
+
+private slots:
+    void setScene(QUuid sceneID);
 };
 
 #endif // SCENEEDITWIDGET_H

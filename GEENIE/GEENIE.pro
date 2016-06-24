@@ -22,60 +22,56 @@ SOURCES += main.cpp\
     ../tinyxml/tinyxmlerror.cpp \
     ../tinyxml/tinyxmlparser.cpp \
     layoutform.cpp \
-    newprojectwidget.cpp \
     scripthighlighter.cpp \
     assetwidget.cpp \
-    inspector.cpp \
-    inspectoraudiowidget.cpp \
-    inspectorcamerawidget.cpp \
-    inspectormaterialwidget.cpp \
-    inspectortexturewidget.cpp \
-    inspectortransformwidget.cpp \
     exitdialog.cpp \
-    toolbar.cpp \
     sceneeditwidget.cpp \
     inspectorwidget.cpp \
     gdockwidget.cpp \
     sceneexplorer.cpp \
-    inspectorparentwidget.cpp
+    addcomponentdialog.cpp \
+    addentitydialog.cpp \
+    renamescenedialog.cpp \
+    renameentitydialog.cpp \
+    newdialog.cpp \
+    newprojectdialog.cpp \
+    addscenedialog.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
     ../tinyxml/tinystr.h \
     ../tinyxml/tinyxml.h \
     layoutform.h \
-    newprojectwidget.h \
     scripthighlighter.h \
     assetwidget.h \
-    inspector.h \
-    inspectoraudiowidget.h \
-    inspectorcamerawidget.h \
-    inspectormaterialwidget.h \
-    inspectortexturewidget.h \
-    inspectortransformwidget.h \
     exitdialog.h \
-    toolbar.h \
     sceneeditwidget.h \
     inspectorwidget.h \
     gdockwidget.h \
     sceneexplorer.h \
-    inspectorparentwidget.h
+    addcomponentdialog.h \
+    addentitydialog.h \
+    renamescenedialog.h \
+    renameentitydialog.h \
+    newdialog.h \
+    newprojectdialog.h \
+    addscenedialog.h
 
 FORMS    += geeniemainwindow.ui \
     layoutform.ui \
-    newprojectwidget.ui \
     assetwidget.ui \
     inspector.ui \
-    inspectoraudiowidget.ui \
-    inspectorcamerawidget.ui \
-    inspectormaterialwidget.ui \
-    inspectortexturewidget.ui \
-    inspectortransformwidget.ui \
     exitdialog.ui \
-    toolbar.ui \
     sceneeditwidget.ui \
     inspectorwidget.ui \
-    sceneexplorer.ui
+    sceneexplorer.ui \
+    addcomponentdialog.ui \
+    addentitydialog.ui \
+    renamescenedialog.ui \
+    renameentitydialog.ui \
+    newdialog.ui \
+    newprojectdialog.ui \
+    addscenedialog.ui
 
 
 win32: DESTDIR = $$OUT_PWD/../bin

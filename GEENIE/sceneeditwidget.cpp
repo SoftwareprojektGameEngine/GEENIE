@@ -19,7 +19,7 @@ Vector addVector(const Vector& vec1, const Vector& vec2) {
     return Vector(vec1.x+vec2.x, vec1.y+vec2.y, vec1.z+vec2.z, vec1.w+vec2.w);
 }
 
-SceneEditWidget::SceneEditWidget(GEENIE* geenie, QWidget *parent) :
+SceneEditWidget::SceneEditWidget(EngineWrapper* engine, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SceneEditWidget)
 {
@@ -29,7 +29,7 @@ SceneEditWidget::SceneEditWidget(GEENIE* geenie, QWidget *parent) :
     camDir = Vector(1.0f,0.0f,0.0f,0.0f);
     camUp = Vector(0.0f,1.0f,0.0f,0.0f);
 
-    this->engine = geenie->getEngine();
+    this->engine = engine;
     this->engineWidget = engine->CreateWidget();
 
     ui->verticalLayout->addWidget(engineWidget->GetWidget());
@@ -79,4 +79,8 @@ SceneEditWidget::~SceneEditWidget()
 {
     delete engineWidget;
     delete ui;
+}
+
+void SceneEditWidget::setScene(QUuid sceneID) {
+
 }

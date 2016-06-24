@@ -1,8 +1,10 @@
 #include "core.h"
-#include "QDebug"
+#include <QDir>
+#include <QDebug>
+
 #define CALC_INDEX(index) ((index) % (MAX_NUM_USERACTIONS + 1))
 
-Project::Project(EngineWrapper* engine, QString name) : fastEntityLookup(), scenes(), assets(), projectName(name) {
+Project::Project(EngineWrapper* engine, QString name, QString path) : fastEntityLookup(), scenes(), assets(), projectName(name), projectPath(path),saved(false) {
     for(int i=0; i < MAX_NUM_USERACTIONS+1;i++) {
         this->userActions[i] = nullptr;
     }
@@ -11,6 +13,12 @@ Project::Project(EngineWrapper* engine, QString name) : fastEntityLookup(), scen
     this->currentActionIndex = 0;
 
     this->engine = engine;
+    emit CanUndoSignal(this->CanUndo());
+    emit CanRedoSignal(this->CanRedo());
+    if(!QDir(this->assetPath()).exists())
+    {
+        QDir().mkpath(this->assetPath());
+    }
 }
 
 Project::~Project() {
@@ -25,9 +33,10 @@ Project::~Project() {
         delete scene;
     }
 }
-
+#include <QDebug>
 void Project::AddUserAction(UserAction *newAction) {
     // clear useractions in front (if any)
+    saved = false;
     if (this->CanRedo()) {
         int index = CALC_INDEX(this->firstActionIndex - 1);
 
@@ -40,7 +49,6 @@ void Project::AddUserAction(UserAction *newAction) {
             index = CALC_INDEX(index - 1);
         }
     }
-
     // advance current index to next slot
     this->currentActionIndex = CALC_INDEX(this->currentActionIndex + 1);
     // add action in current slot
@@ -52,8 +60,9 @@ void Project::AddUserAction(UserAction *newAction) {
         this->userActions[nextIndex] = nullptr;
         this->firstActionIndex = CALC_INDEX(this->firstActionIndex + 1);
     }
-
     newAction->Do();
+    emit CanUndoSignal(this->CanUndo());
+    emit CanRedoSignal(this->CanRedo());
 }
 
 bool Project::CanUndo() {
@@ -67,20 +76,27 @@ bool Project::CanRedo() {
 }
 
 void Project::Undo() {
+    saved = false;
     if(this->CanUndo()) {
         this->userActions[this->currentActionIndex]->Undo();
         this->currentActionIndex = CALC_INDEX(this->currentActionIndex - 1);
     }
+    emit CanUndoSignal(this->CanUndo());
+    emit CanRedoSignal(this->CanRedo());
 }
 
 void Project::Redo() {
+    saved = false;
     if(this->CanRedo()) {
         this->currentActionIndex = CALC_INDEX(this->currentActionIndex + 1);
         this->userActions[this->currentActionIndex]->Do();
     }
+    emit CanUndoSignal(this->CanUndo());
+    emit CanRedoSignal(this->CanRedo());
 }
 
 void Project::AddEntity(Entity* entity) {
+    saved = false;
     if (this->scenes.contains(entity->GetParentID())) {
         this->scenes.value(entity->GetParentID())->AddEntity(entity);
     } else if(this->fastEntityLookup.contains(entity->GetParentID())) {
@@ -93,6 +109,7 @@ void Project::AddEntity(Entity* entity) {
 }
 
 Entity* Project::RemoveEntity(const QUuid& entityID) {
+    saved = false;
     Entity* removedEntity = this->FindEntity(entityID);
 
     if (removedEntity != nullptr) {
@@ -113,12 +130,14 @@ Entity* Project::FindEntity(const QUuid& entityID) {
 }
 
 void Project::AddScene(Scene* scene) {
+    saved = false;
     if (scene == nullptr) return;
 
     this->scenes.insert(scene->GetID(), scene);
 }
 
 Scene* Project::RemoveScene(const QUuid& sceneID) {
+    saved = false;
     Scene* scene = this->scenes.value(sceneID, nullptr);
 
     if (scene != nullptr) {
@@ -136,11 +155,53 @@ QHashIterator<QUuid, Scene*> Project::GetScenes() {
     return QHashIterator<QUuid, Scene*>(this->scenes);
 }
 
+#include <QFileInfo>
+
 void Project::AddAsset(Asset *asset) {
-    qDebug() << "adding asset " << asset->GetID() << " to project";
+    saved = false;
     if (asset == nullptr) return;
 
-    this->assets.insert(asset->GetID(), asset);
+    Asset* a = nullptr;
+
+    QFile file(asset->GetPath());
+    file.copy(this->assetPath()+QString(QFileInfo(asset->GetPath()).fileName()));
+
+    switch(asset->GetType())
+    {
+    case AssetType::TEXTURE_ASSET:
+    {
+        a = new TextureAsset(this->assetPath()+QFileInfo(asset->GetPath()).fileName(),asset->GetID());
+        break;
+    }
+    case AssetType::MODEL_ASSET:
+    {
+        a = new ModelAsset(this->assetPath()+QFileInfo(asset->GetPath()).fileName(),asset->GetID());
+        break;
+    }
+    case AssetType::MATERIAL_ASSET:
+    {
+        a = new MaterialAsset(this->assetPath()+QFileInfo(asset->GetPath()).fileName(),asset->GetID());
+        break;
+    }
+    case AssetType::SCRIPT_ASSET:
+    {
+        a = new ScriptAsset(this->assetPath()+QFileInfo(asset->GetPath()).fileName(),asset->GetID());
+        break;
+    }
+    case AssetType::AUDIO_ASSET:
+    {
+        break;
+    }
+    case AssetType::VIDEO_ASSET:
+    {
+        break;
+    }
+    }
+
+    if(a == nullptr)return;
+    delete asset;
+
+    this->assets.insert(a->GetID(), a);
 }
 
 Asset* Project::GetAsset(const QUuid &assetID) {
@@ -148,11 +209,14 @@ Asset* Project::GetAsset(const QUuid &assetID) {
 }
 
 Asset* Project::RemoveAsset(const QUuid &assetID) {
+    saved = false;
     Asset* asset = this->assets.value(assetID, nullptr);
 
     if (asset != nullptr) {
         this->assets.remove(assetID);
     }
+
+    QFile(this->assetPath()+asset->GetPath()).remove();
 
     return asset;
 }
@@ -169,11 +233,18 @@ Color Project::XmlToColor(TiXmlElement *parent, QString &name)
 {
     Color ret;
     TiXmlElement* c = parent->FirstChildElement(name.toUtf8().data());
-    float t = 0;
-    ret.r = c->FirstChildElement("r")->QueryFloatAttribute("r",&t);
-    ret.g = c->FirstChildElement("g")->QueryFloatAttribute("g",&t);
-    ret.b = c->FirstChildElement("b")->QueryFloatAttribute("b",&t);
-    ret.a = c->FirstChildElement("a")->QueryFloatAttribute("a",&t);
+    float r = 0;
+    float g = 0;
+    float b = 0;
+    float a = 0;
+    c->FirstChildElement("r")->QueryFloatAttribute("r",&r);
+    c->FirstChildElement("g")->QueryFloatAttribute("g",&g);
+    c->FirstChildElement("b")->QueryFloatAttribute("b",&b);
+    c->FirstChildElement("a")->QueryFloatAttribute("a",&a);
+    ret.r = r;
+    ret.g = g;
+    ret.b = b;
+    ret.a = a;
     return ret;
 }
 
@@ -181,17 +252,27 @@ Vector Project::XmlToVector(TiXmlElement *parent, QString &name)
 {
     Vector ret = Vector();
     TiXmlElement* v = parent->FirstChildElement(name.toUtf8().data());
-    ret.x = v->FirstChildElement("x")->QueryFloatAttribute("x",0);
-    ret.y = v->FirstChildElement("y")->QueryFloatAttribute("y",0);
-    ret.z = v->FirstChildElement("z")->QueryFloatAttribute("z",0);
-    ret.w = v->FirstChildElement("w")->QueryFloatAttribute("w",0);
+    float x = 0;
+    v->FirstChildElement("x")->QueryFloatAttribute("x",&x);
+    ret.x = x;
+    float y = 0;
+    v->FirstChildElement("y")->QueryFloatAttribute("y",&y);
+    ret.y = y;
+    float z = 0;
+    v->FirstChildElement("z")->QueryFloatAttribute("z",&z);
+    ret.z = z;
+    float w = 0;
+    v->FirstChildElement("w")->QueryFloatAttribute("w",&w);
+    ret.w = w;
     return ret;
 }
 
 void Project::XmlToComponent(TiXmlElement *c, Entity *e)
 {
     QUuid id = QUuid(QString(c->Attribute("id")));
-    ComponentType type = (ComponentType)c->QueryIntAttribute("type",(int)ComponentType::MODEL);
+    int itype = 0;
+    c->QueryIntAttribute("type",&itype);
+    ComponentType type = static_cast<ComponentType>(itype);
     switch(type)
     {
     case ComponentType::MODEL:
@@ -220,7 +301,7 @@ void Project::XmlToComponent(TiXmlElement *c, Entity *e)
         TiXmlElement* position = c->FirstChildElement("position");
         if(position != 0)
         {
-            Vector pos = XmlToVector(position,QString("position"));
+            Vector pos = XmlToVector(position,QString("pos"));
             e->AddComponent(new PositionComponent(pos,id));
         }
         break;
@@ -245,7 +326,8 @@ void Project::XmlToComponent(TiXmlElement *c, Entity *e)
         if(texture != 0)
         {
             QUuid tId = QUuid(QString(texture->Attribute("id")));
-            int index = texture->QueryIntAttribute("index",0);
+            int index = 0;
+            texture->QueryIntAttribute("index",&index);
             e->AddComponent(new TextureComponent(tId,index,id));
         }
         break;
@@ -275,7 +357,9 @@ void Project::XmlToComponent(TiXmlElement *c, Entity *e)
         TiXmlElement* script = c->FirstChildElement("script");
         QUuid sId = QUuid(QString(script->Attribute("id")));
         TiXmlElement* trigger = script->FirstChildElement("trigger");
-        ScriptTrigger ttype = (ScriptTrigger)trigger->QueryIntAttribute("type",0);
+        int itype = 0;
+        trigger->QueryIntAttribute("type",&itype);
+        ScriptTrigger ttype = static_cast<ScriptTrigger>(itype);
         e->AddComponent(new ScriptTriggerComponent(ttype,sId,id));
         break;
     }
@@ -288,7 +372,8 @@ void Project::XmlToEntity(TiXmlElement *e)
 {
     QUuid id = QUuid(QString(e->Attribute("id")));
     QUuid parentId = QUuid(QString(e->Attribute("parent")));
-    Entity* entity = new Entity(parentId,id);
+    QString name = QString(e->Attribute("name"));
+    Entity* entity = new Entity(parentId,id,name);
     this->AddEntity(entity);
     TiXmlElement* comp = e->FirstChildElement("component");
     for(comp;comp != 0;comp = comp->NextSiblingElement("component"))
@@ -330,29 +415,37 @@ void Project::load(QString &file)
     TiXmlElement* asset = root->FirstChildElement("asset");
     for(asset;asset != 0;asset = asset->NextSiblingElement("asset"))
     {
-        AssetType type = (AssetType)asset->QueryIntAttribute("type",(int)AssetType::TEXTURE_ASSET);
+        int iType = 0;
+        asset->QueryIntAttribute("type",&iType);
+        AssetType type = static_cast<AssetType>(iType);
         QUuid id = QUuid(QString(asset->Attribute("id")));
-        QString path = QString(asset->FirstChildElement("path")->GetText());
+        QString path = QString(this->assetPath()+asset->FirstChildElement("path")->GetText());
         switch(type)
         {
         case AssetType::TEXTURE_ASSET:
         {
             this->AddAsset(new TextureAsset(path,id));
+            break;
         }
         case AssetType::MODEL_ASSET:
         {
             this->AddAsset(new ModelAsset(path,id));
+            break;
         }
         case AssetType::MATERIAL_ASSET:
         {
             this->AddAsset(new MaterialAsset(path,id));
+            break;
         }
         case AssetType::SCRIPT_ASSET:
         {
             this->AddAsset(new ScriptAsset(path,id));
+            break;
         }
         }
     }
+    projectPath = file;
+    saved = true;
 }
 
 void Project::ColorToXml(TiXmlElement *parent, Color color, QString &name)
@@ -363,10 +456,10 @@ void Project::ColorToXml(TiXmlElement *parent, Color color, QString &name)
     TiXmlElement* g = new TiXmlElement("g");
     TiXmlElement* b = new TiXmlElement("b");
     TiXmlElement* a = new TiXmlElement("a");
-    r->SetAttribute("value",QString::number(color.r).toUtf8().data());
-    g->SetAttribute("value",QString::number(color.g).toUtf8().data());
-    b->SetAttribute("value",QString::number(color.b).toUtf8().data());
-    a->SetAttribute("value",QString::number(color.a).toUtf8().data());
+    r->SetDoubleAttribute("value",color.r);
+    g->SetDoubleAttribute("value",color.g);
+    b->SetDoubleAttribute("value",color.b);
+    a->SetDoubleAttribute("value",color.a);
     c->LinkEndChild(r);
     c->LinkEndChild(g);
     c->LinkEndChild(b);
@@ -382,10 +475,10 @@ void Project::VectorToXml(TiXmlElement *parent, Vector vector, QString &name)
     TiXmlElement* y = new TiXmlElement("y");
     TiXmlElement* z = new TiXmlElement("z");
     TiXmlElement* w = new TiXmlElement("w");
-    x->SetAttribute("value",QString::number(vector.x).toUtf8().data());
-    y->SetAttribute("value",QString::number(vector.y).toUtf8().data());
-    z->SetAttribute("value",QString::number(vector.z).toUtf8().data());
-    w->SetAttribute("value",QString::number(vector.w).toUtf8().data());
+    x->SetDoubleAttribute("value",vector.x);
+    y->SetDoubleAttribute("value",vector.y);
+    z->SetDoubleAttribute("value",vector.z);
+    w->SetDoubleAttribute("value",vector.w);
     v->LinkEndChild(x);
     v->LinkEndChild(y);
     v->LinkEndChild(z);
@@ -419,7 +512,7 @@ void Project::AddComponentInformationToXml(TiXmlElement *componentNode, Componen
     {
         PositionComponent* c = dynamic_cast<PositionComponent*>(component);
         TiXmlElement* position = new TiXmlElement("position");
-        VectorToXml(position,c->GetPosition(),QString("position"));
+        VectorToXml(position,c->GetPosition(),QString("pos"));
         componentNode->LinkEndChild(position);
         break;
     }
@@ -479,6 +572,7 @@ void Project::AddComponentInformationToXml(TiXmlElement *componentNode, Componen
 TiXmlElement *Project::SubEntitiesToXml(Entity *entity)
 {
     TiXmlElement* e = new TiXmlElement("entity");
+    e->SetAttribute("name",entity->name().toUtf8().data());
     e->SetAttribute("id",entity->GetID().toByteArray().data());
     e->SetAttribute("parent",entity->GetParentID().toByteArray().data());
     if(entity->HasSubEntities())
@@ -511,6 +605,25 @@ TiXmlElement *Project::SubEntitiesToXml(Entity *entity)
 
 void Project::save(QString &file)
 {
+    saved = true;
+    if(file != this->file())
+    {
+        QDir().mkpath(QFileInfo(file).absolutePath()+QString("/assets/"));
+        QStringList fileList = QDir(this->assetPath()).entryList(QDir::Files);
+        for(auto const filed : fileList)
+        {
+            QFile assetFile(this->assetPath() + filed);
+            QString newFile = QFileInfo(file).absolutePath()+QString("/assets/")+filed;
+            assetFile.copy(newFile);
+        }
+        projectPath = file;
+    }
+    QFile saveFile(file);
+    if(!saveFile.exists())
+    {
+        saveFile.open(QIODevice::WriteOnly);
+        saveFile.close();
+    }
     TiXmlDocument doc;
     TiXmlDeclaration* decl = new TiXmlDeclaration("1.0","utf8","");
     doc.LinkEndChild(decl);
@@ -540,7 +653,7 @@ void Project::save(QString &file)
         assetElement->SetAttribute("id",asset->GetID().toByteArray().data());
         assetElement->SetAttribute("type",(int)asset->GetType());
         TiXmlElement* assetPath = new TiXmlElement("path");
-        assetPath->LinkEndChild(new TiXmlText(asset->GetPath().toUtf8().data()));
+        assetPath->LinkEndChild(new TiXmlText(QFileInfo(asset->GetPath()).fileName().toUtf8().data()));
         assetElement->LinkEndChild(assetPath);
         root->LinkEndChild(assetElement);
     }
@@ -550,4 +663,20 @@ void Project::save(QString &file)
 QString Project::name()
 {
     return projectName;
+}
+
+QString Project::file()
+{
+    return projectPath;
+}
+
+QString Project::path()
+{
+    QFileInfo info(projectPath);
+    return info.path();
+}
+
+QString Project::assetPath()
+{
+    return QString("%1%2").arg(this->path()).arg("/assets/");
 }

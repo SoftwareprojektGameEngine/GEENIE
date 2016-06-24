@@ -1,13 +1,11 @@
 #include "useractions.h"
-
+#include <QDebug>
 ModifyEntityAction::ModifyEntityAction(Project &project, QUuid entityID, QUuid oldComponentID, Component *newValue) : project(project), entityID(entityID) {
     this->newValue = newValue;
-
     Entity* entity = project.FindEntity(entityID);
     if (entity != nullptr) {
         this->oldValue = entity->GetComponent(oldComponentID);
     }
-
     this->done = false;
 }
 
@@ -26,7 +24,6 @@ void ModifyEntityAction::Do() {
         if (this->oldValue != nullptr) {
             entity->RemoveComponent(this->oldValue->GetID());
         }
-
         entity->AddComponent(this->newValue);
 
         this->done = true;

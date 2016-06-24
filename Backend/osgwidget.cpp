@@ -1,8 +1,4 @@
 #include "osgwidget.h"
-#include "cullvisitorex.h"
-#include "graphicswindowex.h"
-#include "viewerex.h"
-#include "stateex.h"
 #include "components.h"
 #include "osg/PositionAttitudeTransform"
 #include "osg/Texture2D"
@@ -255,18 +251,6 @@ bool OSGWidget::event( QEvent* event )
   return handled;
 }
 
-void OSGWidget::onHome()
-{
-  osgViewer::ViewerBase::Views views;
-  viewer_->getViews( views );
-
-  for( std::size_t i = 0; i < views.size(); i++ )
-  {
-    osgViewer::View* view = views.at(i);
-    view->home();
-  }
-}
-
 void OSGWidget::onResize( int width, int height )
 {
   std::vector<osg::Camera*> cameras;
@@ -371,6 +355,7 @@ osg::Node* OSGWidget::buildNode(Entity* entity) {
             }
 
             group->addChild(geode);
+            qDebug() << "added sphere";
 
         }
             break;
@@ -440,7 +425,7 @@ osg::Node* OSGWidget::buildNode(Entity* entity) {
             break;
         case POSITION:
         {
-            //qDebug() << "adding position to entity " << entity->GetID();
+            qDebug() << "adding position to entity " << entity->GetID();
             Vector pos = static_cast<PositionComponent*>(component)->GetPosition();
             osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform();
             pat->setPosition(osg::Vec3d(pos.x, pos.y, pos.z));
@@ -493,7 +478,7 @@ bool OSGWidget::UpdateSceneGraph() {
 
     this->rootNode = newRootNode;
 
-    //viewer->setSceneData(this->rootNode.get());
+    viewer_->getView(0)->setSceneData(this->rootNode.get());
 
     return true;
 }

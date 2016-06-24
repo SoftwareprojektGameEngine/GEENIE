@@ -1,8 +1,8 @@
 #include "useractions.h"
 
-CreateEntityAction::CreateEntityAction(Project& project, QUuid parentID) : project(project), parentID(parentID) {
+CreateEntityAction::CreateEntityAction(Project& project, QUuid parentID, QString name) : project(project), parentID(parentID) {
     this->done = false;
-    this->createdEntity = new Entity(parentID);
+    this->createdEntity = new Entity(parentID,QUuid::createUuid(),name);
 }
 
 CreateEntityAction::~CreateEntityAction() {

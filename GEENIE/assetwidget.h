@@ -7,6 +7,8 @@ namespace Ui {
 class AssetWidget;
 }
 
+#include "assets.h"
+
 /*!
  * \class AssetWidget assetwidget.h
  * \brief The AssetWidget class
@@ -29,12 +31,8 @@ public:
      */
     ~AssetWidget();
 
-    /*!
-     * \fn void FillTreeView(QString _path)
-     * \brief Fills asset widget with information from path
-     * \param _path
-     */
-    void FillTreeView(QString _path);
+    void clear();
+    void AddAsset(Asset* asset);
 
 private slots:
     /*!
@@ -49,14 +47,12 @@ private slots:
      */
     void on_DeleteButton_clicked();
 
-    /*!
-     * \fn void on_treeView_clicked()
-     * \brief slot called when the asset view is clicked
-     */
-    void on_treeView_clicked(const QModelIndex &index);
-
 private:
     Ui::AssetWidget *ui;
+
+signals:
+    void DeleteAsset(QUuid id);
+    void AddAssetToProject(QString, AssetType);
 };
 
 #endif // ASSETWINDOW_H

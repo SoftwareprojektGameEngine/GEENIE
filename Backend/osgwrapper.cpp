@@ -60,12 +60,12 @@ ResHandle OSGWrapper::CreateModel(const ModelAsset& modelAsset) {
     osg::Node* model = dynamic_cast<osg::Node*>(osgDB::readNodeFile(modelAsset.GetPath().toStdString()));
 
     if (model != nullptr) {
-        //qDebug() << "model was created!";
+        qDebug() << "model was created!";
         model->ref();
         models.insert(modelAsset.GetID(), model);
         return (ResHandle)model;
     }
-    //qDebug() << "ERROR: model could not be created!";
+    qDebug() << "ERROR: model could not be created!";
 
     return nullptr;
 }

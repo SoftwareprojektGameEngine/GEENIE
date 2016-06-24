@@ -1,6 +1,7 @@
 #include "core.h"
+#include "components.h"
 
-Entity::Entity(QUuid parentID, QUuid id) : parentID(parentID), components(), subEntities() {
+Entity::Entity(QUuid parentID, QUuid id, QString name) : parentID(parentID), components(), subEntities(),_name(name) {
     this->id = id;
 }
 

@@ -67,7 +67,10 @@ public:
     virtual QUuid GetID() = 0;
     //! GetType returns the component's type
     virtual ComponentType GetType() = 0;
+    //! GetTypeName returns the component's type name
     virtual QString GetTypeName() = 0;
+    //! name returns the component's name
+    virtual QString name() = 0;
 };
 
 /*!
@@ -84,13 +87,15 @@ private:
     QHash<QUuid, Component*> components;
     //! subEntities contains all direct subentities of this entity
     QHash<QUuid, Entity*> subEntities;
+    //! name contains entity name
+    QString _name;
 public:
     /*!
      * \brief Entity
      * \param parentID the id of the parent entity
      * \param id the id of this entity (for serialization purposes)
      */
-    Entity(QUuid parentID, QUuid id = QUuid::createUuid());
+    Entity(QUuid parentID, QUuid id = QUuid::createUuid(), QString name = QString("Entity"));
     //! The destructor
     ~Entity();
 
@@ -154,6 +159,16 @@ public:
      * \return true if this entity has any components
      */
     bool HasComponents();
+    /*!
+     * \brief Returns the name of the entity
+     * \return name
+     */
+    QString name(){return _name;}
+    /*!
+     * \brief Sets the entity name
+     * \param name
+     */
+    void setName(QString name){_name = name;}
 };
 
 /*!
@@ -169,12 +184,16 @@ private:
      * \brief entities
      */
     QHash<QUuid, Entity*> entities;
+    /*!
+     * \brief _name
+     */
+    QString _name;
 public:
     /*!
      * \brief Scene
      * \param id
      */
-    Scene(QUuid id = QUuid::createUuid());
+    Scene(QUuid id = QUuid::createUuid(), QString name = QString("Scene"));
     //! The destructor
     ~Scene();
 
@@ -211,6 +230,16 @@ public:
      * \return
      */
     bool HasEntities();
+    /*!
+     * \brief Returns the name of the scene
+     * \return name
+     */
+    QString name(){return _name;}
+    /*!
+     * \brief Sets the scene name
+     * \param name
+     */
+    void setName(QString name){_name = name;}
 };
 
 #include "enginewrapper.h"
@@ -241,6 +270,10 @@ private:
     EngineWrapper* engine;
     //! The project name
     QString projectName;
+    //! The project directory
+    QString projectPath;
+    //! The project save status
+    bool saved;
     //! Helper function for subentities
     TiXmlElement *SubEntitiesToXml(Entity* entity);
     //! Helper function for components
@@ -260,7 +293,7 @@ private:
 
 public:
     //! The project constructor.
-    Project(EngineWrapper* engine, QString name = QString("untitled"));
+    Project(EngineWrapper* engine, QString name = QString("untitled"), QString path = QString("C:/"));
     //! The project destructor.
     ~Project();
 
@@ -314,10 +347,26 @@ public:
     void save(QString& file);
     //! Returns project name
     QString name();
+    //! Returns project path
+    QString path();
+    //! Returns project path with filename
+    QString file();
+    //! Returns asset path
+    QString assetPath();
+    //! Returns if there are unsaved changes
+    bool unsavedChanges(){return !saved;}
 
 public slots:
 private slots:
 signals:
+    /*!
+     * \brief Signals if there can be something done
+     */
+    void CanRedoSignal(bool);
+    /*!
+     * \brief Signals if there can be something done
+     */
+    void CanUndoSignal(bool);
 };
 
 #endif // CORE_H
