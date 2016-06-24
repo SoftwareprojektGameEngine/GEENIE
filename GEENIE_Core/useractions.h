@@ -162,7 +162,7 @@ private:
     Asset* asset;
     bool done;
 public:
-    AddAssetAction(Project& project, Asset* asset);
+    AddAssetAction(Project& project, AssetType type, QString path);
     ~AddAssetAction();
 
     void Do();

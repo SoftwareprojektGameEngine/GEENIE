@@ -1036,46 +1036,17 @@ void GEENIE::RenameEntity(QUuid id, QString name)
 
 void GEENIE::AddAsset(QString path, AssetType type)
 {
-    Asset* asset = nullptr;
-    switch(type)
+    if(type == AssetType::AUDIO_ASSET || type == AssetType::VIDEO_ASSET)
     {
-    case AssetType::MATERIAL_ASSET:
-    {
-        asset = new MaterialAsset(path);
-        break;
-    }
-    case AssetType::TEXTURE_ASSET:
-    {
-        asset = new TextureAsset(path);
-        break;
-    }
-    case AssetType::MODEL_ASSET:
-    {
-        asset = new ModelAsset(path);
-        break;
-    }
-    case AssetType::SCRIPT_ASSET:
-    {
-        asset = new ScriptAsset(path);
-        break;
-    }
-    case AssetType::AUDIO_ASSET:
-    {
-        break;
-    }
-    case AssetType::VIDEO_ASSET:
-    {
-        break;
-    }
-    default:
-        break;
+        return;
     }
 
-    if(asset != nullptr)
-    {
-        AddAssetAction* aaa = new AddAssetAction((*_project),asset);
+    try {
+        AddAssetAction* aaa = new AddAssetAction((*_project), type, path);
         _project->AddUserAction(aaa);
         fillAssetWidget();
+    } catch(const std::exception& e) {
+        QMessageBox(QMessageBox::Warning, "Error", QString(e.what()), QMessageBox::Ok);
     }
 }
 
