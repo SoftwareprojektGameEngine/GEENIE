@@ -1046,7 +1046,7 @@ void GEENIE::AddAsset(QString path, AssetType type)
         _project->AddUserAction(aaa);
         fillAssetWidget();
     } catch(const std::exception& e) {
-        QMessageBox(QMessageBox::Warning, "Error", QString(e.what()), QMessageBox::Ok);
+        QMessageBox(QMessageBox::Warning, "Error", QString(e.what()), QMessageBox::Ok).exec();
     }
 }
 
