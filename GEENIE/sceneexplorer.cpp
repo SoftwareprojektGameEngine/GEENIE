@@ -2,6 +2,8 @@
 #include "ui_sceneexplorer.h"
 #include "core.h"
 #include <QDebug>
+#include <qdrag.h>
+#include <QMimeData>
 
 //!Initializes the SceneExplorer.
 SceneExplorer::SceneExplorer(QWidget *parent) :
@@ -9,40 +11,12 @@ SceneExplorer::SceneExplorer(QWidget *parent) :
     ui(new Ui::SceneExplorer)
 {
     ui->setupUi(this);
-    ui->treeWidget->setColumnCount(1);
-	/* SceneExplorer Test
-    SCENE_DATA scene;
-    scene.sceneName = "Scene1";
-    scene.sceneId = 0;
+    tree = ui->treeWidget;
+    tree->setColumnCount(1);
 
-	ENTITY_DATA e;
-	e.entityName = "Entity1";
-	e.entityId = 0;
-
-	ENTITY_DATA e2;
-	e2.entityName = "Entity2";
-	e2.entityId = 0;
-
-	ENTITY_DATA e3;
-	e3.entityName = "Entity3";
-	e3.entityId = 0;
-
-	COMPONENT_DATA c;
-	c.componentName = "Comp1";
-	c.entityId = 0;
-
-	e.components.append(c);
-	e2.components.append(c);
-	e3.components.append(c);
-	e2.entities.append(e3);
-	e.entities.append(e2);
-	scene.entities.append(e);
-    QList<SCENE_DATA> scenes;
-    scenes.append(scene);
-	scene.sceneName = "Scene2";
-	scenes.append(scene);
-
-    FillTree(&scenes);*/
+    tree->setAcceptDrops(true);
+    tree->setDragEnabled(true);
+    tree->setDragDropMode(QAbstractItemView::InternalMove);
 }
 
 //!Cleans the used Storage.
@@ -189,6 +163,7 @@ void SceneExplorer::on_treeWidget_customContextMenuRequested(const QPoint &pos)
                 menu->addAction(QString("Add entity"),this,SLOT(ContextMenuAddEntityToEntity()));
                 menu->addAction(QString("Rename entity"),this,SLOT(ContextMenuRenameEntity()));
                 menu->addAction(QString("Delete entity"),this,SLOT(ContextMenuDeleteEntity()));
+                menu->addAction(QString("Move Entity"),this,SLOT(ContextMenuMoveEntity()));
                 menu->addAction(QString("Add Component"),this,SLOT(ContextMenuAddComponent()));
             }
         }
@@ -200,6 +175,12 @@ void SceneExplorer::ContextMenuAddScene()
 {
     emit CMAddScene();
 }
+
+void SceneExplorer::ContextMenuMoveEntity()
+{
+    emit CMMoveEntity(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()));
+}
+
 void SceneExplorer::ContextMenuAddEntityToScene()
 {
     emit CMAddEntity(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()),se::ItemType::SCENE);
@@ -243,4 +224,20 @@ void SceneExplorer::ContextMenuDeleteEntity()
 void SceneExplorer::ContextMenuRenameEntity()
 {
     emit CMRenameEntity(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()));
+}
+
+
+void SceneExplorer::on_treeWidget_itemPressed(QTreeWidgetItem *item, int column)
+{
+/*
+    QDrag *drag = new QDrag(this);
+    QMimeData *mimeData = new QMimeData;
+
+    mimeData->setText("Text");
+    drag->setMimeData(mimeData);
+    QPixmap map;
+
+
+    Qt::DropAction dropAction = drag->exec();
+*/
 }

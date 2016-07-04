@@ -38,3 +38,4 @@ win32:CONFIG(release, debug|release){
 
 INCLUDEPATH += $$PWD/OpenScenegraph/include
 DEPENDPATH += $$PWD/OpenScenegraph/include
+

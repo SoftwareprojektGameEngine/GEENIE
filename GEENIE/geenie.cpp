@@ -260,6 +260,7 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(eWidget,SIGNAL(CMDeleteComponent(QUuid,QUuid)),this,SLOT(DeleteComponent(QUuid,QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteEntity(QUuid)),this,SLOT(DeleteEntity(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteScene(QUuid)),this,SLOT(DeleteScene(QUuid)));
+    QObject::connect(eWidget,SIGNAL(CMMoveEntity(QUuid)),this,SLOT(MoveEntity(QUuid)));
     //QObject::connect(eWidget,SIGNAL(CMRenameEntity(QUuid)),this,SLOT(RenameEntity(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMRenameScene(QUuid)),this,SLOT(RenameScene(QUuid)));
 
@@ -981,6 +982,45 @@ void GEENIE::AddEntity(QUuid parentId, se::ItemType type)
     {
         CreateEntityAction* cea = new CreateEntityAction((*_project),parentId,aed.name());
         _project->AddUserAction(cea);
+        fillSceneExplorer();
+    }
+}
+
+ENTITY_DATA_ME GEENIE::GetEntities(Entity *e, QUuid id)
+{
+    ENTITY_DATA_ME data;
+    data.entityName = e->name();
+    data.entityId = e->GetID();
+
+    QHashIterator<QUuid, Entity*> it = e->GetSubEntities();
+    while(it.hasNext())
+    {
+        it.next();
+        data.entities.push_back(GetEntities(it.value(),id));
+    }
+    return data;
+}
+
+void GEENIE::MoveEntity(QUuid id)
+{
+    QList<ENTITY_DATA_ME> e;
+    QHashIterator<QUuid, Scene*> sc = _project->GetScenes();
+    while(sc.hasNext())
+    {
+        sc.next();
+        QHashIterator<QUuid, Entity*> ent = sc.value()->GetEntities();
+        while(ent.hasNext())
+        {
+           ent.next();
+           e.push_back(GetEntities(ent.value(),id));
+        }
+    }
+    moveentitydialog *dia = new moveentitydialog(_mainWindow);
+    dia->FillComboBox(e, id);
+    if(dia->exec() == QDialog::Accepted)
+    {
+        MoveEntityAction* mea = new MoveEntityAction((*_project),dia->getNewParentID(),dia->getEntityID());
+        _project->AddUserAction(mea);
         fillSceneExplorer();
     }
 }
