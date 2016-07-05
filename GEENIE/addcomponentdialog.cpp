@@ -56,15 +56,7 @@ void AddComponentDialog::on_createBtn_clicked()
     }
     case ComponentType::POSITION:
     {
-        if(ui->checkBox->isChecked())
-        {
-            //TODO: get Pos data?
-            _component = new PositionComponent(Vector(),ui->lineEdit->text());
-        }
-        else
-        {
-            //TODO: Standardcomponent
-        }
+        _component = new PositionComponent(Vector(),ui->lineEdit->text());
         break;
     }
     case ComponentType::LIGHT:
@@ -128,7 +120,13 @@ void AddComponentDialog::on_cancelBtn_clicked()
 
 void AddComponentDialog::SetAssetList(QList<ASSET_DATA> a)
 {
-    QComboBox *list = ui->comboBox;
+    if(a.size() == 0)
+    {
+        ui->checkBox->setChecked(false);
+        ui->checkBox->setEnabled(false);
+        ui->comboBox_2->setEnabled(false);
+    }
+    QComboBox *list = ui->comboBox_2;
     for(int i=0;i<a.count();i++)
     {
         list->addItem(a.at(i).name,a.at(i).id.toByteArray());
@@ -139,5 +137,37 @@ void AddComponentDialog::SetAssetList(QList<ASSET_DATA> a)
 
 void AddComponentDialog::on_comboBox_currentIndexChanged(const QString &arg1)
 {
-    emit LoadAssetList(this, ui->comboBox_2->currentIndex());
+    ui->comboBox_2->clear();
+    if(ui->comboBox->currentIndex() == 2||
+       ui->comboBox->currentIndex() == 3||
+       ui->comboBox->currentIndex() == 6)
+    {
+        ui->checkBox->setChecked(false);
+        ui->comboBox_2->setEnabled(false);
+        ui->checkBox->setEnabled(false);
+    }
+    else
+    {
+        if(ui->comboBox->currentIndex()==-1)return;
+        ui->checkBox->setEnabled(true);
+        if(ui->checkBox->isChecked())
+        {
+            ui->comboBox_2->setEnabled(true);
+            emit LoadAssetList(this, ui->comboBox->currentIndex());
+        }
+    }
+}
+
+void AddComponentDialog::on_checkBox_stateChanged(int arg1)
+{
+    if(ui->checkBox->isChecked())
+    {
+        ui->comboBox_2->setEnabled(true);
+        emit LoadAssetList(this, ui->comboBox->currentIndex());
+    }
+    else
+    {
+        ui->comboBox_2->clear();
+        ui->comboBox_2->setEnabled(false);
+    }
 }

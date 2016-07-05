@@ -75,6 +75,7 @@ public:
 
 private:
     ENTITY_DATA_ME GetEntities(Entity *e,QUuid id);
+    int MapType(int);
 
     //! Entity to inspector method.
     /*!

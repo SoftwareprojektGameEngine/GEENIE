@@ -208,7 +208,7 @@ void SceneExplorer::ContextMenuDeleteComponent()
 
 void SceneExplorer::ContextMenuAddComponent()
 {
-    emit CMAddComponent(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole+2).toByteArray()));
+    emit CMAddComponent(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()));
 }
 
 void SceneExplorer::ContextMenuPreviewScene()

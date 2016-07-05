@@ -27,6 +27,7 @@ GEENIE::GEENIE(QObject *parent) :
     _layoutName("default")//,
     //_highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
 {
+    _project = 0;
     _engine = new OSGWrapper();
     _mainWindow = new GEENIEMainWindow(_engine);
     //EXAMPLE PROJECT
@@ -60,10 +61,8 @@ GEENIE::GEENIE(QObject *parent) :
         e6->AddComponent(new PositionComponent(Vector{1.0f,0.0f,3.0f}));
         _project->AddEntity(e6);
         _project->save(QString("C:/Projects/default.geenie"));
-
         _mainWindow->getSceneEditWidget()->GetEngineWidget()->BuildSceneGraph(scene);
     }
-
     _highlighter = new ScriptHighlighter(_mainWindow->scriptEditorDocument());
 
     createDockWidgetTitles();
@@ -279,7 +278,6 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(loadProject(QString)),this,SLOT(LoadProject(QString)));
     QObject::connect(_mainWindow,SIGNAL(checkIfProjectConfigured()),this,SLOT(ProjectConfigured()));
     QObject::connect(_mainWindow,SIGNAL(setLayoutToDefault()),this,SLOT(SetDefaultLayout()));
-
 }
 
 GEENIE::~GEENIE()
@@ -951,7 +949,6 @@ void GEENIE::AddComponent(QUuid parentId)
     if(acd.exec() == QDialog::Accepted)
     {
         Component* c = acd.component();
-        qDebug() << __LINE__;
         AddComponentAction* aca = new AddComponentAction((*_project),parentId,c);
         _project->AddUserAction(aca);
         fillSceneExplorer();
@@ -1102,56 +1099,60 @@ void GEENIE::DeleteAsset(QUuid id)
     _project->AddUserAction(raa);
     fillAssetWidget();
 }
-
-void GEENIE::LoadAssetList(AddComponentDialog* dialog,int type)
+int GEENIE::MapType(int type)
 {
-    QList<ASSET_DATA> assets;
-    /*
     switch(type)
     {
-        case MATERIAL:
-        {
-
-            break;
-        }
-        case POSITION:
-        {
-
-            break;
-        }
-        case LIGHT:
-        {
-            break;
-        }
         case TEXTURE:
         {
-
+            return 0;
             break;
         }
-        case SOUND:
+        case MODEL:
         {
+            return 1;
             break;
         }
-        case SHADER:
+        case MATERIAL:
         {
+            return 2;
             break;
         }
         case SCRIPT:
         {
+            return 3;
             break;
         }
-    }*/
+        case SOUND:
+        {
+        return 4;
+            break;
+        }
+    default:
+    {
+        return -1;
+        break;
+    }
+    }
+}
+
+void GEENIE::LoadAssetList(AddComponentDialog* dialog,int type)
+{
+    QList<ASSET_DATA> assets;
+    type = MapType(type);
+
     QHashIterator<QUuid,Asset*> a = _project->GetAssets();
+
     while(a.hasNext())
     {
+        a.next();
         if(a.value()->GetType() == type)
         {
             ASSET_DATA data;
             data.id = a.value()->GetID();
-            data.name = "Material";
+            data.name = a.value()->GetPath();
             assets.push_back(data);
         }
-        a.next();
     }
     dialog->SetAssetList(assets);
 }

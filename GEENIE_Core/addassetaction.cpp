@@ -14,10 +14,9 @@ AddAssetAction::AddAssetAction(Project& project, AssetType type, QString path) :
     if(!fileInfo.exists()) {
         throw std::exception("invalid file path");
     }
-
     if(!fileInfo.absoluteFilePath().startsWith(assetDir.absolutePath())) {
         fileInfo.setFile(assetDir.absoluteFilePath(fileInfo.fileName()));
-
+        QString a = fileInfo.absoluteFilePath();
         if(fileInfo.exists()) {
             // error, file already exists
             throw std::exception("asset file already exists!");
