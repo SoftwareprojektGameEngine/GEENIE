@@ -1009,6 +1009,12 @@ void GEENIE::MoveEntity(QUuid id)
     {
         sc.next();
         QHashIterator<QUuid, Entity*> ent = sc.value()->GetEntities();
+
+        ENTITY_DATA_ME s;
+        s.entityId = sc.key();
+        s.entityName = sc.value()->name();
+        e.push_back(s);
+
         while(ent.hasNext())
         {
            ent.next();
