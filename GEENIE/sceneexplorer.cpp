@@ -13,10 +13,9 @@ SceneExplorer::SceneExplorer(QWidget *parent) :
     ui->setupUi(this);
     tree = ui->treeWidget;
     tree->setColumnCount(1);
-
-    tree->setAcceptDrops(true);
-    tree->setDragEnabled(true);
-    tree->setDragDropMode(QAbstractItemView::InternalMove);
+    //tree->setAcceptDrops(true);
+    //tree->setDragEnabled(true);
+    //tree->setDragDropMode(QAbstractItemView::InternalMove);
 }
 
 //!Cleans the used Storage.
