@@ -13,15 +13,16 @@ MoveEntityAction::MoveEntityAction(Project& project, QUuid newParentID, QUuid en
 
 MoveEntityAction::~MoveEntityAction()
 {
-    /* delete only if action not undone
-    if (this->done) {
-        delete this->removedEntity;
-    }*/
+    //delete only if action not undone
+    if (this->done)
+    {
+        delete this->movedEntity;
+    }
 }
 
 void MoveEntityAction::Do()
 {
-    Entity *e = new Entity(this->parentID,this->movedEntity->GetID(),this->movedEntity->name());
+    Entity *e = new Entity(this->newParentID,this->movedEntity->GetID(),this->movedEntity->name());
 
 
     QHashIterator<QUuid,Component*> com = this->movedEntity->GetComponents();
@@ -39,6 +40,18 @@ void MoveEntityAction::Do()
 
 void MoveEntityAction::Undo()
 {
-    //project.AddEntity(this->movedEntity->GetID());
+    Entity *e = new Entity(this->parentID,this->movedEntity->GetID(),this->movedEntity->name());
+
+
+    QHashIterator<QUuid,Component*> com = this->movedEntity->GetComponents();
+    while(com.hasNext())
+    {
+        com.next();
+        e->AddComponent(com.value());
+    }
+    project.RemoveEntity(this->movedEntity->GetID());
+    project.AddEntity(e);
+
+    this->movedEntity = e;
     this->done = false;
 }

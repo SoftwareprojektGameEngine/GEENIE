@@ -13,6 +13,7 @@ struct ENTITY_DATA_ME
     QUuid   entityId;
     QList<ENTITY_DATA_ME> entities;
 };
+
 namespace Ui {
 class moveentitydialog;
 }
