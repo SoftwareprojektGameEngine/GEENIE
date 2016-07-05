@@ -271,7 +271,12 @@ void Project::XmlToComponent(TiXmlElement *c, Entity *e)
             Color diffuse = XmlToColor(light,QString("diffuse"));
             Color specular = XmlToColor(light,QString("specular"));
             Vector spotlight = XmlToVector(light,QString("spotlight"));
-            LightSourceType ltype = (LightSourceType)light->FirstChildElement("lightsource")->QueryIntAttribute("type",0);
+            int *a = new int(0);
+            LightSourceType ltype;
+            if(TIXML_SUCCESS == light->FirstChildElement("lightsource")->QueryIntAttribute("type",a))
+            {
+                ltype = (LightSourceType) ((int)*a);
+            }
             e->AddComponent(new LightComponent(ltype,ambient,diffuse,specular,spotlight,id));
         }
         break;
