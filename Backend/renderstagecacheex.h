@@ -14,6 +14,10 @@ public:
 
     META_Object(Ex, RenderStageCacheEx)
 
+    /*!
+     * \brief objectDeleted
+     * \param object
+     */
     virtual void objectDeleted(void* object);
     //!Sets Render Stage of CullVisitor.
     void setRenderStage(osgUtil::CullVisitor* cullVisitor, osgUtil::RenderStage* renderStage);

@@ -28,17 +28,6 @@ InspectorWidget::~InspectorWidget()
     delete ui;
 }
 
-void InspectorWidget::addWidget(QWidget *widget)
-{
-    /*widget->setParent(ui->scrollAreaWidgetContents);
-    widget->setGeometry(widget->x(),widget->y(),ui->scrollAreaWidgetContents->width(),widget->height());
-    ui->scrollAreaWidgetContents->layout()->addWidget(widget);*/
-}
-void InspectorWidget::removeWidget(QWidget* widget)
-{
-    //ui->scrollAreaWidgetContents->layout()->removeWidget(widget);
-}
-
 void InspectorWidget::resizeSlot(int h, int w)
 {
     setGeometry(this->x(),this->y(),w,h);
@@ -82,7 +71,7 @@ QTreeWidgetItem* InspectorWidget::ColorToItem(Color c)
     return color;
 }
 
-void InspectorWidget::FillTree(Entity *e, bool sub)
+void InspectorWidget::FillTree(Entity *entity, bool sub)
 {
 
     if(!sub)
@@ -92,10 +81,10 @@ void InspectorWidget::FillTree(Entity *e, bool sub)
     QTreeWidgetItem *itm = new QTreeWidgetItem(ui->treeWidget);
     itm->setFlags(itm->flags() | Qt::ItemIsEditable);
     itm->setText(0,"Entity");
-    itm->setText(1,e->name());
-    itm->setData(1,Qt::UserRole,e->GetID().toByteArray());
+    itm->setText(1,entity->name());
+    itm->setData(1,Qt::UserRole,entity->GetID().toByteArray());
 
-    QHashIterator<QUuid, Component*> it = e->GetComponents();
+    QHashIterator<QUuid, Component*> it = entity->GetComponents();
     while(it.hasNext())
     {
         it.next();
@@ -105,7 +94,7 @@ void InspectorWidget::FillTree(Entity *e, bool sub)
         c->setText(0,comp->GetTypeName());
         c->setData(0,Qt::UserRole,(int)comp->GetType());
         c->setData(1,Qt::UserRole,comp->GetID().toByteArray());
-        c->setData(1,Qt::UserRole+1,e->GetID().toByteArray());
+        c->setData(1,Qt::UserRole+1,entity->GetID().toByteArray());
         c->setText(1,comp->name());
         switch(comp->GetType())
         {
@@ -166,7 +155,7 @@ void InspectorWidget::FillTree(Entity *e, bool sub)
         }
         itm->addChild(c);
     }
-    QHashIterator<QUuid, Entity*> it2 = e->GetSubEntities();
+    QHashIterator<QUuid, Entity*> it2 = entity->GetSubEntities();
     while(it2.hasNext())
     {
         it2.next();

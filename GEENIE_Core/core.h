@@ -94,6 +94,7 @@ public:
      * \brief Entity
      * \param parentID the id of the parent entity
      * \param id the id of this entity (for serialization purposes)
+     * \param name for display purposes
      */
     Entity(QUuid parentID, QUuid id = QUuid::createUuid(), QString name = QString("Entity"));
     //! The destructor
@@ -192,6 +193,7 @@ public:
     /*!
      * \brief Scene
      * \param id
+     * \param name
      */
     Scene(QUuid id = QUuid::createUuid(), QString name = QString("Scene"));
     //! The destructor
