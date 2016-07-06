@@ -9,9 +9,9 @@ void UseStyleSheets(){
     QFile file( "Stylesheets.qss" );
 
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) ){
-        QMessageBox msg;
+        /*QMessageBox msg;
         msg.setText("Failed to load Stylesheet-File!");
-        msg.exec();
+        msg.exec();*/
     }
     QTextStream textstream( &file );
     QString style = textstream.readAll();
