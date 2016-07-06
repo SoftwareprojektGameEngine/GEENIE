@@ -354,6 +354,11 @@ void Project::XmlToEntity(TiXmlElement *e)
 
 void Project::load(QString &file)
 {
+    QDir *d = new QDir(file);
+    d->cd("..");
+    QString absPath = d->absolutePath();
+    this->projectPath = absPath;
+
     TiXmlDocument doc(file.toUtf8().data());
     bool ok = doc.LoadFile();
     if(!ok)
@@ -380,6 +385,8 @@ void Project::load(QString &file)
         asset->QueryIntAttribute("type",&iType);
         AssetType type = static_cast<AssetType>(iType);
         QUuid id = QUuid(QString(asset->Attribute("id")));
+        QString a = this->assetPath();
+        QString b = asset->FirstChildElement("path")->GetText();
         QString path = QString(this->assetPath()+asset->FirstChildElement("path")->GetText());
         switch(type)
         {
@@ -633,11 +640,13 @@ QString Project::file()
 
 QString Project::path()
 {
-    QFileInfo info(projectPath);
-    return info.path();
+    //QFileInfo info(projectPath);
+    //QString a = info.path();
+    return projectPath;
 }
 
 QString Project::assetPath()
 {
+    auto a = this->path();
     return QString("%1%2").arg(this->path()).arg("/assets/");
 }
