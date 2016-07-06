@@ -916,7 +916,11 @@ void GEENIE::NewProject()
     if(n.exec() == QDialog::Accepted)
     {
         Project* tmp = _project;
-        _project = new Project(0,n.name(),n.file());
+        QDir *dir = new QDir(n.file());
+        dir->cd("..");
+        QString a = dir->absolutePath();
+
+        _project = new Project(0,n.name(),a);
         delete tmp;
         QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
         QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
