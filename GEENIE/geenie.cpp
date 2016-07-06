@@ -278,6 +278,8 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(loadProject(QString)),this,SLOT(LoadProject(QString)));
     QObject::connect(_mainWindow,SIGNAL(checkIfProjectConfigured()),this,SLOT(ProjectConfigured()));
     QObject::connect(_mainWindow,SIGNAL(setLayoutToDefault()),this,SLOT(SetDefaultLayout()));
+    QObject::connect(_mainWindow,SIGNAL(createAsset()),this,SLOT(createAsset()));
+
 }
 
 GEENIE::~GEENIE()
@@ -1159,4 +1161,13 @@ void GEENIE::LoadAssetList(AddComponentDialog* dialog,int type)
         }
     }
     dialog->SetAssetList(assets);
+}
+
+void GEENIE::createAsset()
+{
+    createassetdialog *cad = new createassetdialog(this->_mainWindow);
+    if(QDialog::Accepted == cad->exec())
+    {
+        AddAsset(cad->getFile(),cad->getType());
+    }
 }

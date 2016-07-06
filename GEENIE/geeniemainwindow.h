@@ -149,6 +149,7 @@ signals:
 
     void setLayoutToDefault();
 
+    void createAsset();
 public slots:
 
     //! Slot for the undo signal.
@@ -264,6 +265,9 @@ private slots:
     //! Checks if the project is configured and saves it.
 
     void on_actionSave_2_triggered();
+
+
+    void on_actionCreate_triggered();
 
 private:
 

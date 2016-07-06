@@ -329,3 +329,8 @@ void GEENIEMainWindow::on_actionSave_2_triggered()
     if(!_projectConfigured)return;
     emit saveProject();
 }
+
+void GEENIEMainWindow::on_actionCreate_triggered()
+{
+    emit createAsset();
+}
