@@ -140,6 +140,8 @@ private slots:
 
     void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
 
+
+
     //! The context menu.
     /*!
       Depend on the position in the tree, this method is returning the right context menu.
@@ -188,6 +190,12 @@ private slots:
 
     void ContextMenuAddScene();
 
+    //! Emits moveentity.
+
+    void ContextMenuMoveEntity();
+
+    void on_treeWidget_itemPressed(QTreeWidgetItem *item, int column);
+
 signals:
 
     //! Clicked signal.
@@ -234,14 +242,19 @@ signals:
 
     void CMAddScene();
 
+    //! Movescene signal.
+
+    void CMMoveEntity(QUuid);
+
     //! Scene clicked signal.
 
-    void sceneClicked();
+    void sceneClicked(QUuid);
 
 private:
 
     //! Private variable stores the scene explorer ui.
 
     Ui::SceneExplorer *ui;
+    QTreeWidget *tree;
 };
 #endif // SCENEEXPLORER_H

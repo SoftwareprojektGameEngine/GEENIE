@@ -1,12 +1,13 @@
 #include "geeniemainwindow.h"
 #include "ui_geeniemainwindow.h"
 #include "exitdialog.h"
+#include "sceneeditwidget.h"
 
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QDebug>
 
-GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
+GEENIEMainWindow::GEENIEMainWindow(EngineWrapper* engine, QWidget *parent) :
     QMainWindow(parent),
     _projectSaved(true),
     _projectConfigured(false),
@@ -23,6 +24,16 @@ GEENIEMainWindow::GEENIEMainWindow(QWidget *parent) :
     ui->comboBox->addItem(QString("Python"));
     ui->comboBox->addItem(QString("Lua"));
     ui->comboBox->setCurrentIndex(0);
+
+    //engineWidget = geenie->getEngine()->CreateWidget();
+    //engineWidget->GetWidget()->setParent(this);
+    _sceneEditWidget = new SceneEditWidget(engine);
+    auto layout = new QVBoxLayout();
+    layout->addWidget(_sceneEditWidget);
+    layout->setContentsMargins(0,0,0,0);
+    _sceneEditWidget->setLayout(layout);
+
+    ui->tabWidget->addTab(_sceneEditWidget, QString("SceneEdit"));//engineWidget->GetWidget(), QString("scene edit"));
     ui->actionUndo->setEnabled(false);
     ui->actionRedo->setEnabled(false);
 }
@@ -317,4 +328,9 @@ void GEENIEMainWindow::on_actionSave_2_triggered()
     emit checkIfProjectConfigured();
     if(!_projectConfigured)return;
     emit saveProject();
+}
+
+void GEENIEMainWindow::on_actionCreate_triggered()
+{
+    emit createAsset();
 }

@@ -57,6 +57,8 @@ private slots:
 
     void on_comboBox_currentIndexChanged(const QString &arg1);
 
+    void on_checkBox_stateChanged(int arg1);
+
 signals:
     void LoadAssetList(AddComponentDialog* ,int);
 private:

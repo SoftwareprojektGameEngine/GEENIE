@@ -20,17 +20,27 @@
 #include <QString>
 #include <QScrollArea>
 
+#include "osgwrapper.h"
+
 GEENIE::GEENIE(QObject *parent) :
     QObject(parent),
-    _mainWindow(new GEENIEMainWindow),
-    _layoutName("default"),
-    _highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
+    _layoutName("default")//,
+    //_highlighter(new ScriptHighlighter(_mainWindow->scriptEditorDocument()))
 {
+    _project = 0;
+    _engine = new OSGWrapper();
+    _mainWindow = new GEENIEMainWindow(_engine);
+    //EXAMPLE PROJECT
     _project = new Project(0,QString("Example project"));
     {
         Scene* scene = new Scene(QUuid::createUuid(),QString("Example Scene 1"));
         _project->AddScene(scene);
+        //ModelAsset *baseModel = new ModelAsset(QString(""));
+        //_project->AddAsset(baseModel);
+        QUuid modelID = QUuid::createUuid();
         Entity* e1 = new Entity(scene->GetID(),QUuid::createUuid(),QString("Example Entity 1"));
+        e1->AddComponent(new ModelComponent(modelID));
+        e1->AddComponent(new PositionComponent(Vector{0.0f,0.0f,3.0f}));
         _project->AddEntity(e1);
         Entity* e2 = new Entity(scene->GetID(),QUuid::createUuid(),QString("Example Entity 2"));
         e2->AddComponent(new LightComponent(LightSourceType::AMBIENT,Color(),Color(),Color()));
@@ -47,9 +57,14 @@ GEENIE::GEENIE(QObject *parent) :
         Scene* scene2 = new Scene(QUuid::createUuid(),QString("Example Scene 2"));
         _project->AddScene(scene2);
         Entity* e6 = new Entity(scene->GetID(),QUuid::createUuid(),QString("Example Entity 6"));
+        e6->AddComponent(new ModelComponent(modelID));
+        e6->AddComponent(new PositionComponent(Vector{1.0f,0.0f,3.0f}));
         _project->AddEntity(e6);
         _project->save(QString("C:/Projects/default.geenie"));
+        _mainWindow->getSceneEditWidget()->GetEngineWidget()->BuildSceneGraph(scene);
     }
+    _highlighter = new ScriptHighlighter(_mainWindow->scriptEditorDocument());
+
     createDockWidgetTitles();
     QDir dir;
     dir.mkpath(Common::log_path);
@@ -235,13 +250,16 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(toggleDock(EDockWidgetTypes,bool)),
                      this,SLOT(toggleDock(EDockWidgetTypes,bool)));
     QObject::connect(eWidget,SIGNAL(clicked(QUuid,se::ItemType)),this,SLOT(ExplorerClicked(QUuid,se::ItemType)));
-    QObject::connect(eWidget,SIGNAL(sceneClicked()),this,SLOT(UnsetInspector()));
+    QObject::connect(eWidget,&SceneExplorer::sceneClicked,this,[=](QUuid q){UnsetInspector();});
+    QObject::connect(eWidget,SIGNAL(sceneClicked(QUuid)),_mainWindow->getSceneEditWidget(),SLOT(setScene(QUuid)));
+    QObject::connect(eWidget,SIGNAL(CMPreviewScene(QUuid)),_mainWindow->getSceneEditWidget(),SLOT(setScene(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMAddComponent(QUuid)),this,SLOT(AddComponent(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMAddEntity(QUuid,se::ItemType)),this,SLOT(AddEntity(QUuid,se::ItemType)));
     QObject::connect(eWidget,SIGNAL(CMAddScene()),this,SLOT(AddScene()));
     QObject::connect(eWidget,SIGNAL(CMDeleteComponent(QUuid,QUuid)),this,SLOT(DeleteComponent(QUuid,QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteEntity(QUuid)),this,SLOT(DeleteEntity(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteScene(QUuid)),this,SLOT(DeleteScene(QUuid)));
+    QObject::connect(eWidget,SIGNAL(CMMoveEntity(QUuid)),this,SLOT(MoveEntity(QUuid)));
     //QObject::connect(eWidget,SIGNAL(CMRenameEntity(QUuid)),this,SLOT(RenameEntity(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMRenameScene(QUuid)),this,SLOT(RenameScene(QUuid)));
 
@@ -260,6 +278,7 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(loadProject(QString)),this,SLOT(LoadProject(QString)));
     QObject::connect(_mainWindow,SIGNAL(checkIfProjectConfigured()),this,SLOT(ProjectConfigured()));
     QObject::connect(_mainWindow,SIGNAL(setLayoutToDefault()),this,SLOT(SetDefaultLayout()));
+    QObject::connect(_mainWindow,SIGNAL(createAsset()),this,SLOT(createAsset()));
 
 }
 
@@ -899,7 +918,11 @@ void GEENIE::NewProject()
     if(n.exec() == QDialog::Accepted)
     {
         Project* tmp = _project;
-        _project = new Project(0,n.name(),n.file());
+        QDir *dir = new QDir(n.file());
+        dir->cd("..");
+        QString a = dir->absolutePath();
+
+        _project = new Project(0,n.name(),a);
         delete tmp;
         QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
         QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
@@ -921,6 +944,7 @@ void GEENIE::AddScene()
         AddSceneAction* asa = new AddSceneAction((*_project),scene);
         _project->AddUserAction(asa);
         fillSceneExplorer();
+        _mainWindow->getSceneEditWidget()->GetEngineWidget()->BuildSceneGraph(scene);
     }
 }
 
@@ -931,7 +955,6 @@ void GEENIE::AddComponent(QUuid parentId)
     if(acd.exec() == QDialog::Accepted)
     {
         Component* c = acd.component();
-        qDebug() << __LINE__;
         AddComponentAction* aca = new AddComponentAction((*_project),parentId,c);
         _project->AddUserAction(aca);
         fillSceneExplorer();
@@ -962,6 +985,51 @@ void GEENIE::AddEntity(QUuid parentId, se::ItemType type)
     {
         CreateEntityAction* cea = new CreateEntityAction((*_project),parentId,aed.name());
         _project->AddUserAction(cea);
+        fillSceneExplorer();
+    }
+}
+
+ENTITY_DATA_ME GEENIE::GetEntities(Entity *e, QUuid id)
+{
+    ENTITY_DATA_ME data;
+    data.entityName = e->name();
+    data.entityId = e->GetID();
+
+    QHashIterator<QUuid, Entity*> it = e->GetSubEntities();
+    while(it.hasNext())
+    {
+        it.next();
+        data.entities.push_back(GetEntities(it.value(),id));
+    }
+    return data;
+}
+
+void GEENIE::MoveEntity(QUuid id)
+{
+    QList<ENTITY_DATA_ME> e;
+    QHashIterator<QUuid, Scene*> sc = _project->GetScenes();
+    while(sc.hasNext())
+    {
+        sc.next();
+        QHashIterator<QUuid, Entity*> ent = sc.value()->GetEntities();
+
+        ENTITY_DATA_ME s;
+        s.entityId = sc.key();
+        s.entityName = sc.value()->name();
+        e.push_back(s);
+
+        while(ent.hasNext())
+        {
+           ent.next();
+           e.push_back(GetEntities(ent.value(),id));
+        }
+    }
+    moveentitydialog *dia = new moveentitydialog(_mainWindow);
+    dia->FillComboBox(e, id);
+    if(dia->exec() == QDialog::Accepted)
+    {
+        MoveEntityAction* mea = new MoveEntityAction((*_project),dia->getNewParentID(),dia->getEntityID());
+        _project->AddUserAction(mea);
         fillSceneExplorer();
     }
 }
@@ -1017,46 +1085,17 @@ void GEENIE::RenameEntity(QUuid id, QString name)
 
 void GEENIE::AddAsset(QString path, AssetType type)
 {
-    Asset* asset = nullptr;
-    switch(type)
+    if(type == AssetType::AUDIO_ASSET || type == AssetType::VIDEO_ASSET)
     {
-    case AssetType::MATERIAL_ASSET:
-    {
-        asset = new MaterialAsset(path);
-        break;
-    }
-    case AssetType::TEXTURE_ASSET:
-    {
-        asset = new TextureAsset(path);
-        break;
-    }
-    case AssetType::MODEL_ASSET:
-    {
-        asset = new ModelAsset(path);
-        break;
-    }
-    case AssetType::SCRIPT_ASSET:
-    {
-        asset = new ScriptAsset(path);
-        break;
-    }
-    case AssetType::AUDIO_ASSET:
-    {
-        break;
-    }
-    case AssetType::VIDEO_ASSET:
-    {
-        break;
-    }
-    default:
-        break;
+        return;
     }
 
-    if(asset != nullptr)
-    {
-        AddAssetAction* aaa = new AddAssetAction((*_project),asset);
+    try {
+        AddAssetAction* aaa = new AddAssetAction((*_project), type, path);
         _project->AddUserAction(aaa);
         fillAssetWidget();
+    } catch(const std::exception& e) {
+        QMessageBox(QMessageBox::Warning, "Error", QString(e.what()), QMessageBox::Ok).exec();
     }
 }
 
@@ -1066,56 +1105,69 @@ void GEENIE::DeleteAsset(QUuid id)
     _project->AddUserAction(raa);
     fillAssetWidget();
 }
-
-void GEENIE::LoadAssetList(AddComponentDialog* dialog,int type)
+int GEENIE::MapType(int type)
 {
-    QList<ASSET_DATA> assets;
-    /*
     switch(type)
     {
-        case MATERIAL:
-        {
-
-            break;
-        }
-        case POSITION:
-        {
-
-            break;
-        }
-        case LIGHT:
-        {
-            break;
-        }
         case TEXTURE:
         {
-
+            return 0;
             break;
         }
-        case SOUND:
+        case MODEL:
         {
+            return 1;
             break;
         }
-        case SHADER:
+        case MATERIAL:
         {
+            return 2;
             break;
         }
         case SCRIPT:
         {
+            return 3;
             break;
         }
-    }*/
+        case SOUND:
+        {
+        return 4;
+            break;
+        }
+    default:
+    {
+        return -1;
+        break;
+    }
+    }
+}
+
+void GEENIE::LoadAssetList(AddComponentDialog* dialog,int type)
+{
+    QList<ASSET_DATA> assets;
+    type = MapType(type);
+
     QHashIterator<QUuid,Asset*> a = _project->GetAssets();
+
     while(a.hasNext())
     {
+        a.next();
         if(a.value()->GetType() == type)
         {
             ASSET_DATA data;
             data.id = a.value()->GetID();
-            data.name = "Material";
+            data.name = a.value()->GetPath();
             assets.push_back(data);
         }
-        a.next();
     }
     dialog->SetAssetList(assets);
+}
+
+void GEENIE::createAsset()
+{
+    createassetdialog *cad = new createassetdialog(this->_mainWindow);
+    if(QDialog::Accepted == cad->exec())
+    {
+        AddAsset(cad->getFile(),cad->getType());
+    }
 }

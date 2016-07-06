@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "enginewrapper.h"
+#include "geenie.h"
 
 namespace Ui {
 class SceneEditWidget;
@@ -32,8 +33,9 @@ public:
     /*!
      * Deletes the osg-widget and the whole ui.
      */
-
     ~SceneEditWidget();
+
+    inline EngineWidgetWrapper* GetEngineWidget() { return engineWidget; }
 
 private:
 
@@ -48,6 +50,15 @@ private:
     //! Private variable that stores the connection to the osg-widget.
 
     EngineWidgetWrapper* engineWidget;
+    Vector camPos;
+    Vector camDir;
+    Vector camUp;
+
+protected:
+    virtual void keyPressEvent(QKeyEvent* keyEvent);
+
+private slots:
+    void setScene(QUuid sceneID);
 };
 
 #endif // SCENEEDITWIDGET_H

@@ -7,8 +7,11 @@
 #include "common.h"
 #include "scripthighlighter.h"
 #include "sceneexplorer.h"
+#include "enginewrapper.h"
 #include "components.h"
 #include "addcomponentdialog.h"
+#include "moveentitydialog.h"
+#include "createassetdialog.h"
 
 class GEENIEMainWindow;
 class QDockWidget;
@@ -72,6 +75,8 @@ public:
     void moveDockWidget(EDockWidgetTypes type, bool show = false, Qt::DockWidgetArea area = Qt::BottomDockWidgetArea, bool floating = false, int width = 200, int height = 200, int x = 0, int y = 0);
 
 private:
+    ENTITY_DATA_ME GetEntities(Entity *e,QUuid id);
+    int MapType(int);
 
     //! Entity to inspector method.
     /*!
@@ -144,6 +149,7 @@ private:
     //! Private variable for the current project.
 
     Project* _project;
+    EngineWrapper* _engine;
 
 
 private slots:
@@ -261,6 +267,9 @@ private slots:
 
     void AddEntity(QUuid parentId,se::ItemType type);
 
+    //! Dialog for moving an entity
+    void MoveEntity(QUuid id);
+
     //! Dialog for adding a new scene to explorer.
 
     void AddScene();
@@ -278,6 +287,7 @@ private slots:
      */
 
     void DeleteScene(QUuid id);
+
 
     //! Dialog for deleting a component of an entity.
     /*!
@@ -355,6 +365,7 @@ private slots:
 
     void DeleteAsset(QUuid id);
 
+    void createAsset();
 signals:
 public slots:
 };

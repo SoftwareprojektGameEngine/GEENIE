@@ -2,6 +2,7 @@
 
 #include "osgDB/ReadFile"
 #include "osgwidget.h"
+#include <QDebug>
 
 OSGWrapper::OSGWrapper() : models(), textures(), materials() {
 
@@ -55,19 +56,22 @@ bool OSGWrapper::DestroyTexture(ResHandle texture) {
 }
 
 ResHandle OSGWrapper::CreateModel(const ModelAsset& modelAsset) {
-    osg::Geode* model = dynamic_cast<osg::Geode*>(osgDB::readNodeFile(modelAsset.GetPath().toStdString()));
+    //qDebug() << "creating model for asset " << modelAsset.GetID();
+    osg::Node* model = dynamic_cast<osg::Node*>(osgDB::readNodeFile(modelAsset.GetPath().toStdString()));
 
     if (model != nullptr) {
+        qDebug() << "model was created!";
         model->ref();
         models.insert(modelAsset.GetID(), model);
         return (ResHandle)model;
     }
+    qDebug() << "ERROR: model could not be created!";
 
     return nullptr;
 }
 
 ResHandle OSGWrapper::UpdateModel(ResHandle modelHandle, const ModelAsset &modelAsset) {
-    osg::Geode* model = (osg::Geode*)modelHandle;
+    osg::Node* model = (osg::Node*)modelHandle;
 
     if(model != nullptr && !models.key(model).isNull()) {
         // TODO: find way to compare files
@@ -79,7 +83,7 @@ ResHandle OSGWrapper::UpdateModel(ResHandle modelHandle, const ModelAsset &model
 }
 
 bool OSGWrapper::DestroyModel(ResHandle modelHandle) {
-    osg::Geode* model = (osg::Geode*)modelHandle;
+    osg::Node* model = (osg::Node*)modelHandle;
     QUuid key = models.key(model);
 
     if (model != nullptr && !key.isNull()) {

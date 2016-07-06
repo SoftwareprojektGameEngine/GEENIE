@@ -16,23 +16,13 @@ DEFINES += BACKEND_LIBRARY
 SOURCES += \
     osgwrapper.cpp \
     osgwidget.cpp \
-    viewerex.cpp \
-    cullvisitorex.cpp \
-    graphicswindowex.cpp \
-    renderstagecacheex.cpp \
-    renderstageex.cpp \
-    stateex.cpp
+    compositeviewerex.cpp
 
 HEADERS +=\
         backend_global.h \
     osgwrapper.h \
     osgwidget.h \
-    viewerex.h \
-    renderstagecacheex.h \
-    stateex.h \
-    renderstageex.h \
-    cullvisitorex.h \
-    graphicswindowex.h
+    compositeviewerex.h
 
 DLLDESTDIR = $$OUT_PWD/../bin
 

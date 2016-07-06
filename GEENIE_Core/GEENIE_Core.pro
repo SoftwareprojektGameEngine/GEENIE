@@ -38,7 +38,8 @@ SOURCES += \
     ../tinyxml/tinyxmlparser.cpp \
     removecomponentaction.cpp \
     renamesceneaction.cpp \
-    renameentityaction.cpp
+    renameentityaction.cpp \
+    moveentityaction.cpp
 
 HEADERS +=\
         geenie_core_global.h \

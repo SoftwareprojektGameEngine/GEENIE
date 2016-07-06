@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "scripthighlighter.h"
 #include "logger.h"
+#include "geenie.h"
+#include "sceneeditwidget.h"
 
 class QTextDocument;
 class Project;
@@ -22,20 +24,18 @@ class GEENIEMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-
     //! Constructor.
     /*!
       Setting the font, some settings for the scripteditor and the undo and redo button as not clickable.
      * \param parent The parent widget.
      */
 
-    explicit GEENIEMainWindow(QWidget *parent = 0);
+    explicit GEENIEMainWindow(EngineWrapper *engine, QWidget *parent = 0);
 
     //! Destructor.
     /*!
      * Destroys the mainwindow ui.
      */
-
     ~GEENIEMainWindow();
 
     //! Set script type for the scipteditor.
@@ -77,6 +77,7 @@ public:
     //! Gets the current script in the scripteditor as a textdocument.
 
     QTextDocument* scriptEditorDocument();
+    inline SceneEditWidget* getSceneEditWidget() { return _sceneEditWidget; }
 
 protected:
 
@@ -148,6 +149,7 @@ signals:
 
     void setLayoutToDefault();
 
+    void createAsset();
 public slots:
 
     //! Slot for the undo signal.
@@ -264,6 +266,9 @@ private slots:
 
     void on_actionSave_2_triggered();
 
+
+    void on_actionCreate_triggered();
+
 private:
 
     //! Private variable stores if the current project is saved.
@@ -277,6 +282,7 @@ private:
     //! Private variable stores the mainwindow ui.
 
     Ui::GEENIEMainWindow *ui;
+    SceneEditWidget* _sceneEditWidget;
 };
 
 #endif // GEENIEMAINWINDOW_H

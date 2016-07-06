@@ -1,6 +1,7 @@
 #include "core.h"
 #include <QDir>
 #include <QDebug>
+
 #define CALC_INDEX(index) ((index) % (MAX_NUM_USERACTIONS + 1))
 
 Project::Project(EngineWrapper* engine, QString name, QString path) : fastEntityLookup(), scenes(), assets(), projectName(name), projectPath(path),saved(false) {
@@ -154,53 +155,11 @@ QHashIterator<QUuid, Scene*> Project::GetScenes() {
     return QHashIterator<QUuid, Scene*>(this->scenes);
 }
 
-#include <QFileInfo>
-
 void Project::AddAsset(Asset *asset) {
     saved = false;
     if (asset == nullptr) return;
 
-    Asset* a = nullptr;
-
-    QFile file(asset->GetPath());
-    file.copy(this->assetPath()+QString(QFileInfo(asset->GetPath()).fileName()));
-
-    switch(asset->GetType())
-    {
-    case AssetType::TEXTURE_ASSET:
-    {
-        a = new TextureAsset(this->assetPath()+QFileInfo(asset->GetPath()).fileName(),asset->GetID());
-        break;
-    }
-    case AssetType::MODEL_ASSET:
-    {
-        a = new ModelAsset(this->assetPath()+QFileInfo(asset->GetPath()).fileName(),asset->GetID());
-        break;
-    }
-    case AssetType::MATERIAL_ASSET:
-    {
-        a = new MaterialAsset(this->assetPath()+QFileInfo(asset->GetPath()).fileName(),asset->GetID());
-        break;
-    }
-    case AssetType::SCRIPT_ASSET:
-    {
-        a = new ScriptAsset(this->assetPath()+QFileInfo(asset->GetPath()).fileName(),asset->GetID());
-        break;
-    }
-    case AssetType::AUDIO_ASSET:
-    {
-        break;
-    }
-    case AssetType::VIDEO_ASSET:
-    {
-        break;
-    }
-    }
-
-    if(a == nullptr)return;
-    delete asset;
-
-    this->assets.insert(a->GetID(), a);
+    this->assets.insert(asset->GetID(), asset);
 }
 
 Asset* Project::GetAsset(const QUuid &assetID) {
@@ -214,8 +173,6 @@ Asset* Project::RemoveAsset(const QUuid &assetID) {
     if (asset != nullptr) {
         this->assets.remove(assetID);
     }
-
-    QFile(this->assetPath()+asset->GetPath()).remove();
 
     return asset;
 }
@@ -314,7 +271,12 @@ void Project::XmlToComponent(TiXmlElement *c, Entity *e)
             Color diffuse = XmlToColor(light,QString("diffuse"));
             Color specular = XmlToColor(light,QString("specular"));
             Vector spotlight = XmlToVector(light,QString("spotlight"));
-            LightSourceType ltype = (LightSourceType)light->FirstChildElement("lightsource")->QueryIntAttribute("type",0);
+            int *a = new int(0);
+            LightSourceType ltype;
+            if(TIXML_SUCCESS == light->FirstChildElement("lightsource")->QueryIntAttribute("type",a))
+            {
+                ltype = (LightSourceType) ((int)*a);
+            }
             e->AddComponent(new LightComponent(ltype,ambient,diffuse,specular,spotlight,id));
         }
         break;
@@ -392,6 +354,11 @@ void Project::XmlToEntity(TiXmlElement *e)
 
 void Project::load(QString &file)
 {
+    QDir *d = new QDir(file);
+    d->cd("..");
+    QString absPath = d->absolutePath();
+    this->projectPath = absPath;
+
     TiXmlDocument doc(file.toUtf8().data());
     bool ok = doc.LoadFile();
     if(!ok)
@@ -418,6 +385,8 @@ void Project::load(QString &file)
         asset->QueryIntAttribute("type",&iType);
         AssetType type = static_cast<AssetType>(iType);
         QUuid id = QUuid(QString(asset->Attribute("id")));
+        QString a = this->assetPath();
+        QString b = asset->FirstChildElement("path")->GetText();
         QString path = QString(this->assetPath()+asset->FirstChildElement("path")->GetText());
         switch(type)
         {
@@ -671,11 +640,13 @@ QString Project::file()
 
 QString Project::path()
 {
-    QFileInfo info(projectPath);
-    return info.path();
+    //QFileInfo info(projectPath);
+    //QString a = info.path();
+    return projectPath;
 }
 
 QString Project::assetPath()
 {
+    auto a = this->path();
     return QString("%1%2").arg(this->path()).arg("/assets/");
 }

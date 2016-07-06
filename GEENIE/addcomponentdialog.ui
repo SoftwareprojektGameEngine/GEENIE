@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>144</height>
+    <height>150</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <item>
     <widget class="QCheckBox" name="checkBox">
      <property name="text">
-      <string>CheckBox</string>
+      <string>Load from Assets</string>
      </property>
     </widget>
    </item>

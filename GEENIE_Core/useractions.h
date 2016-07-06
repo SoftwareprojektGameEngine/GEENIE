@@ -26,6 +26,24 @@ public:
     void Undo();
 };
 
+class SHARED_EXPORT MoveEntityAction : public UserAction {
+private:
+    Project& project;
+    Entity *movedEntity;
+    QUuid parentID;
+    QUuid newParentID;
+
+    bool done;
+
+public:
+    MoveEntityAction(Project& project,QUuid newParentID, QUuid entityID);
+    ~MoveEntityAction();
+
+    void Do();
+
+    void Undo();
+};
+
 /*!
  * \brief The RemoveEntityAction class
  */
@@ -162,7 +180,7 @@ private:
     Asset* asset;
     bool done;
 public:
-    AddAssetAction(Project& project, Asset* asset);
+    AddAssetAction(Project& project, AssetType type, QString path);
     ~AddAssetAction();
 
     void Do();

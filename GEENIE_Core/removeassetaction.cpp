@@ -1,4 +1,7 @@
 #include "useractions.h"
+#include <QFile>
+#include <QDir>
+#include <QFileInfo>
 
 RemoveAssetAction::RemoveAssetAction(Project& project, QUuid assetID) : project(project) {
     this->done = false;
@@ -7,6 +10,10 @@ RemoveAssetAction::RemoveAssetAction(Project& project, QUuid assetID) : project(
 
 RemoveAssetAction::~RemoveAssetAction() {
     if (this->done) {
+        QFileInfo fileInfo(project.assetPath() + asset->GetPath());
+        if(fileInfo.exists()) {
+            QFile(fileInfo.absoluteFilePath()).remove();
+        }
         delete this->asset;
     }
 }

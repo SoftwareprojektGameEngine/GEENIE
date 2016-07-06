@@ -48,7 +48,7 @@ public:
     EngineWidgetWrapper* CreateWidget();
 
 private:
-    QHash<QUuid, osg::Geode*> models;
+    QHash<QUuid, osg::Node*> models;
     QHash<QUuid, osg::Image*> textures;
     QHash<QUuid, osg::Material*> materials;
 };
