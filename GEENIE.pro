@@ -5,6 +5,7 @@ SUBDIRS += \
     Logger \
     common \
     GEENIE_Core \
+    GEENIE_Core_Test \
     Backend
 
 GEENIE.depends = Backend GEENIE_Core Logger common
