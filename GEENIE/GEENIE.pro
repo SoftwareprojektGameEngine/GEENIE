@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     newprojectdialog.cpp \
     addscenedialog.cpp \
     moveentitydialog.cpp \
-    createassetdialog.cpp
+    createassetdialog.cpp \
+    deleteassetdialog.cpp
 
 HEADERS  += geeniemainwindow.h \
     geenie.h \
@@ -59,7 +60,8 @@ HEADERS  += geeniemainwindow.h \
     newprojectdialog.h \
     addscenedialog.h \
     moveentitydialog.h \
-    createassetdialog.h
+    createassetdialog.h \
+    deleteassetdialog.h
 
 FORMS    += geeniemainwindow.ui \
     layoutform.ui \
@@ -77,7 +79,8 @@ FORMS    += geeniemainwindow.ui \
     newprojectdialog.ui \
     addscenedialog.ui \
     moveentitydialog.ui \
-    createassetdialog.ui
+    createassetdialog.ui \
+    deleteassetdialog.ui
 
 
 win32: DESTDIR = $$OUT_PWD/../bin

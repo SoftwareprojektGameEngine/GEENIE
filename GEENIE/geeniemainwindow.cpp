@@ -334,3 +334,9 @@ void GEENIEMainWindow::on_actionCreate_triggered()
 {
     emit createAsset();
 }
+
+
+void GEENIEMainWindow::on_actionDelete_triggered()
+{
+    emit deleteAsset();
+}

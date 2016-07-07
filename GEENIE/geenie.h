@@ -12,6 +12,7 @@
 #include "addcomponentdialog.h"
 #include "moveentitydialog.h"
 #include "createassetdialog.h"
+#include "deleteassetdialog.h"
 
 class GEENIEMainWindow;
 class QDockWidget;
@@ -366,6 +367,8 @@ private slots:
     void DeleteAsset(QUuid id);
 
     void createAsset();
+
+    void deleteAssetDia();
 signals:
 public slots:
 };

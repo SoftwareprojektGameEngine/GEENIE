@@ -279,6 +279,7 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(checkIfProjectConfigured()),this,SLOT(ProjectConfigured()));
     QObject::connect(_mainWindow,SIGNAL(setLayoutToDefault()),this,SLOT(SetDefaultLayout()));
     QObject::connect(_mainWindow,SIGNAL(createAsset()),this,SLOT(createAsset()));
+    QObject::connect(_mainWindow,SIGNAL(deleteAsset()),this,SLOT(deleteAssetDia()));
 
 }
 
@@ -1169,5 +1170,27 @@ void GEENIE::createAsset()
     if(QDialog::Accepted == cad->exec())
     {
         AddAsset(cad->getFile(),cad->getType());
+    }
+}
+
+void GEENIE::deleteAssetDia()
+{
+    DeleteAssetDialog *dad = new DeleteAssetDialog(this->_mainWindow);
+    QHashIterator<QUuid,Asset*> list = _project->GetAssets();
+    QList<ASSET_LIST_DA> data;
+    while(list.hasNext())
+    {
+        list.next();
+        ASSET_LIST_DA as;
+        QString a = list.value()->GetPath();
+        QDir *dir = new QDir(a);
+        as.name = dir->dirName();
+        as.id = list.key();
+        data.push_back(as);
+    }
+    dad->setAssetList(data);
+    if(dad->exec() == QDialog::Accepted)
+    {
+       this->DeleteAsset(dad->getAssetID());
     }
 }
