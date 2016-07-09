@@ -76,6 +76,10 @@ public:
     void moveDockWidget(EDockWidgetTypes type, bool show = false, Qt::DockWidgetArea area = Qt::BottomDockWidgetArea, bool floating = false, int width = 200, int height = 200, int x = 0, int y = 0);
 
 private:
+    void createDefaultProject();
+    void loadDefaultProject();
+    bool pathExists(QString, QString file = "");
+
     ENTITY_DATA_ME GetEntities(Entity *e,QUuid id);
     int MapType(int);
 

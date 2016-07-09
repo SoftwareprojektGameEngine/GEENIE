@@ -6,7 +6,7 @@
 #include "logger.h"
 #include "geenie.h"
 #include "sceneeditwidget.h"
-
+#include <QProcessEnvironment>
 class QTextDocument;
 class Project;
 

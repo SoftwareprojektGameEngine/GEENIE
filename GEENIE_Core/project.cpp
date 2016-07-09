@@ -1,6 +1,7 @@
 #include "core.h"
 #include <QDir>
 #include <QDebug>
+#include <QProcessEnvironment>
 
 #define CALC_INDEX(index) ((index) % (MAX_NUM_USERACTIONS + 1))
 
@@ -8,7 +9,15 @@ Project::Project(EngineWrapper* engine, QString name, QString path) : fastEntity
     for(int i=0; i < MAX_NUM_USERACTIONS+1;i++) {
         this->userActions[i] = nullptr;
     }
-
+    if(projectPath == "")
+    {
+        QProcessEnvironment env(QProcessEnvironment::systemEnvironment());
+        projectPath = env.value("USERPROFILE")+"\\GEENIE";
+        QDir *dir = new QDir(projectPath);
+        dir->mkdir(projectName);
+        dir->cd(projectName);
+        projectPath = dir->absolutePath();
+    }
     this->firstActionIndex = 0;
     this->currentActionIndex = 0;
 
@@ -573,6 +582,10 @@ TiXmlElement *Project::SubEntitiesToXml(Entity *entity)
 
 void Project::save(QString &file)
 {
+    if(file == "")
+    {
+        file =this->path()+ "\\" + this->name()+".geenie";
+    }
     saved = true;
     if(file != this->file())
     {

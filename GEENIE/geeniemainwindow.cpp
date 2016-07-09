@@ -296,7 +296,11 @@ void GEENIEMainWindow::on_actionOpen_2_triggered()
             return;
         }
     }
-    QString file = QFileDialog::getOpenFileName(this,QString("Load project ..."),QString("C:/"),QString("GEENIE project files (*.geenie)"));
+
+    QProcessEnvironment env(QProcessEnvironment::systemEnvironment());
+    QString userprofile = env.value("USERPROFILE") + "\\" + "GEENIE";
+
+    QString file = QFileDialog::getOpenFileName(this,QString("Load project ..."),userprofile,QString("GEENIE project files (*.geenie)"));
     if(file.isEmpty())
     {
         return;

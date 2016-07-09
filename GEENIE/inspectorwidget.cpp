@@ -195,3 +195,7 @@ void InspectorWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int colum
     }
 
 }
+void InspectorWidget::clear()
+{
+    ui->treeWidget->clear();
+}

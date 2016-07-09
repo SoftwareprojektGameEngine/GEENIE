@@ -2,7 +2,7 @@
 #define NEWPROJECTDIALOG_H
 
 #include <QDialog>
-
+#include <QProcessEnvironment>
 namespace Ui {
 class NewProjectDialog;
 }
@@ -39,7 +39,7 @@ public:
 
     //! Returns the GEENIE-project file.
 
-    QString file(){return _file;}
+    QString path(){return _path;}
 
 private slots:
 
@@ -72,8 +72,9 @@ private:
 
     //! Private variable stores the location of the GEENIE project file.
 
-    QString _file;
+    QString _path;
 
+    QString userprofile;
     //! Private variable stores the dialog ui.
 
     Ui::NewProjectDialog *ui;

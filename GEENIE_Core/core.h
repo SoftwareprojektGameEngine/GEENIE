@@ -295,7 +295,7 @@ private:
 
 public:
     //! The project constructor.
-    Project(EngineWrapper* engine, QString name = QString("untitled"), QString path = QString("C:/"));
+    Project(EngineWrapper* engine, QString name = QString("untitled"), QString path = QString(""));
     //! The project destructor.
     ~Project();
 
@@ -346,7 +346,7 @@ public:
     //! Loads project from specified file
     void load(QString& file);
     //! Saves project to specified file
-    void save(QString& file);
+    void save(QString& file = QString(""));
     //! Returns project name
     QString name();
     //! Returns project path

@@ -29,7 +29,7 @@ public:
      * \param sub
      */
     void FillTree(Entity* entity, bool sub = false);
-
+    void clear();
 signals:
     /*!
      * \brief Signals if an entity was renamed

@@ -6,6 +6,11 @@ NewProjectDialog::NewProjectDialog(QWidget *parent) :
     ui(new Ui::NewProjectDialog)
 {
     ui->setupUi(this);
+
+    QProcessEnvironment env(QProcessEnvironment::systemEnvironment());
+    this->userprofile = env.value("USERPROFILE") + "\\" + "GEENIE";
+
+    ui->lineEdit_2->setText(userprofile);
 }
 
 NewProjectDialog::~NewProjectDialog()
@@ -16,7 +21,7 @@ NewProjectDialog::~NewProjectDialog()
 #include <QFileDialog>
 void NewProjectDialog::on_pushButton_clicked()
 {
-    QString file = QFileDialog::getSaveFileName(this,"Select project file","C:/","GEENIE project file (*.geenie)");
+    QString file = QFileDialog::getExistingDirectory(this,"Select the location of the project-folder",userprofile);
     ui->lineEdit_2->setText(file);
 }
 
@@ -24,20 +29,31 @@ void NewProjectDialog::on_pushButton_clicked()
 #include <QMessageBox>
 void NewProjectDialog::on_pushButton_2_clicked()
 {
-    _name = ui->lineEdit->text();
-    _file = ui->lineEdit_2->text();
-    if(QFileInfo(_file).absoluteDir().entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries).count() != 0)
+    if(ui->lineEdit_2->text() != QString("") && ui->lineEdit->text() != QString(""))
     {
-        QMessageBox::warning(this,QString("Not empty directory"),QString("The selected directoy is not empty.\nPlease select another directory."));
-        return;
-    }
-    if(!_name.isEmpty() && !_file.isEmpty())
-    {
-        QDialog::accept();
+        QDir *dir = new QDir(ui->lineEdit_2->text());
+        if(dir->exists())
+        {
+            this->_name = ui->lineEdit->text();
+            this->_path = ui->lineEdit_2->text();
+            QDialog::accept();
+        }
+        else
+        {
+            QMessageBox box;
+            box.setWindowTitle("Error");
+            box.setText("Selected Directory does not exist");
+            box.setStandardButtons(QMessageBox::Ok);
+            box.exec();
+        }
     }
     else
     {
-        QDialog::reject();
+        QMessageBox box;
+        box.setWindowTitle("Error");
+        box.setText("Please enter the project name and path");
+        box.setStandardButtons(QMessageBox::Ok);
+        box.exec();
     }
 }
 

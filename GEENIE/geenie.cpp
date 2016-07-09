@@ -19,7 +19,7 @@
 #include <QTimer>
 #include <QString>
 #include <QScrollArea>
-
+#include <QProcessEnvironment>
 #include "osgwrapper.h"
 
 GEENIE::GEENIE(QObject *parent) :
@@ -30,6 +30,8 @@ GEENIE::GEENIE(QObject *parent) :
     _project = 0;
     _engine = new OSGWrapper();
     _mainWindow = new GEENIEMainWindow(_engine);
+
+    /*
     //EXAMPLE PROJECT
     _project = new Project(0,QString("Example project"));
     {
@@ -62,7 +64,7 @@ GEENIE::GEENIE(QObject *parent) :
         _project->AddEntity(e6);
         _project->save(QString("C:/Projects/default.geenie"));
         _mainWindow->getSceneEditWidget()->GetEngineWidget()->BuildSceneGraph(scene);
-    }
+    }*/
     _highlighter = new ScriptHighlighter(_mainWindow->scriptEditorDocument());
 
     createDockWidgetTitles();
@@ -265,9 +267,7 @@ GEENIE::GEENIE(QObject *parent) :
 
     QObject::connect(aWidget,SIGNAL(AddAssetToProject(QString,AssetType)),this,SLOT(AddAsset(QString,AssetType)));
     QObject::connect(aWidget,SIGNAL(DeleteAsset(QUuid)),this,SLOT(DeleteAsset(QUuid)));
-    UnsetInspector();
-    fillSceneExplorer();
-    _mainWindow->show();
+
     QObject::connect(_mainWindow,SIGNAL(redo()),this,SLOT(redo()));
     QObject::connect(_mainWindow,SIGNAL(undo()),this,SLOT(undo()));
     QObject::connect(_mainWindow,SIGNAL(newProject()),this,SLOT(NewProject()));
@@ -281,6 +281,10 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(createAsset()),this,SLOT(createAsset()));
     QObject::connect(_mainWindow,SIGNAL(deleteAsset()),this,SLOT(deleteAssetDia()));
 
+    this->loadDefaultProject();
+    UnsetInspector();
+    fillSceneExplorer();
+    _mainWindow->show();
 }
 
 GEENIE::~GEENIE()
@@ -318,21 +322,19 @@ void GEENIE::SaveProject(QString path)
 
 void GEENIE::LoadProject(QString path)
 {
-    if(_project == nullptr)
-    {
-        _project = new Project(0);
-    }
-    else
+    if(_project != nullptr)
     {
         Project* tmp = _project;
         _project = new Project(0);
         delete tmp;
     }
+    _project = new Project(_engine,"",path);
     _project->load(path);
     QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
     QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
     fillSceneExplorer();
     fillAssetWidget();
+    UnsetInspector();
 }
 
 void GEENIE::toggleDock(EDockWidgetTypes type, bool show)
@@ -452,7 +454,7 @@ void GEENIE::EntityToInspector(Entity *e)
 void GEENIE::UnsetInspector()
 {
     InspectorWidget* w = dynamic_cast<InspectorWidget*>(_dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget());
-    w->children();
+    w->clear();
 }
 
 void GEENIE::defaultSession(QWidget *inspector, QWidget *asset, QWidget *entities)
@@ -918,21 +920,32 @@ void GEENIE::NewProject()
     NewProjectDialog n(_mainWindow);
     if(n.exec() == QDialog::Accepted)
     {
-        Project* tmp = _project;
-        QDir *dir = new QDir(n.file());
-        dir->cd("..");
-        QString a = dir->absolutePath();
+        QDir *dir = new QDir(n.path());
+        if(dir->exists())
+        {
+            Project* tmp = _project;
+            dir->mkdir(n.name());
+            dir->cd(n.name());
 
-        _project = new Project(0,n.name(),a);
-        delete tmp;
-        QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
-        QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
-        QFile file(n.file());
-        file.open(QIODevice::WriteOnly | QIODevice::Text);
-        file.close();
-        _project->save(n.file());
-        fillSceneExplorer();
-        fillAssetWidget();
+            _project = new Project(_engine,n.name(),dir->absolutePath());
+            delete tmp;
+
+
+            QObject::connect(_project,SIGNAL(CanRedoSignal(bool)),_mainWindow,SLOT(CanRedo(bool)));
+            QObject::connect(_project,SIGNAL(CanUndoSignal(bool)),_mainWindow,SLOT(CanUndo(bool)));
+
+            _project->save();
+
+            fillSceneExplorer();
+            fillAssetWidget();
+        }
+        else
+        {
+            ERROR_MSG("New project: Selected path is not a valid target");
+        }
+        //QFile file(n.file());
+        //file.open(QIODevice::WriteOnly | QIODevice::Text);
+        //file.close();
     }
 }
 
@@ -1193,4 +1206,68 @@ void GEENIE::deleteAssetDia()
     {
        this->DeleteAsset(dad->getAssetID());
     }
+}
+
+bool GEENIE::pathExists(QString path, QString file)
+{
+    QDir *dir = new QDir(path);
+    if(file == "")
+    {
+        if(dir->exists())
+            return true;
+        return false;
+    }
+    else
+    {
+        if(dir->exists(file))
+            return true;
+        return false;
+    }
+}
+
+void GEENIE::loadDefaultProject()
+{
+    QProcessEnvironment env(QProcessEnvironment::systemEnvironment());
+    QString userprofile = env.value("USERPROFILE");
+
+    QString path = userprofile+"\\GEENIE";
+    if(pathExists(path))
+    {
+        path += "\\default_project";
+        if(pathExists(path))
+        {
+            QString file = "default_project.geenie";
+            bool b = pathExists(path,file);
+            if(pathExists(path))
+            {
+                this->LoadProject(path + "\\" + file);
+                return;
+            }
+            else
+            {
+                createDefaultProject();
+            }
+        }
+        else
+        {
+            QDir *dir = new QDir(path);
+            dir->mkdir("default_project");
+            createDefaultProject();
+        }
+    }
+    else
+    {
+        path = userprofile;
+        QDir *dir = new QDir(path);
+        dir->mkdir("GEENIE");
+        dir->cd("GEENIE");
+        dir->mkdir("default_project");
+        createDefaultProject();
+    }
+}
+
+void GEENIE::createDefaultProject()
+{
+    _project = new Project(_engine,"default_project");
+    _project->save();
 }
