@@ -341,3 +341,23 @@ void GEENIEMainWindow::on_actionDelete_triggered()
 {
     emit deleteAsset();
 }
+
+void GEENIEMainWindow::on_actionClose_Project_triggered()
+{
+    if(!_projectSaved)
+    {
+        QMessageBox::StandardButton sBtn = QMessageBox::question(this,tr("Unsaved changes"),
+                                                                 tr("There are unsaved changes.\nWould you like to save them before closing?"),
+                                                                 QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                                                 QMessageBox::Yes);
+        if(sBtn == QMessageBox::Yes)
+        {
+            emit saveProject();
+        }
+        else if(sBtn == QMessageBox::Cancel)
+        {
+            return;
+        }
+    }
+    emit closeProject();
+}

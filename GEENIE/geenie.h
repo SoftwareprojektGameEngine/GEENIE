@@ -373,6 +373,8 @@ private slots:
     void createAsset();
 
     void deleteAssetDia();
+
+    void closeProject();
 signals:
 public slots:
 };

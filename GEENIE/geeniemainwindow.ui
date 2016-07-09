@@ -135,6 +135,7 @@
     <addaction name="actionOpen_2"/>
     <addaction name="actionSave_2"/>
     <addaction name="actionSave_As"/>
+    <addaction name="actionClose_Project"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -419,6 +420,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionClose_Project">
+   <property name="text">
+    <string>Close Project</string>
    </property>
   </action>
  </widget>

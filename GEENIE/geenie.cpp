@@ -280,6 +280,7 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(_mainWindow,SIGNAL(setLayoutToDefault()),this,SLOT(SetDefaultLayout()));
     QObject::connect(_mainWindow,SIGNAL(createAsset()),this,SLOT(createAsset()));
     QObject::connect(_mainWindow,SIGNAL(deleteAsset()),this,SLOT(deleteAssetDia()));
+    QObject::connect(_mainWindow,SIGNAL(closeProject()),this,SLOT(closeProject()));
 
     this->loadDefaultProject();
     UnsetInspector();
@@ -1270,4 +1271,10 @@ void GEENIE::createDefaultProject()
 {
     _project = new Project(_engine,"default_project");
     _project->save();
+}
+
+void GEENIE::closeProject()
+{
+    this->loadDefaultProject();
+    this->fillSceneExplorer();
 }

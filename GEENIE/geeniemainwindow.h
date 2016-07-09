@@ -152,6 +152,8 @@ signals:
     void createAsset();
 
     void deleteAsset();
+
+    void closeProject();
 public slots:
 
     //! Slot for the undo signal.
@@ -272,6 +274,8 @@ private slots:
     void on_actionCreate_triggered();
 
     void on_actionDelete_triggered();
+
+    void on_actionClose_Project_triggered();
 
 private:
 
