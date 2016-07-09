@@ -287,6 +287,8 @@ private:
 
     Ui::GEENIEMainWindow *ui;
     SceneEditWidget* _sceneEditWidget;
+
+    QString userprofile;
 };
 
 #endif // GEENIEMAINWINDOW_H

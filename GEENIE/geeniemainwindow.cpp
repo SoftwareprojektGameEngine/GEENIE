@@ -14,6 +14,10 @@ GEENIEMainWindow::GEENIEMainWindow(EngineWrapper* engine, QWidget *parent) :
     ui(new Ui::GEENIEMainWindow)
 {
     ui->setupUi(this);
+
+    QProcessEnvironment env(QProcessEnvironment::systemEnvironment());
+    this->userprofile = env.value("USERPROFILE") + "\\" + "GEENIE";
+
     QFont font;
     font.setFamily("Courier");
     font.setFixedPitch(true);
@@ -297,10 +301,8 @@ void GEENIEMainWindow::on_actionOpen_2_triggered()
         }
     }
 
-    QProcessEnvironment env(QProcessEnvironment::systemEnvironment());
-    QString userprofile = env.value("USERPROFILE") + "\\" + "GEENIE";
 
-    QString file = QFileDialog::getOpenFileName(this,QString("Load project ..."),userprofile,QString("GEENIE project files (*.geenie)"));
+    QString file = QFileDialog::getOpenFileName(this,QString("Load project ..."),this->userprofile,QString("GEENIE project files (*.geenie)"));
     if(file.isEmpty())
     {
         return;
@@ -313,15 +315,10 @@ void GEENIEMainWindow::on_actionSave_As_triggered()
     emit checkIfProjectConfigured();
     if(!_projectConfigured)return;
 
-    QString file = QFileDialog::getSaveFileName(this,"Select project file","C:/","GEENIE project file (*.geenie)");
+    QString file = QFileDialog::getSaveFileName(this,"Select project file",this->userprofile,"GEENIE project file (*.geenie)");
     if(file.isEmpty())
     {
         QMessageBox::warning(this,QString("No file name"),QString("The filename is empty.\nPlease select one."));
-        return;
-    }
-    if(QFileInfo(file).absoluteDir().entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries).count() != 0)
-    {
-        QMessageBox::warning(this,QString("Not empty directory"),QString("The selected directoy is not empty.\nPlease select another directory."));
         return;
     }
     emit saveProject(file);
