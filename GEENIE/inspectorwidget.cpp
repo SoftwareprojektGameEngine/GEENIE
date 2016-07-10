@@ -176,8 +176,9 @@ void InspectorWidget::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int
     {
         return;
     }
-    QString a = item->parent()->parent()->text(0);
-    if(a == "Light" && item->text(0)!= "Alpha")
+    if(     item->text(0) == "R"
+        ||  item->text(0) == "G"
+        ||  item->text(0) == "B")
     {
         QColorDialog dia;
         if(dia.exec() == QDialog::Accepted)
@@ -196,10 +197,26 @@ void InspectorWidget::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int
     }
     else
     {
-        Qt::ItemFlags flag = item->flags();
-        item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-        ui->treeWidget->editItem(item,column);
-        item->setFlags(flag);
+        if(item->text(0) == "Entity")
+        {
+            Qt::ItemFlags flag = item->flags();
+            item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+            ui->treeWidget->editItem(item,column);
+            item->setFlags(flag);
+        }
+        else if(item->childCount() == 0
+                && !(item->text(0) == "Model"
+                    || item->text(0) == "Texture"
+                    || item->text(0) == "Script"
+                    || item->text(0) == "Material"
+                    || item->text(0) == "Audio"
+                    || item->text(0) == "Video"))
+        {
+            Qt::ItemFlags flag = item->flags();
+            item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+            ui->treeWidget->editItem(item,column);
+            item->setFlags(flag);
+        }
     }
 }
 
