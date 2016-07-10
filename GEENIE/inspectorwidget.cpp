@@ -172,11 +172,14 @@ void InspectorWidget::SetHeaderText(QString text1, QString text2)
 
 void InspectorWidget::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
-    if(column == 0)
+    if(column == 0 || item == 0)
     {
         return;
     }
+    Qt::ItemFlags flag = item->flags();
+    item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
     ui->treeWidget->editItem(item,column);
+    item->setFlags(flag);
 }
 
 void InspectorWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column)
@@ -198,4 +201,18 @@ void InspectorWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int colum
 void InspectorWidget::clear()
 {
     ui->treeWidget->clear();
+}
+
+Color InspectorWidget::ColorPicker()
+{
+    QColorDialog *dia = new QColorDialog(this);
+    dia->exec();
+    QColor col = dia->currentColor();
+    Color color;
+    color.a = col.alpha();
+    color.b = col.blue();
+    color.g = col.green();
+    color.r = col.red();
+    return color;
+
 }

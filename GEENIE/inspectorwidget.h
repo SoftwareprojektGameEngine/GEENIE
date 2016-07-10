@@ -3,6 +3,7 @@
 #include "geenie.h"
 
 #include <QWidget>
+#include <QColorDialog>
 
 namespace Ui {
 class InspectorWidget;
@@ -65,6 +66,7 @@ private:
     void InitializeTree();
     QTreeWidgetItem* VectorToItem(Vector v);
     QTreeWidgetItem* ColorToItem(Color c);
+    Color ColorPicker();
 };
 
 #endif // INSPECTORWIDGET_H
