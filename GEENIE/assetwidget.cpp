@@ -2,9 +2,6 @@
 #include "ui_assetwidget.h"
 #include <qfiledialog.h>
 
-QString Path;
-QList<QString> FileList;
-
 AssetWidget::AssetWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::AssetWidget)
@@ -19,51 +16,136 @@ AssetWidget::~AssetWidget()
 
 void AssetWidget::on_LoadButton_clicked()
 {
-    QStringList *model;
-    //Show File Dialog
-    QFileDialog View(this);
-    View.setFileMode(QFileDialog::ExistingFiles);
-    View.setViewMode(QFileDialog::Detail);
-    View.show();
-    //Get Files from Dialog
-    Path = View.getExistingDirectory();//@Artem: Muss hier der Konstruktor gefüllt werden?
-    FileList.append(Path);
-    //Fill ListView
-    ui->listWidget->addItems(FileList);
+    int TabName = ui->AssetTabWidget->currentIndex();
+    QString Path;
+    AssetType type;
+    switch (TabName) {
+    case 0:
+        Path = QFileDialog::getOpenFileName(this, tr("Load Material"), "C:/", "Material Files (*.bmp; *.dds; *.gif; *.hdr; *.jps; *.jpc; *.jpeg; *.jpg; *.attr; *.pic; *.png; *.pnm; *.pgm; *.pbm; *.rgb; *.sgi; *.rgba; *.int; *.inta; *.bw; *.tga; *.tiff; *.tif");
+        type = AssetType::MATERIAL_ASSET;
+        break;
+    case 1:
+        Path = QFileDialog::getOpenFileName(this, tr("Load Texture"), "C:/", "Texture Files (*.bmp; *.dds; *.gif; *.hdr; *.jps; *.jpc; *.jpeg; *.jpg; *.attr; *.pic; *.png; *.pnm; *.pgm; *.pbm; *.rgb; *.sgi; *.rgba; *.int; *.inta; *.bw; *.tga; *.tiff; *.tif)");
+        type = AssetType::TEXTURE_ASSET;
+        break;
+    case 2:
+        Path = QFileDialog::getOpenFileName(this, tr("Load Model"), "C:/", "Model Files (*.3dc; *.asc; *.ac; *.bsp; *.dae; *.dw; *.dxf; *.fbx; *.gem; *.geo; *.iv; *.wrl; *.ive; *.logo; *.lwo; *.lw; *.lws; *.md2; *.obj; *.ogr; *.flt; *.osg; *.shp; *.stl; *.sta; *.x)");
+        type = AssetType::MODEL_ASSET;
+        break;
+    case 3:
+        Path = QFileDialog::getOpenFileName(this, tr("Load Script"), "C:/", "Script Files (*.py; *.lua)");
+        type = AssetType::SCRIPT_ASSET;
+        break;
+    case 4:
+        Path = QFileDialog::getOpenFileName(this, tr("Load Audio"), "C:/", "All Files (*.mp3; *.ogg)");
+        type = AssetType::AUDIO_ASSET;
+        break;
+    case 5:
+        Path = QFileDialog::getOpenFileName(this, tr("Load Video"), "C:/", "Video files (*.mov; *.mpg; *.mpv; *.mp4; *.m4v; *.dv; *.avi; *.flv; *.swf)");
+        type = AssetType::VIDEO_ASSET;
+        break;
+    default:
+        break;
+    }
+    if(Path != QString())
+    {
+        emit AddAssetToProject(Path,type);
+    }
 }
 
 void AssetWidget::on_DeleteButton_clicked()
 {
-    //qDeleteAll(ui->listWidget->selectedItems());
-    int count = ui->listWidget->selectedItems().count();
-    for(int i=0; i<count;i++)
+    QListWidget* view;
+    switch(ui->AssetTabWidget->currentIndex())
     {
-        FileList.removeAt(ui->listWidget->selectionModel()->selectedIndexes()[i].row());
+    case 0:
+        view = ui->MaterialListWidget;
+        break;
+    case 1:
+        view = ui->TextureListWidget;
+        break;
+    case 2:
+        view = ui->ModelListWidget;
+        break;
+    case 3:
+        view = ui->ScriptListWidget;
+        break;
+    case 4:
+        view = ui->AudioListWidget;
+        break;
+    case 5:
+        view = ui->VideoListWidget;
+        break;
+    default:
+        break;
     }
-    ui->listWidget->update();
+    if(view != 0 && !view->selectedItems().isEmpty())
+    {
+
+        emit DeleteAsset(QUuid(view->selectedItems().at(0)->data(Qt::UserRole).toByteArray()));
+    }
 }
 
-void AssetWidget::on_treeView_clicked(const QModelIndex &index)
+void AssetWidget::clear()
 {
-    //Append ListView with FileList that gets data from the treeview
-    FileList.clear();
-    //FileList.append();//@Artem: HILFE!!!
-    ui->listWidget->addItems(FileList);
-    ui->listWidget->update();
+    ui->ModelListWidget->clear();
+    ui->TextureListWidget->clear();
+    ui->MaterialListWidget->clear();
+    ui->ScriptListWidget->clear();
+    ui->AudioListWidget->clear();
+    ui->VideoListWidget->clear();
 }
 
-void AssetWidget::FillTreeView(QString _path){
-   /*
-    //filling the tree view with the root path
-    QString _path;//root path of the project
-    QString mPath;
-    if(path==''){
-        mPath = "C:/";
-    }else{
-        mPath = _path;
+#include <QFileInfo>
+
+void AssetWidget::AddAsset(Asset *asset)
+{
+    QListWidgetItem* item;
+    switch(asset->GetType())
+    {
+    case MODEL_ASSET:
+    {
+        item = new QListWidgetItem(QFileInfo(asset->GetPath()).fileName(),ui->ModelListWidget);
+        item->setData(Qt::UserRole,asset->GetID().toByteArray());
+        ui->ModelListWidget->update();
+        break;
     }
-    dirModel = new QFileSystemModel(this);
-    dirModel->setRootPath(mPath);
-    ui->treeView->setModel(dirModel);
-    */
+    case MATERIAL_ASSET:
+    {
+        item = new QListWidgetItem(QFileInfo(asset->GetPath()).fileName(),ui->MaterialListWidget);
+        item->setData(Qt::UserRole,asset->GetID().toByteArray());
+        ui->MaterialListWidget->update();
+        break;
+    }
+    case TEXTURE_ASSET:
+    {
+        item = new QListWidgetItem(QFileInfo(asset->GetPath()).fileName(),ui->TextureListWidget);
+        item->setData(Qt::UserRole,asset->GetID().toByteArray());
+        ui->TextureListWidget->update();
+        break;
+    }
+    case AUDIO_ASSET:
+    {
+        item = new QListWidgetItem(QFileInfo(asset->GetPath()).fileName(),ui->AudioListWidget);
+        item->setData(Qt::UserRole,asset->GetID().toByteArray());
+        ui->AudioListWidget->update();
+        break;
+    }
+    case VIDEO_ASSET:
+    {
+        item = new QListWidgetItem(QFileInfo(asset->GetPath()).fileName(),ui->VideoListWidget);
+        item->setData(Qt::UserRole,asset->GetID().toByteArray());
+        ui->VideoListWidget->update();
+        break;
+    }
+    case SCRIPT_ASSET:
+    {
+        item = new QListWidgetItem(QFileInfo(asset->GetPath()).fileName(),ui->ScriptListWidget);
+        item->setData(Qt::UserRole,asset->GetID().toByteArray());
+        ui->ScriptListWidget->update();
+        break;
+    }
+    default:
+        break;
+    }
 }

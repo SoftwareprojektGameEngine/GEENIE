@@ -1,8 +1,9 @@
 #include "components.h"
 
-PositionComponent::PositionComponent(Vector pos, QUuid id) :
+PositionComponent::PositionComponent(Vector pos, QUuid id, QString name) :
     _position(pos),
-    _id(id)
+    _id(id),
+    _name(name)
 {
 }
 
@@ -28,13 +29,14 @@ QString PositionComponent::GetTypeName()
     return QString("Position");
 }
 
-LightComponent::LightComponent(LightSourceType lightType, Color ambient, Color diffuse, Color specular, Vector spotlightDir, QUuid id) :
+LightComponent::LightComponent(LightSourceType lightType, Color ambient, Color diffuse, Color specular, Vector spotlightDir, QUuid id, QString name) :
     _id(id),
     _lightSourceType(lightType),
     _ambientColor(ambient),
     _diffuseColor(diffuse),
     _specularColor(specular),
-    _spotlightDirection(spotlightDir)
+    _spotlightDirection(spotlightDir),
+    _name(name)
 {
 }
 
@@ -82,9 +84,10 @@ QString LightComponent::GetTypeName()
     return QString("Light");
 }
 
-ModelComponent::ModelComponent(QUuid modelID, QUuid id) :
+ModelComponent::ModelComponent(QUuid modelID, QUuid id, QString name) :
     _id(id),
-    _modelID(modelID)
+    _modelID(modelID),
+    _name(name)
 {
 }
 
@@ -112,10 +115,11 @@ QString ModelComponent::GetTypeName()
     return QString("Model");
 }
 
-MaterialComponent::MaterialComponent(QUuid matID, int matIndex, QUuid id) :
+MaterialComponent::MaterialComponent(QUuid matID, int matIndex, QUuid id, QString name) :
     _id(id),
     _materialID(matID),
-    _materialIndex(matIndex)
+    _materialIndex(matIndex),
+    _name(name)
 {
 }
 
@@ -146,9 +150,10 @@ QString MaterialComponent::GetTypeName()
     return QString("Material");
 }
 
-ShaderComponent::ShaderComponent(QUuid shaderId, QUuid id):
+ShaderComponent::ShaderComponent(QUuid shaderId, QUuid id, QString name):
     _id(id),
-    _shaderID(shaderId)
+    _shaderID(shaderId),
+    _name(name)
 {
 }
 ShaderComponent::~ShaderComponent(){}
@@ -170,10 +175,11 @@ QString ShaderComponent::GetTypeName()
     return QString("Shader");
 }
 
-TextureComponent::TextureComponent(QUuid texID, int texIndex, QUuid id) :
+TextureComponent::TextureComponent(QUuid texID, int texIndex, QUuid id, QString name) :
     _id(id),
     _textureID(texID),
-    _textureIndex(texIndex)
+    _textureIndex(texIndex),
+    _name(name)
 {
 }
 
@@ -206,10 +212,11 @@ QString TextureComponent::GetTypeName()
     return QString("Texture");
 }
 
-ScriptTriggerComponent::ScriptTriggerComponent(ScriptTrigger trigger, QUuid scriptID, QUuid id):
+ScriptTriggerComponent::ScriptTriggerComponent(ScriptTrigger trigger, QUuid scriptID, QUuid id, QString name):
     _id(id),
     _trigger(trigger),
-    _scriptID(scriptID)
+    _scriptID(scriptID),
+    _name(name)
 {
 }
 
@@ -238,9 +245,10 @@ QString ScriptTriggerComponent::GetTypeName()
     return QString("Scripttrigger");
 }
 
-SoundComponent::SoundComponent(QUuid sound, QUuid id) :
+SoundComponent::SoundComponent(QUuid sound, QUuid id, QString name) :
     _id(id),
-    _soundID(sound)
+    _soundID(sound),
+    _name(name)
 {
 }
 

@@ -12,17 +12,36 @@ namespace Ui {
 class LoggerWidget;
 }
 
+/*!
+ * \brief The LoggerWidget class is the GUI-element for the logger, which displays all messages and controls
+ */
 class LOGGERSHARED_EXPORT LoggerWidget : public QWidget
 {
     Q_OBJECT
 
 public:
+    /*!
+     * \brief Constructor
+     * \param parent
+     */
     explicit LoggerWidget(QWidget *parent = 0);
     ~LoggerWidget();
 
+    /*!
+     * \brief Creates a new message
+     * \param msg
+     * \param type
+     */
     void newMessage(const QString& msg, logger::MessageType type) const;
 
 signals:
+    /*!
+     * \brief Signals when the filtering through the comboboxes has changed.
+     * \param debug
+     * \param error
+     * \param warning
+     * \param info
+     */
     void filterChanged(bool debug, bool error, bool warning, bool info);
 
 private slots:

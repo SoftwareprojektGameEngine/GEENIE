@@ -16,13 +16,31 @@ private:
     bool done; //!< The state of this action. (Needed for cleanup.)
 public:
     //! The constructor
-    CreateEntityAction(Project& project, QUuid parentID);
+    CreateEntityAction(Project& project, QUuid parentID, QString name);
     //! The destructor
     ~CreateEntityAction();
 
     //! This executes the action (created the entity).
     void Do();
     //! This rolls the action back (removes the entity).
+    void Undo();
+};
+
+class SHARED_EXPORT MoveEntityAction : public UserAction {
+private:
+    Project& project;
+    Entity *movedEntity;
+    QUuid parentID;
+    QUuid newParentID;
+
+    bool done;
+
+public:
+    MoveEntityAction(Project& project,QUuid newParentID, QUuid entityID);
+    ~MoveEntityAction();
+
+    void Do();
+
     void Undo();
 };
 
@@ -37,6 +55,21 @@ private:
 public:
     RemoveEntityAction(Project& project, QUuid entityID);
     ~RemoveEntityAction();
+
+    void Do();
+    void Undo();
+};
+
+class SHARED_EXPORT RenameEntityAction : public UserAction {
+private:
+    Project& project;
+    QString oldName;
+    QString newName;
+    QUuid entityID;
+    bool done;
+public:
+    RenameEntityAction(Project& project, QUuid entityId, QString name);
+    ~RenameEntityAction();
 
     void Do();
     void Undo();
@@ -77,6 +110,20 @@ public:
     void Undo();
 };
 
+class SHARED_EXPORT RemoveComponentAction : public UserAction {
+private:
+    Project& project;
+    QUuid entityID;
+    Component* component;
+    bool done;
+public:
+    RemoveComponentAction(Project& project, QUuid entityID, QUuid componentID);
+    ~RemoveComponentAction();
+
+    void Do();
+    void Undo();
+};
+
 /*!
  * \brief The AddSceneAction class
  */
@@ -109,6 +156,21 @@ public:
     void Undo();
 };
 
+class SHARED_EXPORT RenameSceneAction : public UserAction {
+private:
+    Project& project;
+    QString oldName;
+    QString newName;
+    bool done;
+    QUuid sceneID;
+public:
+    RenameSceneAction(Project& project, QUuid sceneID, QString name);
+    ~RenameSceneAction();
+
+    void Do();
+    void Undo();
+};
+
 /*!
  * \brief The AddAssetAction class
  */
@@ -118,7 +180,7 @@ private:
     Asset* asset;
     bool done;
 public:
-    AddAssetAction(Project& project, Asset* asset);
+    AddAssetAction(Project& project, AssetType type, QString path);
     ~AddAssetAction();
 
     void Do();

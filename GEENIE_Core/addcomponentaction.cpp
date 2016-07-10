@@ -1,6 +1,8 @@
 #include "useractions.h"
 
-AddComponentAction::AddComponentAction(Project &project, QUuid entityID, Component *component) : project(project), entityID(entityID) {
+AddComponentAction::AddComponentAction(Project &project, QUuid entityID, Component *component)
+    : project(project), entityID(entityID)
+{
     this->component = component;
     this->done = false;
 }

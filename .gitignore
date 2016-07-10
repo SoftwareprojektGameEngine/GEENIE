@@ -1,1 +1,13 @@
 *.pro.user
+.vs/
+*.vcxProj*
+*/debug/
+x64/
+bin/
+*.sln
+GeneratedFiles/
+*VC.db
+session_save.xml
+*.bat
+*.opendb
+*.autosave

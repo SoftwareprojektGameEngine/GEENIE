@@ -1,6 +1,6 @@
 #include "core.h"
 
-Scene::Scene(QUuid id) : entities() {
+Scene::Scene(QUuid id, QString name) : entities(), _name(name) {
     this->id = id;
 }
 
