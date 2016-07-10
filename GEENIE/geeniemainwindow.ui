@@ -24,7 +24,7 @@
      <height>400</height>
     </size>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QGridLayout" name="gridLayout_2">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -37,7 +37,7 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
-    <item>
+    <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
        <number>0</number>
@@ -52,23 +52,8 @@
        <attribute name="title">
         <string>Script-Editor</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <property name="topMargin">
            <number>0</number>
@@ -90,22 +75,29 @@
           <item>
            <widget class="QComboBox" name="comboBox"/>
           </item>
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
         </item>
-        <item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="LoadTemplateButton">
+          <property name="text">
+           <string>Load Template</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>762</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="0" colspan="3">
          <widget class="QTextEdit" name="scriptEditor">
           <property name="tabStopWidth">
            <number>20</number>
@@ -124,7 +116,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

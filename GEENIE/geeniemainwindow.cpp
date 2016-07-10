@@ -361,3 +361,9 @@ void GEENIEMainWindow::on_actionClose_Project_triggered()
     }
     emit closeProject();
 }
+
+void GEENIEMainWindow::on_LoadTemplateButton_clicked()
+{
+    QString script = "--Declare your variables here\n--Put your code here";
+    setScript(script);
+}

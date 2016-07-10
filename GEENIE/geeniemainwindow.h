@@ -277,6 +277,8 @@ private slots:
 
     void on_actionClose_Project_triggered();
 
+    void on_LoadTemplateButton_clicked();
+
 private:
 
     //! Private variable stores if the current project is saved.
