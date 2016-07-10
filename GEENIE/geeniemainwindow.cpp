@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QDebug>
-
+#include <QFileDialog>
 GEENIEMainWindow::GEENIEMainWindow(EngineWrapper* engine, QWidget *parent) :
     QMainWindow(parent),
     _projectSaved(true),
@@ -314,14 +314,25 @@ void GEENIEMainWindow::on_actionSave_As_triggered()
 {
     emit checkIfProjectConfigured();
     if(!_projectConfigured)return;
+    QFileDialog dia;
+    dia.setNameFilter("GEENIE project file (*.geenie)");
+    dia.setDirectory(this->userprofile);
+    dia.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
+    //dia.setLabelText(0,"Select project file");
+    dia.setFileMode(QFileDialog::AnyFile);
 
-    QString file = QFileDialog::getSaveFileName(this,"Select project file",this->userprofile,"GEENIE project file (*.geenie)");
-    if(file.isEmpty())
+    if(dia.exec() == QDialog::Rejected)
     {
-        QMessageBox::warning(this,QString("No file name"),QString("The filename is empty.\nPlease select one."));
         return;
     }
-    emit saveProject(file);
+    else
+    {
+        if(dia.selectedFiles().at(0) == QString(""))
+        {
+            ERROR_MSG("Save as: Empty File path.");
+        }
+        emit saveProject(dia.selectedFiles().at(0));
+    }
 }
 
 void GEENIEMainWindow::on_actionSave_2_triggered()
