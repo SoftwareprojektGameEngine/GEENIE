@@ -661,5 +661,9 @@ QString Project::path()
 QString Project::assetPath()
 {
     auto a = this->path();
-    return QString("%1%2").arg(this->path()).arg("/assets/");
+    QDir *dir = new QDir(this->path());
+    dir->cd("..");
+    dir->cd("assets");
+    return dir->absolutePath();
+    //return QString("%1%2").arg(this->path()).arg("/assets/");
 }
