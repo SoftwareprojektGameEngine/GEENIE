@@ -285,6 +285,11 @@ GEENIE::GEENIE(QObject *parent) :
     this->loadDefaultProject();
     UnsetInspector();
     fillSceneExplorer();
+    QFile s(QString(":/style.css"));
+    s.open(QIODevice::ReadOnly | QIODevice::Text);
+    qDebug() << s.errorString();
+    QString style = QString::fromUtf8(s.readAll());
+    _mainWindow->setStyleSheet(style);
     _mainWindow->show();
 }
 

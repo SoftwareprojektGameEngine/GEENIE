@@ -111,4 +111,5 @@ INCLUDEPATH += $$PWD/../Backend
 DEPENDPATH += $$PWD/../Backend
 
 RESOURCES += \
-    images.qrc
+    images.qrc \
+    stylesheets.qrc

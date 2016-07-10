@@ -1,0 +1,156 @@
+QWidget{
+	background: #333333;
+	color: white;
+}
+
+QPushButton, QComboBox, QLineEdit {
+	background: #333333;
+	border: 1px solid white;
+	border-radius: 5px;
+	color: white;
+}
+
+QPushButton:hover, QPushButton:focus, QComboBox:hover, QComboBox:focus {
+	border: 1px solid #3399FF;
+}
+
+QDockWidget{
+	border: 2px solid rgb(217, 217, 217);
+}
+
+QDockWidget::title{
+	background: #333333;
+	color: white;
+}
+
+QMenuBar {
+	background-color: #333333;
+}
+
+QMenuBar::item {
+	background-color: #333333;
+	color: white;
+}
+
+QTreeWidget{
+	background: white;
+	color: #333333;
+}
+
+QTreeWidget::item{
+	border: 1px solid rgb(0, 115, 230);
+}
+
+QTreeWidget::item::hover{
+	
+}
+
+QTabWidget {
+	border: none;
+}
+
+QTabWidget::pane {
+	border: none;
+	background: #333333;
+	color: white;
+}
+
+QTabWidget::tab-bar {
+	background: #333333;
+	color: white;
+}	
+
+QTabBar::tab {
+	background: #333333;
+	color: white;
+	min-width: 80px;
+	min-height: 20px;
+}
+
+QTabBar::tab:selected {
+	color: white;
+}
+
+QTabBar::tab:!selected {
+	color: #999999;
+}
+
+QHeaderView::section {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #616161, stop: 0.5 #505050,
+                                      stop: 0.6 #434343, stop:1 #656565);
+    color: white;
+    padding-left: 4px;
+    border: 1px solid #6c6c6c;
+}
+
+QDockWidget::close-button, QDockWidget::float-button {
+    border: 1px solid transparent;
+    background: darkgray;
+    padding: 0px;
+}
+
+QSlider::groove:horizontal {
+    border: 1px solid #999999;
+    height: 8px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4);
+    margin: 2px 0;
+}
+
+QComboBox QAbstractItemView {
+    border: 2px solid darkgray;
+    selection-background-color: lightgray;
+}
+
+QTreeView {
+    show-decoration-selected: 1;
+}
+
+QTreeView::item {
+     border: 1px solid #d9d9d9;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+}
+
+QTreeView::item:hover {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e7effd, stop: 1 #cbdaf1);
+    border: 1px solid #bfcde4;
+
+QProgressBar::chunk {
+    background-color: #CD96CD;
+    width: 10px;
+    margin: 0.5px;
+}
+
+QScrollBar:horizontal {
+    border: 2px solid grey;
+    background: #32CC99;
+    height: 15px;
+    margin: 0px 20px 0 20px;
+}
+
+QScrollBar:vertical {
+	width: 5px;
+	background: white;
+}
+
+QScrollBar::handle:vertical {
+	background: #333333;
+}
+
+QScrollBar::handle:vertical:hover {
+	background: #3399FF
+}
+
+QScrollBar:horizontal {
+	height: 5px;
+	background: white;
+}
+
+QScrollBar::handle:horizontal {
+	background: #333333;
+}
+
+QScrollBar::handle:horizontal:hover {
+	background: #3399FF
+}

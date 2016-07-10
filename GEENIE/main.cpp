@@ -15,7 +15,7 @@ void UseStyleSheets(){
     }
     QTextStream textstream( &file );
     QString style = textstream.readAll();
-    qApp->setStyleSheet( style );
+    //qApp->setStyleSheet( style );
 }
 
 int main(int argc, char *argv[])
