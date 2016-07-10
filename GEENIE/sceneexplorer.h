@@ -228,7 +228,7 @@ signals:
 
     //! Deletecomponent signal.
 
-    void CMDeleteComponent(QUuid,QUuid);
+    void CMDeleteComponent(QUuid);
 
     //! Deleteentity signal.
 

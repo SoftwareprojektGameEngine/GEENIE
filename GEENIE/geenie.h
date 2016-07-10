@@ -300,7 +300,7 @@ private slots:
      * \param parentId The parent id.
      */
 
-    void DeleteComponent(QUuid id, QUuid parentId);
+    void DeleteComponent(QUuid parentId);
 
     //! Dialog for changing components values.
     /*!

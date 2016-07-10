@@ -258,7 +258,7 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(eWidget,SIGNAL(CMAddComponent(QUuid)),this,SLOT(AddComponent(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMAddEntity(QUuid,se::ItemType)),this,SLOT(AddEntity(QUuid,se::ItemType)));
     QObject::connect(eWidget,SIGNAL(CMAddScene()),this,SLOT(AddScene()));
-    QObject::connect(eWidget,SIGNAL(CMDeleteComponent(QUuid,QUuid)),this,SLOT(DeleteComponent(QUuid,QUuid)));
+    QObject::connect(eWidget,SIGNAL(CMDeleteComponent(QUuid)),this,SLOT(DeleteComponent(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteEntity(QUuid)),this,SLOT(DeleteEntity(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMDeleteScene(QUuid)),this,SLOT(DeleteScene(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMMoveEntity(QUuid)),this,SLOT(MoveEntity(QUuid)));
@@ -980,19 +980,29 @@ void GEENIE::AddComponent(QUuid parentId)
         fillSceneExplorer();
     }
 }
-
-void GEENIE::DeleteComponent(QUuid id, QUuid parentId)
+#include "deletecomponentdialog.h"
+void GEENIE::DeleteComponent(QUuid parentId)
 {
-    QMessageBox::StandardButton resBtn = QMessageBox::question(_mainWindow,tr("Delete Component"),tr("Are you sure you want to delete this component?"),QMessageBox::No | QMessageBox::Yes);
-    if(resBtn == QMessageBox::Yes)
+    DeleteComponentDialog *dia = new DeleteComponentDialog(_mainWindow);
+    QList<COMPONENT_DATA_DC> list;
+
+    Entity *e = _project->FindEntity(parentId);
+    QHashIterator<QUuid, Component*> c = e->GetComponents();
+    while(c.hasNext())
     {
-        RemoveComponentAction* rsa = new RemoveComponentAction((*_project),parentId,id);
-        _project->AddUserAction(rsa);
-        fillSceneExplorer();
+        c.next();
+        COMPONENT_DATA_DC cd;
+        cd.name = c.value()->name();
+        cd.id = c.key();
+        list.push_back(cd);
     }
-    else
+    dia->SetComponentList(list);
+    if(dia->exec() == QDialog::Accepted)
     {
-        return;
+        QUuid comp = dia->SelectedId();
+        UserAction *ua = new RemoveComponentAction((*_project),parentId,comp);
+        _project->AddUserAction(ua);
+        this->UnsetInspector();
     }
 }
 

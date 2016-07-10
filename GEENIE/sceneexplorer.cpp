@@ -164,6 +164,7 @@ void SceneExplorer::on_treeWidget_customContextMenuRequested(const QPoint &pos)
                 menu->addAction(QString("Delete entity"),this,SLOT(ContextMenuDeleteEntity()));
                 menu->addAction(QString("Move Entity"),this,SLOT(ContextMenuMoveEntity()));
                 menu->addAction(QString("Add Component"),this,SLOT(ContextMenuAddComponent()));
+                menu->addAction(QString("Delete Component"),this,SLOT(ContextMenuDeleteComponent()));
             }
         }
     }
@@ -202,7 +203,7 @@ void SceneExplorer::ContextMenuDeleteScene()
 
 void SceneExplorer::ContextMenuDeleteComponent()
 {
-    emit CMDeleteComponent(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()),QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole+2).toByteArray()));
+    emit CMDeleteComponent(QUuid(ui->treeWidget->selectedItems().at(0)->data(0,Qt::UserRole).toByteArray()));
 }
 
 void SceneExplorer::ContextMenuAddComponent()
