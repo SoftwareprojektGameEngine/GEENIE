@@ -46,6 +46,8 @@ signals:
      */
     void ModifyComponent(QUuid id, QUuid parentId, Component* component);
 
+    void getComponentType();
+
 public slots:
     /*!
      * \brief Workaround for automatic size. Resizes the widget to the parameters

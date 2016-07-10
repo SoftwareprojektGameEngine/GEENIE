@@ -176,10 +176,31 @@ void InspectorWidget::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int
     {
         return;
     }
-    Qt::ItemFlags flag = item->flags();
-    item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-    ui->treeWidget->editItem(item,column);
-    item->setFlags(flag);
+    QString a = item->parent()->parent()->text(0);
+    if(a == "Light" && item->text(0)!= "Alpha")
+    {
+        QColorDialog dia;
+        if(dia.exec() == QDialog::Accepted)
+        {
+            QTreeWidgetItem *itm = item->parent();
+            QTreeWidgetItem *child = itm->child(0);
+            QColor color = dia.currentColor();
+
+            child->setText(1,QString::number(color.red()));
+            child = itm->child(1);
+            child->setText(1,QString::number(color.green()));
+            child = itm->child(2);
+            child->setText(1,QString::number(color.blue()));
+
+        }
+    }
+    else
+    {
+        Qt::ItemFlags flag = item->flags();
+        item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+        ui->treeWidget->editItem(item,column);
+        item->setFlags(flag);
+    }
 }
 
 void InspectorWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column)
