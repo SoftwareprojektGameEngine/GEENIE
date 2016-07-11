@@ -13,6 +13,7 @@ greaterThan(QT_MAJOR_VERSION, 4)
 TARGET = GEENIE
 TEMPLATE = app
 
+RC_FILE = icon.rc
 
 SOURCES += main.cpp\
         geeniemainwindow.cpp \
