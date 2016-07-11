@@ -254,7 +254,7 @@ GEENIE::GEENIE(QObject *parent) :
     QObject::connect(eWidget,SIGNAL(clicked(QUuid,se::ItemType)),this,SLOT(ExplorerClicked(QUuid,se::ItemType)));
     QObject::connect(eWidget,&SceneExplorer::sceneClicked,this,[=](QUuid q){UnsetInspector();});
     QObject::connect(eWidget,SIGNAL(sceneClicked(QUuid)),_mainWindow->getSceneEditWidget(),SLOT(setScene(QUuid)));
-    QObject::connect(eWidget,SIGNAL(CMPreviewScene(QUuid)),_mainWindow->getSceneEditWidget(),SLOT(setScene(QUuid)));
+    QObject::connect(eWidget,&SceneExplorer::CMPreviewScene,this,[=](QUuid q){ _mainWindow->getSceneEditWidget()->GetEngineWidget()->BuildSceneGraph(_project->GetScene(q)); });
     QObject::connect(eWidget,SIGNAL(CMAddComponent(QUuid)),this,SLOT(AddComponent(QUuid)));
     QObject::connect(eWidget,SIGNAL(CMAddEntity(QUuid,se::ItemType)),this,SLOT(AddEntity(QUuid,se::ItemType)));
     QObject::connect(eWidget,SIGNAL(CMAddScene()),this,SLOT(AddScene()));
