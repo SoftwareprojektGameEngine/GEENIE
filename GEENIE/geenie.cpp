@@ -944,6 +944,7 @@ void GEENIE::NewProject()
 
             fillSceneExplorer();
             fillAssetWidget();
+            EntityToInspector(nullptr);
         }
         else
         {
