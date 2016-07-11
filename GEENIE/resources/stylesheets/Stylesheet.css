@@ -8,6 +8,7 @@ QPushButton, QComboBox, QLineEdit {
 	border: 1px solid white;
 	border-radius: 5px;
 	color: white;
+	min-width: 50px;
 }
 
 QPushButton:hover, QPushButton:focus, QComboBox:hover, QComboBox:focus {
@@ -21,6 +22,7 @@ QDockWidget{
 QDockWidget::title{
 	background: #333333;
 	color: white;
+	border-bottom: 1px solid white;
 }
 
 QMenuBar {
@@ -32,17 +34,48 @@ QMenuBar::item {
 	color: white;
 }
 
+QMenuBar::item:!enabled {
+	color: #888888;
+}
+
+QMenuBar::item:selected {
+	background-color: #333333;
+	color: #3399FF;
+}
+
+QMenuBar::item:pressed {
+	background-color: #666666;
+}
+
+QMenu {
+	background-color: #333333;
+	color: white;
+}
+
+QMenu::item {
+	background-color: #333333;
+	color: white;
+}
+
+QMenu::item:selected {
+	color: #3399FF;
+}
+
+QMenu::item:!enabled {
+	color: #999999;
+}
+
 QTreeWidget{
-	background: white;
-	color: #333333;
+	background: #333333;
+	color: white;
 }
 
 QTreeWidget::item{
-	border: 1px solid rgb(0, 115, 230);
+	color: white;
 }
 
 QTreeWidget::item::hover{
-	
+	color: #3399FF;
 }
 
 QTabWidget {
@@ -75,6 +108,10 @@ QTabBar::tab:!selected {
 	color: #999999;
 }
 
+QTabBar::tab:hover {
+	color: #3399FF;
+}
+
 QHeaderView::section {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                                       stop:0 #616161, stop: 0.5 #505050,
@@ -98,23 +135,17 @@ QSlider::groove:horizontal {
 }
 
 QComboBox QAbstractItemView {
-    border: 2px solid darkgray;
-    selection-background-color: lightgray;
+	background: #333333;
+    color: white;
 }
 
-QTreeView {
-    show-decoration-selected: 1;
+QComboBox QAbstractItemView::item {
+	color: white;
 }
 
-QTreeView::item {
-     border: 1px solid #d9d9d9;
-    border-top-color: transparent;
-    border-bottom-color: transparent;
+QComboBox QAbstractItemView::item:hover {
+	color: #3399FF;
 }
-
-QTreeView::item:hover {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e7effd, stop: 1 #cbdaf1);
-    border: 1px solid #bfcde4;
 
 QProgressBar::chunk {
     background-color: #CD96CD;
@@ -122,35 +153,35 @@ QProgressBar::chunk {
     margin: 0.5px;
 }
 
-QScrollBar:horizontal {
+QWidget QScrollBar:horizontal {
     border: 2px solid grey;
     background: #32CC99;
     height: 15px;
     margin: 0px 20px 0 20px;
 }
 
-QScrollBar:vertical {
+QWidget QScrollBar:vertical {
 	width: 5px;
 	background: white;
 }
 
-QScrollBar::handle:vertical {
+QWidget QScrollBar::handle:vertical {
 	background: #333333;
 }
 
-QScrollBar::handle:vertical:hover {
+QWidget QScrollBar::handle:vertical:hover {
 	background: #3399FF
 }
 
-QScrollBar:horizontal {
+QWidget QScrollBar:horizontal {
 	height: 5px;
 	background: white;
 }
 
-QScrollBar::handle:horizontal {
+QWidget QScrollBar::handle:horizontal {
 	background: #333333;
 }
 
-QScrollBar::handle:horizontal:hover {
+QWidget QScrollBar::handle:horizontal:hover {
 	background: #3399FF
 }

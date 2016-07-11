@@ -66,6 +66,7 @@ void GEENIEMainWindow::closeEvent(QCloseEvent *event)
             return;
         }
     }
+#ifdef CAT_EXIT
     QMessageBox::StandardButton resBtn = QMessageBox::question( this, tr("GEENIE"),
                                                                 tr("Are you sure you want to leave?\n"),
                                                                 QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
@@ -92,6 +93,21 @@ void GEENIEMainWindow::closeEvent(QCloseEvent *event)
             event->accept();
         }
     }
+#else
+    QMessageBox::StandardButton resBtn = QMessageBox::question( this, tr("GEENIE"),
+                                                                tr("Are you sure you want to leave?\n"),
+                                                                QMessageBox::Cancel | QMessageBox::Yes,
+                                                                QMessageBox::Yes);
+    if (resBtn == QMessageBox::Cancel)
+    {
+        event->ignore();
+    }
+    else if (resBtn == QMessageBox::Yes)
+    {
+        emit saveSession();
+        event->accept();
+    }
+#endif
 }
 
 QTextDocument* GEENIEMainWindow::scriptEditorDocument()
