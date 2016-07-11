@@ -915,7 +915,7 @@ void GEENIE::ModifyComponent(QUuid id, QUuid parentId, Component *component)
     ModifyEntityAction* mea = new ModifyEntityAction((*_project),parentId,id,component);
     _project->AddUserAction(mea);
     fillSceneExplorer();
-    EntityToInspector(_project->FindEntity(parentId));
+    EntityToInspector(inspectedEntity);
     _mainWindow->getSceneEditWidget()->GetEngineWidget()->UpdateSceneGraph();
 }
 

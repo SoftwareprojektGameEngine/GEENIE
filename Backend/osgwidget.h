@@ -5,6 +5,7 @@
 #include "enginewrapper.h"
 
 #include <QOpenGLWidget>
+#include <QTimer>
 
 #include <osg/ref_ptr>
 
@@ -59,7 +60,7 @@ private:
 
     osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> graphicsWindow_;
     osg::ref_ptr<osgViewer::CompositeViewer> viewer_;
-    //QTimer heartbeat;
+    QTimer heartbeat;
     Scene* scene;
     QHash<QUuid, osg::Node*> nodeMap;
     osg::ref_ptr<osg::Node> rootNode;

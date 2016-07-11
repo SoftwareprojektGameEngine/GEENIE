@@ -46,7 +46,8 @@ void InspectorWidget::VectorToItem(QTreeWidgetItem* vector, Vector v)
     x->setData(0, Qt::UserRole+1, vector->data(0, Qt::UserRole+1));
     x->setData(0, Qt::UserRole+2, vector->data(0, Qt::UserRole+2));
     x->setData(1, Qt::UserRole, vector->data(1, Qt::UserRole));
-    x->setData(1, Qt::UserRole+1, 0);
+    x->setData(1, Qt::UserRole+1, vector->data(1, Qt::UserRole+1));
+    x->setData(1, Qt::UserRole+2, 0);
 
     QTreeWidgetItem* y = new QTreeWidgetItem(vector);
     y->setText(0,QString("Y"));
@@ -56,7 +57,8 @@ void InspectorWidget::VectorToItem(QTreeWidgetItem* vector, Vector v)
     y->setData(0, Qt::UserRole+1, vector->data(0, Qt::UserRole+1));
     y->setData(0, Qt::UserRole+2, vector->data(0, Qt::UserRole+2));
     y->setData(1, Qt::UserRole, vector->data(1, Qt::UserRole));
-    y->setData(1, Qt::UserRole+1, 1);
+    y->setData(1, Qt::UserRole+1, vector->data(1, Qt::UserRole+1));
+    y->setData(1, Qt::UserRole+2, 1);
 
     QTreeWidgetItem* z = new QTreeWidgetItem(vector);
     z->setText(0,QString("Z"));
@@ -66,7 +68,8 @@ void InspectorWidget::VectorToItem(QTreeWidgetItem* vector, Vector v)
     z->setData(0, Qt::UserRole+1, vector->data(0, Qt::UserRole+1));
     z->setData(0, Qt::UserRole+2, vector->data(0, Qt::UserRole+2));
     z->setData(1, Qt::UserRole, vector->data(1, Qt::UserRole));
-    z->setData(1, Qt::UserRole+1, 2);
+    z->setData(1, Qt::UserRole+1, vector->data(1, Qt::UserRole+1));
+    z->setData(1, Qt::UserRole+2, 2);
 
     QTreeWidgetItem* w = new QTreeWidgetItem(vector);
     w->setText(0,QString("W"));
@@ -76,7 +79,8 @@ void InspectorWidget::VectorToItem(QTreeWidgetItem* vector, Vector v)
     w->setData(0, Qt::UserRole+1, vector->data(0, Qt::UserRole+1));
     w->setData(0, Qt::UserRole+2, vector->data(0, Qt::UserRole+2));
     w->setData(1, Qt::UserRole, vector->data(1, Qt::UserRole));
-    w->setData(1, Qt::UserRole+1, 3);
+    w->setData(1, Qt::UserRole+1, vector->data(1, Qt::UserRole+1));
+    w->setData(1, Qt::UserRole+2, 3);
 
     //return vector;
 }
@@ -185,7 +189,9 @@ void InspectorWidget::FillTree(Entity *entity, bool sub)
         case ComponentType::POSITION:
         {
             PositionComponent* co = dynamic_cast<PositionComponent*>(comp);
+            c->setData(1, Qt::UserRole+1, 0);
             VectorToItem(c, co->GetPosition());
+            c->setData(1, Qt::UserRole+1, -1);
             c->setExpanded(true);
         }
             break;
@@ -296,7 +302,16 @@ void InspectorWidget::FillTree(Entity *entity, bool sub)
         default:
             break;
         }
-        itm->addChild(c);
+
+        bool inserted = false;
+        for(int i = 0; i < itm->childCount(); i++) {
+            if(c->data(1, Qt::DisplayRole).toString() < itm->child(i)->data(1, Qt::DisplayRole).toString()) {
+                itm->insertChild(i, c);
+                inserted = true;
+                break;
+            }
+        }
+        if(!inserted) itm->addChild(c);
     }
     QHashIterator<QUuid, Entity*> it2 = entity->GetSubEntities();
     while(it2.hasNext())
@@ -306,6 +321,7 @@ void InspectorWidget::FillTree(Entity *entity, bool sub)
     }
 
     itm->setExpanded(true);
+    ui->treeWidget->expandAll();
     if(!sub) b = true;
 }
 void InspectorWidget::SetHeaderText(QString text1, QString text2)
@@ -331,13 +347,18 @@ void InspectorWidget::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int
 
         switch(item->data(1, Qt::UserRole).toInt()) {
         case 2:
-            if(item->data(1, Qt::UserRole+1).toInt() == -1) return;
             break;
         case 3:
         {
             int index = item->data(1, Qt::UserRole+1).toInt();
+            qDebug() << index;
             if(index == 3 || index == 4 || item->data(1, Qt::UserRole+2).toInt() == 3) {
-                break;
+                if(index == 3 && item->data(1, Qt::UserRole+2).toInt() == -1) return;
+                Qt::ItemFlags flags = item->flags();
+                item->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+                ui->treeWidget->editItem(item, 1);
+                item->setFlags(flags);
+                return;
             }
 
             QColorDialog colorDialog;
@@ -483,9 +504,18 @@ void InspectorWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int colum
         case 3: // LIGHT
         {
             if(item->data(1, Qt::UserRole+1).toInt() == -1) return;
+            if(item->data(1, Qt::UserRole+1).toInt() == 4) {
+                Color c = Color(0.f, 0.f, 0.f, 1.f);
+                Vector v = Vector(0.f, 0.f, 0.f, 0.f);
+
+                LightComponent *lightComp = new LightComponent((LightSourceType)item->data(1, Qt::DisplayRole).toInt(), c, c, c, v);
+                emit ModifyComponent(compID, entityID, lightComp);
+                return;
+            }
 
             auto compNode = item;
             while(compNode->data(1, Qt::UserRole+1).toInt() != -1) compNode = compNode->parent();
+            qDebug() << compNode->data(1, Qt::DisplayRole);
 
             Color ambient;
             Color diffuse;
@@ -493,6 +523,7 @@ void InspectorWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int colum
             Vector dir = Vector(0.f,0.f,0.f,0.f);
 
             LightSourceType type = (LightSourceType)compNode->child(compNode->childCount()-1)->data(1, Qt::DisplayRole).toInt();
+            qDebug() << type;
             int attrIndex = 0;
 
 #define clamp(a, b, c) ((a) < (b)) ? (b) : ((a) > (c)) ? (c) : (a)
@@ -504,16 +535,20 @@ void InspectorWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int colum
     attrIndex++;
 
             if((type & AMBIENT) != 0) {
+                qDebug() << "has ambient";
                 GETCOLOR(ambient)
             }
 
             if((type & DIFFUSE) != 0) {
+                qDebug() << "has diffuse";
                 GETCOLOR(diffuse)
             }
 
             if((type & SPECULAR) != 0) {
+                qDebug() << "has specular";
                 GETCOLOR(specular)
             } else if((type & SPOT) != 0) {
+                qDebug() << "has spot light";
                 GETCOLOR(specular);
 
                 dir.x = compNode->child(attrIndex)->child(0)->data(1, Qt::DisplayRole).toFloat();
@@ -523,8 +558,9 @@ void InspectorWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int colum
             }
 #undef GETCOLOR
 #undef clamp
-
+            qDebug() << "collected data";
             LightComponent *lightComp = new LightComponent(type, ambient, diffuse, specular, dir);
+            qDebug() << "light component created";
             emit ModifyComponent(compID, entityID, lightComp);
         }
             break;

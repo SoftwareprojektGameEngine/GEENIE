@@ -35,6 +35,7 @@ OSGWidget::OSGWidget(OSGWrapper* wrapper, QWidget *parentWidget, Qt::WindowFlags
     : QOpenGLWidget(parentWidget, flags),
       graphicsWindow_(new osgViewer::GraphicsWindowEmbedded(this->x(), this->y(), this->width(), this->height())),
       viewer_(new CompositeViewerEx()),
+      heartbeat(),
       nodeMap() {
     this->wrapper = wrapper;
     this->scene = nullptr;
@@ -87,9 +88,9 @@ OSGWidget::OSGWidget(OSGWrapper* wrapper, QWidget *parentWidget, Qt::WindowFlags
     viewer->getCamera()->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     viewer->getCamera()->setClearColor(osg::Vec4(1.0f, 0.0f, 0.0f, 0.0f));
 
-    // setup timer
+    // setup timer*/
     connect(&heartbeat, SIGNAL(timeout()), this, SLOT(update()), Qt::QueuedConnection);
-    heartbeat.start(10);*/
+    heartbeat.start(33); // 30 fps
 }
 
 OSGWidget::~OSGWidget() {
