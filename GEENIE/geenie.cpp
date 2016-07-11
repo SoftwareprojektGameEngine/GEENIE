@@ -454,12 +454,14 @@ ENTITY_DATA GEENIE::fillSceneExplorerWithEntities(Entity *e)
 void GEENIE::EntityToInspector(Entity *e)
 {
     InspectorWidget* in = dynamic_cast<InspectorWidget*>(_dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget());
+    inspectedEntity = e;
     in->FillTree(e);
 }
 
 void GEENIE::UnsetInspector()
 {
     InspectorWidget* w = dynamic_cast<InspectorWidget*>(_dockWidgets.value(EDockWidgetTypes::InspectorWidget)->widget());
+    inspectedEntity = nullptr;
     w->clear();
 }
 
@@ -893,6 +895,8 @@ void GEENIE::undo()
     _project->Undo();
     fillSceneExplorer();
     fillAssetWidget();
+    _mainWindow->getSceneEditWidget()->GetEngineWidget()->UpdateSceneGraph();
+    EntityToInspector(inspectedEntity);
 }
 
 void GEENIE::redo()
@@ -900,6 +904,8 @@ void GEENIE::redo()
     _project->Redo();
     fillSceneExplorer();
     fillAssetWidget();
+    _mainWindow->getSceneEditWidget()->GetEngineWidget()->UpdateSceneGraph();
+    EntityToInspector(inspectedEntity);
 }
 
 #include "useractions.h"

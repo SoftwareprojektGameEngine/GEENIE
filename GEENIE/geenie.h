@@ -156,6 +156,8 @@ private:
     Project* _project;
     EngineWrapper* _engine;
 
+    Entity* inspectedEntity;
+
 
 private slots:
 
