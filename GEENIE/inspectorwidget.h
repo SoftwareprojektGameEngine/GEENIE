@@ -66,8 +66,8 @@ private:
     QTreeWidget *t;
     void SetHeaderText(QString, QString);
     void InitializeTree();
-    QTreeWidgetItem* VectorToItem(Vector v);
-    QTreeWidgetItem* ColorToItem(Color c);
+    void VectorToItem(QTreeWidgetItem* item, Vector v);
+    void ColorToItem(QTreeWidgetItem* item, Color c);
     Color ColorPicker();
     bool b;
 };

@@ -26,7 +26,7 @@ enum ComponentType {
 /*!
  * \brief The LightSourceType enum
  */
-enum LightSourceType {
+enum LightSourceType : int {
     AMBIENT = 0x01, //!< The light source contains ambient light information
     DIFFUSE = 0x02, //!< The light source contains diffuse light information
     SPOT = 0x04,  //!< The light source contains spot light information

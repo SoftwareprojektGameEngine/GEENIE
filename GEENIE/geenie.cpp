@@ -909,6 +909,8 @@ void GEENIE::ModifyComponent(QUuid id, QUuid parentId, Component *component)
     ModifyEntityAction* mea = new ModifyEntityAction((*_project),parentId,id,component);
     _project->AddUserAction(mea);
     fillSceneExplorer();
+    EntityToInspector(_project->FindEntity(parentId));
+    _mainWindow->getSceneEditWidget()->GetEngineWidget()->UpdateSceneGraph();
 }
 
 #include "addcomponentdialog.h"
@@ -980,6 +982,7 @@ void GEENIE::AddComponent(QUuid parentId)
         _project->AddUserAction(aca);
         fillSceneExplorer();
         EntityToInspector(_project->FindEntity(parentId));
+        _mainWindow->getSceneEditWidget()->GetEngineWidget()->UpdateSceneGraph();
     }
 }
 #include "deletecomponentdialog.h"
@@ -1004,7 +1007,9 @@ void GEENIE::DeleteComponent(QUuid parentId)
         QUuid comp = dia->SelectedId();
         UserAction *ua = new RemoveComponentAction((*_project),parentId,comp);
         _project->AddUserAction(ua);
-        this->UnsetInspector();
+        //this->UnsetInspector();
+        EntityToInspector(_project->FindEntity(parentId));
+        _mainWindow->getSceneEditWidget()->GetEngineWidget()->UpdateSceneGraph();
     }
 }
 
@@ -1018,6 +1023,7 @@ void GEENIE::AddEntity(QUuid parentId, se::ItemType type)
         CreateEntityAction* cea = new CreateEntityAction((*_project),parentId,aed.name());
         _project->AddUserAction(cea);
         fillSceneExplorer();
+        _mainWindow->getSceneEditWidget()->GetEngineWidget()->UpdateSceneGraph();
     }
 }
 
@@ -1085,6 +1091,8 @@ void GEENIE::DeleteScene(QUuid id)
         RemoveSceneAction* rsa = new RemoveSceneAction((*_project),id);
         _project->AddUserAction(rsa);
         fillSceneExplorer();
+        UnsetInspector();
+        _mainWindow->getSceneEditWidget()->GetEngineWidget()->BuildSceneGraph(nullptr);
     }
     else
     {
@@ -1100,6 +1108,8 @@ void GEENIE::DeleteEntity(QUuid id)
         RemoveEntityAction* rea = new RemoveEntityAction((*_project),id);
         _project->AddUserAction(rea);
         fillSceneExplorer();
+        UnsetInspector();
+        _mainWindow->getSceneEditWidget()->GetEngineWidget()->UpdateSceneGraph();
     }
     else
     {
@@ -1112,6 +1122,7 @@ void GEENIE::RenameEntity(QUuid id, QString name)
     RenameEntityAction* rea = new RenameEntityAction((*_project),id,name);
     _project->AddUserAction(rea);
     fillSceneExplorer();
+    EntityToInspector(_project->FindEntity(id));
 }
 
 
