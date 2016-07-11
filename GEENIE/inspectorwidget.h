@@ -69,6 +69,7 @@ private:
     QTreeWidgetItem* VectorToItem(Vector v);
     QTreeWidgetItem* ColorToItem(Color c);
     Color ColorPicker();
+    bool b;
 };
 
 #endif // INSPECTORWIDGET_H

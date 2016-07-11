@@ -9,7 +9,7 @@ InspectorWidget::InspectorWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     t = ui->treeWidget;
-
+    b = false;
     InitializeTree();
 }
 void InspectorWidget::InitializeTree()
@@ -73,7 +73,7 @@ QTreeWidgetItem* InspectorWidget::ColorToItem(Color c)
 
 void InspectorWidget::FillTree(Entity *entity, bool sub)
 {
-
+    b = false;
     if(!sub)
     {
         ui->treeWidget->clear();
@@ -161,6 +161,7 @@ void InspectorWidget::FillTree(Entity *entity, bool sub)
         it2.next();
         FillTree(it2.value(),true);
     }
+    b = true;
 }
 void InspectorWidget::SetHeaderText(QString text1, QString text2)
 {
@@ -222,19 +223,21 @@ void InspectorWidget::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int
 
 void InspectorWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column)
 {
-    if(column == 0)
+    if(b)
     {
-        return;
-    }
-    if(item->data(1,Qt::UserRole+1) == QVariant()) // Entity name changed
-    {
-        emit RenameEntity(QUuid(item->data(1,Qt::UserRole).toByteArray()),item->data(1,Qt::DisplayRole).toString());
-    }
-    else // Component name changed
-    {
+        if(column == 0)
+        {
+            return;
+        }
+        if(item->data(1,Qt::UserRole+1) == QVariant()) // Entity name changed
+        {
+            emit RenameEntity(QUuid(item->data(1,Qt::UserRole).toByteArray()),item->data(1,Qt::DisplayRole).toString());
+        }
+        else // Component name changed
+        {
 
+        }
     }
-
 }
 void InspectorWidget::clear()
 {

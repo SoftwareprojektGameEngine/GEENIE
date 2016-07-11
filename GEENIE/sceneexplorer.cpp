@@ -160,7 +160,6 @@ void SceneExplorer::on_treeWidget_customContextMenuRequested(const QPoint &pos)
             else
             {
                 menu->addAction(QString("Add entity"),this,SLOT(ContextMenuAddEntityToEntity()));
-                menu->addAction(QString("Rename entity"),this,SLOT(ContextMenuRenameEntity()));
                 menu->addAction(QString("Delete entity"),this,SLOT(ContextMenuDeleteEntity()));
                 menu->addAction(QString("Move Entity"),this,SLOT(ContextMenuMoveEntity()));
                 menu->addAction(QString("Add Component"),this,SLOT(ContextMenuAddComponent()));
