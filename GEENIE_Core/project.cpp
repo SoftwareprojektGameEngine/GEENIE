@@ -380,7 +380,10 @@ void Project::load(QString &file)
     for(scene;scene != 0;scene = scene->NextSiblingElement("scene"))
     {
         QUuid id = QUuid(QString(scene->Attribute("id")));
-        this->AddScene(new Scene(id));
+        QString name = QString(scene->Attribute("name"));
+        Scene *s = new Scene(id);
+        s->setName(name);
+        this->AddScene(s);
         TiXmlElement* entity = scene->FirstChildElement("entity");
         for(entity;entity != 0;entity = entity->NextSiblingElement("entity"))
         {
@@ -589,12 +592,12 @@ void Project::save(QString &file)
     saved = true;
     if(file != this->file())
     {
-        QDir().mkpath(QFileInfo(file).absolutePath()+QString("/assets/"));
+        QDir().mkpath(QFileInfo(file).absolutePath()+QString("\\assets\\"));
         QStringList fileList = QDir(this->assetPath()).entryList(QDir::Files);
         for(auto const filed : fileList)
         {
             QFile assetFile(this->assetPath() + filed);
-            QString newFile = QFileInfo(file).absolutePath()+QString("/assets/")+filed;
+            QString newFile = QFileInfo(file).absolutePath()+QString("\\assets\\")+filed;
             assetFile.copy(newFile);
         }
         projectPath = file;
@@ -615,6 +618,7 @@ void Project::save(QString &file)
     {
         TiXmlElement* sceneElement = new TiXmlElement("scene");
         sceneElement->SetAttribute("id",scene->GetID().toByteArray().data());
+        sceneElement->SetAttribute("name",scene->name().toStdString().c_str());
         QHashIterator<QUuid, Entity*> it = scene->GetEntities();
         if(scene->HasEntities())
         {
