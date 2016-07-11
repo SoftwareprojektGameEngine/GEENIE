@@ -84,6 +84,7 @@ void InspectorWidget::FillTree(Entity *entity, bool sub)
     itm->setText(0,"Entity");
     itm->setText(1,entity->name());
     itm->setData(1,Qt::UserRole,entity->GetID().toByteArray());
+    itm->setExpanded(true);
 
     QHashIterator<QUuid, Component*> it = entity->GetComponents();
     while(it.hasNext())
@@ -91,30 +92,33 @@ void InspectorWidget::FillTree(Entity *entity, bool sub)
         it.next();
         QTreeWidgetItem *c = new QTreeWidgetItem();
         Component *comp = it.value();
+
         c->setFlags(c->flags() | Qt::ItemIsEditable);
         c->setText(0,comp->GetTypeName());
         c->setData(0,Qt::UserRole,(int)comp->GetType());
         c->setData(1,Qt::UserRole,comp->GetID().toByteArray());
         c->setData(1,Qt::UserRole+1,entity->GetID().toByteArray());
         c->setText(1,comp->name());
+        c->setExpanded(true);
+
         switch(comp->GetType())
         {
         case ComponentType::MODEL:
         {
-            break;
         }
+            break;
         case ComponentType::MATERIAL:
         {
-            break;
         }
+            break;
         case ComponentType::POSITION:
         {
             PositionComponent* co = dynamic_cast<PositionComponent*>(comp);
             QTreeWidgetItem* prop = VectorToItem(co->GetPosition());
             prop->setText(0,QString("Position"));
             c->addChild(prop);
-            break;
         }
+            break;
         case ComponentType::LIGHT:
         {
             LightComponent* co = dynamic_cast<LightComponent*>(comp);
@@ -133,24 +137,24 @@ void InspectorWidget::FillTree(Entity *entity, bool sub)
             QTreeWidgetItem* sourceType = new QTreeWidgetItem(c);
             sourceType->setText(0,QString("Light source type"));
             sourceType->setData(1,Qt::DisplayRole,(int)co->GetLightSourceType());
-            break;
         }
+            break;
         case ComponentType::TEXTURE:
         {
-            break;
         }
+            break;
         case ComponentType::SOUND:
         {
-            break;
         }
+            break;
         case ComponentType::SHADER:
         {
-            break;
         }
+            break;
         case ComponentType::SCRIPT:
         {
-            break;
         }
+            break;
         default:
             break;
         }

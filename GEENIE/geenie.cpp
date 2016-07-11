@@ -979,6 +979,7 @@ void GEENIE::AddComponent(QUuid parentId)
         AddComponentAction* aca = new AddComponentAction((*_project),parentId,c);
         _project->AddUserAction(aca);
         fillSceneExplorer();
+        EntityToInspector(_project->FindEntity(parentId));
     }
 }
 #include "deletecomponentdialog.h"

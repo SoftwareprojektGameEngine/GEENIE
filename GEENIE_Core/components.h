@@ -211,6 +211,7 @@ public:
 
 enum ScriptTrigger {
     // TODO: insert plausible values
+    SCRIPTTRIGGER_DEFAULT
 };
 
 //! A script-trigger component.

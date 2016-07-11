@@ -34,11 +34,12 @@ void AddComponentDialog::on_createBtn_clicked()
     {
         if(ui->checkBox->isChecked())
         {
-            _component = new ModelComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()),ui->lineEdit->text());
+            _component = new ModelComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()), QUuid::createUuid(), ui->lineEdit->text());
         }
         else
         {
-            //TODO: Standardcomponent
+            // create sphere
+            _component = new ModelComponent(QUuid::createUuid(), QUuid::createUuid(), ui->lineEdit->text());
         }
         break;
     }
@@ -46,35 +47,37 @@ void AddComponentDialog::on_createBtn_clicked()
     {
         if(ui->checkBox->isChecked())
         {
-            _component = new MaterialComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()),1,ui->lineEdit->text());
+            _component = new MaterialComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()),1, QUuid::createUuid(), ui->lineEdit->text());
         }
         else
         {
             //TODO: Standardcomponent
+            _component = new MaterialComponent(QUuid::createUuid(), 0, QUuid::createUuid(), ui->lineEdit->text());
         }
         break;
     }
     case ComponentType::POSITION:
     {
-        _component = new PositionComponent(Vector(),ui->lineEdit->text());
+        _component = new PositionComponent(Vector(),QUuid::createUuid(), ui->lineEdit->text());
         break;
     }
     case ComponentType::LIGHT:
     {
         Color c(0,0,0,0);
         Vector v(0,0,0,0);
-        _component = new LightComponent(AMBIENT,c,c,c,v,ui->lineEdit->text());
+        _component = new LightComponent(AMBIENT,c,c,c,v, QUuid::createUuid(), ui->lineEdit->text());
         break;
     }
     case ComponentType::TEXTURE:
     {
         if(ui->checkBox->isChecked())
         {
-            _component = new TextureComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()),1,ui->lineEdit->text());
+            _component = new TextureComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()),1, QUuid::createUuid(), ui->lineEdit->text());
         }
         else
         {
             //TODO: Standardcomponent
+            _component = new TextureComponent(QUuid::createUuid(), 0, QUuid::createUuid(), ui->lineEdit->text());
         }
         break;
     }
@@ -82,11 +85,12 @@ void AddComponentDialog::on_createBtn_clicked()
     {
         if(ui->checkBox->isChecked())
         {
-            _component = new SoundComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()),ui->lineEdit->text());
+            _component = new SoundComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()), QUuid::createUuid(), ui->lineEdit->text());
         }
         else
         {
             //TODO: Standardcomponent
+            _component = new SoundComponent(QUuid::createUuid(), QUuid::createUuid(), ui->lineEdit->text());
         }
         break;
     }
@@ -94,19 +98,21 @@ void AddComponentDialog::on_createBtn_clicked()
     {
         if(ui->checkBox->isChecked())
         {
-            _component = new ShaderComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()),ui->lineEdit->text());
+            _component = new ShaderComponent(QUuid(ui->comboBox_2->currentData(Qt::UserRole).toByteArray()), QUuid::createUuid(), ui->lineEdit->text());
         }
         else
         {
             //TODO: Standardcomponent
+            _component = new ShaderComponent(QUuid::createUuid(), QUuid::createUuid(), ui->lineEdit->text());
         }
         break;
     }
     case ComponentType::SCRIPT:
     {
         //TODO: Disable ScriptComponent?
-        break;
+        _component = new ScriptTriggerComponent(SCRIPTTRIGGER_DEFAULT, QUuid::createUuid(), QUuid::createUuid(), ui->lineEdit->text());
     }
+        break;
     default: QDialog::reject(); break;
     }
 

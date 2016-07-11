@@ -15,11 +15,15 @@ AddComponentAction::~AddComponentAction() {
 }
 
 void AddComponentAction::Do() {
+    if(this->done) return;
+
     Entity* entity = project.FindEntity(this->entityID);
 
     if(entity != nullptr) {
         entity->AddComponent(this->component);
         this->done = true;
+    } else {
+        throw std::exception("entity not found");
     }
 }
 
