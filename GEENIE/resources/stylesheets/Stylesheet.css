@@ -78,6 +78,28 @@ QTreeWidget::item::hover{
 	color: #3399FF;
 }
 
+QTreeWidget::branch {
+	width: 10px;
+	height: 7px;
+}
+
+QTreeWidget::branch:closed:has-children {
+	image: url(:/icons/closed.png);
+	color: white;
+}
+
+QTreeWidget::branch:closed:has-children:hover {
+	image: url(:/icons/closed_hover.png);
+	color: white;
+}
+
+QTreeWidget::branch:open:has-children {
+	image: url(:/icons/open.png);
+}
+
+QTreeWidget::branch:open:has-children:hover {
+	image: url(:/icons/open_hover.png);
+}
 QTabWidget {
 	border: none;
 }
