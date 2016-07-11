@@ -78,7 +78,7 @@ void InspectorWidget::FillTree(Entity *entity, bool sub)
     {
         ui->treeWidget->clear();
     }
-    if(e == nullptr) return;
+    if(entity == nullptr) return;
     QTreeWidgetItem *itm = new QTreeWidgetItem(ui->treeWidget);
     itm->setFlags(itm->flags() | Qt::ItemIsEditable);
     itm->setText(0,"Entity");
