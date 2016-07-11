@@ -202,10 +202,10 @@ Color Project::XmlToColor(TiXmlElement *parent, QString &name)
     float g = 0;
     float b = 0;
     float a = 0;
-    c->FirstChildElement("r")->QueryFloatAttribute("r",&r);
-    c->FirstChildElement("g")->QueryFloatAttribute("g",&g);
-    c->FirstChildElement("b")->QueryFloatAttribute("b",&b);
-    c->FirstChildElement("a")->QueryFloatAttribute("a",&a);
+    c->FirstChildElement("r")->QueryFloatAttribute("value",&r);
+    c->FirstChildElement("g")->QueryFloatAttribute("value",&g);
+    c->FirstChildElement("b")->QueryFloatAttribute("value",&b);
+    c->FirstChildElement("a")->QueryFloatAttribute("value",&a);
     ret.r = r;
     ret.g = g;
     ret.b = b;
@@ -218,16 +218,16 @@ Vector Project::XmlToVector(TiXmlElement *parent, QString &name)
     Vector ret = Vector();
     TiXmlElement* v = parent->FirstChildElement(name.toUtf8().data());
     float x = 0;
-    v->FirstChildElement("x")->QueryFloatAttribute("x",&x);
+    v->FirstChildElement("x")->QueryFloatAttribute("value",&x);
     ret.x = x;
     float y = 0;
-    v->FirstChildElement("y")->QueryFloatAttribute("y",&y);
+    v->FirstChildElement("y")->QueryFloatAttribute("value",&y);
     ret.y = y;
     float z = 0;
-    v->FirstChildElement("z")->QueryFloatAttribute("z",&z);
+    v->FirstChildElement("z")->QueryFloatAttribute("value",&z);
     ret.z = z;
     float w = 0;
-    v->FirstChildElement("w")->QueryFloatAttribute("w",&w);
+    v->FirstChildElement("w")->QueryFloatAttribute("value",&w);
     ret.w = w;
     return ret;
 }
